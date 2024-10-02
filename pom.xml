@@ -4,18 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.example</groupId>
-        <artifactId>SCAS</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-
-<!--    <groupId>org.example</groupId> -->
-    <artifactId>backend</artifactId>
-<!--    <version>1.0-SNAPSHOT</version> -->
+    <groupId>org.example</groupId>
+    <artifactId>SCAS</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>manager</module>
+        <module>backend</module>
+<!--        <module>front</module> -->
+        <module>rnd</module>
     </modules>
 
     <properties>
