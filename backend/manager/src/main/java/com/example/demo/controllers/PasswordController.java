@@ -2,7 +2,10 @@ package com.example.demo.controllers;
 
 import com.example.demo.dto.ChangePasswordDto;
 import com.example.demo.dto.RegistrationDto;
+import com.example.demo.entity.Token;
+import com.example.demo.exception.PasswordException;
 import com.example.demo.service.EmailService;
+import com.example.demo.service.TokenService;
 import com.example.demo.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,13 +22,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.UnsupportedEncodingException;
 
 @Controller
-@RequestMapping()
+@RequestMapping("/password")
 @RequiredArgsConstructor
 public class PasswordController {
 
     private final EmailService emailService;
 
     private final UserService userService;
+
+    private final TokenService tokenService;
 
     @GetMapping("/change")
     public String showFormChangePassword(Model model){
@@ -37,7 +42,7 @@ public class PasswordController {
     public String verifyEmailForChangePassword(@ModelAttribute("email") ChangePasswordDto email, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         String code = userService.changePassword(email.getEmail());
         emailService.sendVerificationPassword(email.getEmail(), code, request);
-        return "login";
+        return "auth";
     }
 
     @GetMapping("/change-password")
@@ -47,17 +52,19 @@ public class PasswordController {
             model.addAttribute("verify-code", code);
             return "change-password";
         } else {
-            return "login";
+            return "auth";
         }
     }
 
     @PostMapping("/change-password")
-    public String changePassword(@ModelAttribute("changePassword") ChangePasswordDto changePasswordDto, HttpServletRequest request){
-        User user = userService.getByVerifyCode(request.getParameter("verify-code"));
+    public String changePassword(@ModelAttribute("changePassword") ChangePasswordDto changePasswordDto, HttpServletRequest request) throws PasswordException {
+        User user = tokenService.getByVerifyCode(request.getParameter("verify-code")).getUser();
         if(changePasswordDto.getPassword().equals(changePasswordDto.getPasswordConfirm())){
             userService.changePasswordUser(user, changePasswordDto.getPassword());
+        }else{
+            throw new PasswordException("passwords don't match");
         }
-        return "login";
+        return "auth";
     }
 
 }
