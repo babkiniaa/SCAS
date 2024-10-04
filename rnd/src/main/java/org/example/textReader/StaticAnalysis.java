@@ -24,14 +24,18 @@ public class StaticAnalysis {
 
             // Пример команды, которую вы хотите выполнить в новой директории
             processBuilder.command(
-                    "C:\\Program Files\\maven\\bin\\mvn.cmd",
-                    dirReport,
+//                    "C:\\Program Files\\maven\\bin\\mvn.cmd",
+                    "C:\\apache-maven-3.9.0\\bin\\mvn.cmd",
+//                    dirReport,
                     "org.owasp:dependency-check-maven:check"
             );
 
             Process process = processBuilder.start();
+            process.destroy();
+//            processBuilder.directory(new File("C:\\Users\\Ярик\\Desktop\\sast"));
+//            processBuilder.directory(new File(System.getProperty("user.dir")));
 
-            processBuilder.directory(new File("C:\\Users\\Ярик\\Desktop\\sast"));
+
 
             // Обработка вывода или ошибок процесса, если необходимо
 
@@ -46,7 +50,8 @@ public class StaticAnalysis {
         ProcessBuilder processBuilder = new ProcessBuilder();
         String dirReport = "-DdistPMD=" + nameFile;
         processBuilder.command(
-                "C:\\Program Files\\maven\\bin\\mvn.cmd",
+//                "C:\\Program Files\\maven\\bin\\mvn.cmd",
+                "C:\\apache-maven-3.9.0\\bin\\mvn.cmd",
                 dirReport,
                 "pmd:pmd"
         );
@@ -65,6 +70,7 @@ public class StaticAnalysis {
 
             // Ожидаем завершения процесса и получаем его результат
             int exitCode = process.waitFor();
+            process.destroy();
             System.out.println("\nКоманда завершена с кодом: " + exitCode);
 
         } catch (InterruptedException | IOException e) {
@@ -77,7 +83,8 @@ public class StaticAnalysis {
         ProcessBuilder processBuilder = new ProcessBuilder();
         String dirReport = "-DdistCheckerStyle=" + nameFile;
         processBuilder.command(
-                "C:\\Program Files\\maven\\bin\\mvn.cmd",
+//                "C:\\Program Files\\maven\\bin\\mvn.cmd",
+                "C:\\apache-maven-3.9.0\\bin\\mvn.cmd",
                 dirReport,
                 "checkstyle:checkstyle"
         );
@@ -96,6 +103,7 @@ public class StaticAnalysis {
 
             // Ожидаем завершения процесса и получаем его результат
             int exitCode = process.waitFor();
+            process.destroy();
             System.out.println("\nКоманда завершена с кодом: " + exitCode);
 
         } catch (InterruptedException | IOException e) {

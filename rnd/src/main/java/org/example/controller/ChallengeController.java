@@ -3,7 +3,6 @@ package org.example.controller;
 import org.example.entity.Report;
 import org.example.repository.ReportRepository;
 import org.example.textReader.Manager;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +43,7 @@ public class ChallengeController {
                 e.printStackTrace();
             }
         });
+//        executorService.shutdown();
 //        reportRepository.save();
         return ResponseEntity.ok("Работаем в фоне");
     }
