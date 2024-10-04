@@ -3,6 +3,7 @@ package org.example.textReader;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,14 @@ public class StaticAnalysis {
             );
 
             Process process = processBuilder.start();
-            process.destroy();
+//            BufferedReader reader =
+//                    new BufferedReader(new InputStreamReader(process.getInputStream()));
+//
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//            process.destroy();
 //            processBuilder.directory(new File("C:\\Users\\Ярик\\Desktop\\sast"));
 //            processBuilder.directory(new File(System.getProperty("user.dir")));
 
@@ -105,7 +113,6 @@ public class StaticAnalysis {
             int exitCode = process.waitFor();
             process.destroy();
             System.out.println("\nКоманда завершена с кодом: " + exitCode);
-
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
