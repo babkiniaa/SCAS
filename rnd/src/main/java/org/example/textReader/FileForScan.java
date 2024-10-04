@@ -47,8 +47,9 @@ public class FileForScan {
         if(fDesktop.exists()) {
             deleteDir(fDesktop);
         }
+
 //        deleteDir(f);
-//        FileUtils.deleteDirectory(new File(cloneDirectoryPath));
+//        FileUtils.deleteDirectory(fDesktop);
 //        if(f.exists()) {
 //            ProcessBuilder processBuilder = new ProcessBuilder();
 //

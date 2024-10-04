@@ -11,13 +11,17 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class BinAnalysis {
-    public void sportbugs() throws IOException, XMLStreamException {
+    public void spotbugs(String dir) throws IOException, XMLStreamException {
 
-        System.setProperty("maven.home", "C:\\Users\\Ярик\\apache-maven-3.9.0");
+//        System.setProperty("maven.home", "C:\\Program Files\\maven");
+        System.setProperty("maven.home", "C:\\apache-maven-3.9.0");
 
         InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File("C:\\sber\\SberTasks2024\\pom.xml"));
-        request.setGoals(Collections.singletonList("-Ddist=C:\\sber\\SberTasks2024\\src\\down spotbugs:check"));
+//        request.setPomFile(new File("C:\\Users\\Ярик\\Desktop\\sast\\pom.xml"));
+        request.setPomFile(new File(System.getProperty("user.dir") + "\\pom.xml"));
+
+        String ddist = "-Ddist=" + dir + " spotbugs:check";
+        request.setGoals(Collections.singletonList(ddist));
 
         Invoker invoker = new DefaultInvoker();
         try {
@@ -31,7 +35,8 @@ public class BinAnalysis {
         Writer writer = new Writer();
         XMLParser xmlParser = new XMLParser();
 //        System.out.println(xmlParser.parse("C:\\sber\\SberTasks2024\\target\\spotbugsXml.xml"));
-        writer.writeFile(xmlParser.parse("C:\\sber\\SberTasks2024\\target\\spotbugsXml.xml"));
+//        writer.writeFile(xmlParser.parse("C:\\Users\\Ярик\\Desktop\\sast\\target\\spotbugsXml.xml"));
+        //writer.writeFile(xmlParser.parse(System.getProperty("user.dir") + "\\target\\spotbugsXml.xml"));
         System.out.println("looooop");
     }
 }
