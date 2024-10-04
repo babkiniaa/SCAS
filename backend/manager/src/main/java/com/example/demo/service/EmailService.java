@@ -25,7 +25,7 @@ public class EmailService {
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
                 + "Thank you,<br>"
                 + "SCASIK_STASIK.";
-        sendEmail(email, subject, content, verificationCode, request, "/verify?code=");
+        sendEmail(email, subject, content, verificationCode, request, "/auth/verify?code=");
     }
 
     private String getSiteURL(HttpServletRequest request) {
@@ -40,7 +40,7 @@ public class EmailService {
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
                 + "Thank you,<br>"
                 + "SCASIK_STASIK.";
-        sendEmail(email, subject, content, verificationCode, request, "/change-password?code=");
+        sendEmail(email, subject, content, verificationCode, request, "/password/change-password?code=");
     }
 
     private void sendEmail(String toAddress, String subject, String content, String verificationCode, HttpServletRequest request, String partVerifyURL) throws MessagingException, UnsupportedEncodingException {

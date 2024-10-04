@@ -21,16 +21,17 @@ public class Config {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/verify", "/login", "/change-password", "/change").permitAll()
+                        .requestMatchers("/auth/**", "/password/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
+                        .loginPage("/auth/login")
                         .defaultSuccessUrl("/home", true)
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
+                        .logoutSuccessUrl("/auth/login")
                         .permitAll()
                 );
         return httpSecurity.build();
