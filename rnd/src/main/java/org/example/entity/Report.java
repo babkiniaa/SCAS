@@ -3,11 +3,15 @@ package org.example.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+import java.util.Date;
+
+@Builder
 @Setter
 @Getter
-@Entity
-@Table(name = "repots")
+@Table
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "reports")
 public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +19,10 @@ public class Report {
 
 //    @Column(nullable = false)
 //    private User user;
+
+    private String nameProject;
+
+    private Date date;
 
     private String reportDepencyChecker;
 
@@ -24,15 +32,17 @@ public class Report {
 
     private String reportBugs;
 
-    public Report(String reportDepencyChecker, String reportCheckerStyle, String reportPMD, String reportBugs){
-        this.reportDepencyChecker = reportDepencyChecker;
-        this.reportCheckerStyle = reportCheckerStyle;
-        this.reportPMD = reportPMD;
-        this.reportBugs= reportBugs;
-    }
-
-    public Report(){
-
-    }
+//    public Report(String nameProject, Date date, String reportDepencyChecker, String reportCheckerStyle, String reportPMD, String reportBugs){
+//        this.nameProject = nameProject;
+//        this.date = date;
+//        this.reportDepencyChecker = reportDepencyChecker;
+//        this.reportCheckerStyle = reportCheckerStyle;
+//        this.reportPMD = reportPMD;
+//        this.reportBugs= reportBugs;
+//    }
+//
+//    public Report(){
+//
+//    }
 
 }
