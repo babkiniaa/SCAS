@@ -22,6 +22,10 @@ import java.util.Collections;
 public class Manager {
 
     private String url = " ";
+    private String repOWASP = " ";
+    private String repPMD = " ";
+    private String repStyle = " ";
+    private String repSpotBug = " ";
 
     public void start() throws IOException {
         BinAnalysis binAnalysis = new BinAnalysis();
