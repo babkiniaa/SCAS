@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.Mapper.ReportMapper;
 import org.example.dto.ReportDto;
 import org.example.entity.Report;
 import org.example.repository.*;
@@ -22,14 +23,16 @@ public class ChallengeController {
 
     private final Manager manager;
     private final ReportService reportService;
-    private final ExecutorService executorService;
-    private final ReportDto reportDto;
+    private final ExecutorService executorService;;
+    private final ReportMapper reportMapper;
+    private final Report report;
 
-    public ChallengeController(Manager manager, ExecutorService executorService, ReportService reportService, ReportDto reportDto) {
+    public ChallengeController(Manager manager, ExecutorService executorService, ReportService reportService, ReportMapper reportMapper, Report report) {
         this.manager = manager;
         this.executorService = executorService;
         this.reportService = reportService;
-        this.reportDto = reportDto;
+        this.reportMapper = reportMapper;
+        this.report = report;
     }
 
     @GetMapping("/reports")
@@ -51,13 +54,13 @@ public class ChallengeController {
             try {
                 manager.setUrl(url);
                 manager.start();
-                reportService.create(reportDto.builder()
+                reportService.create(reportMapper.ReportToReportDto(Report.builder()
                         .nameProject(name)
                         .reportDepencyChecker(manager.getRepOWASP())
                         .reportPMD(manager.getRepPMD())
                         .reportCheckerStyle(manager.getRepStyle())
                         .reportBugs(manager.getRepSpotBug())
-                        .build());
+                        .build()));
 
             } catch (IOException e) {
                 e.printStackTrace();

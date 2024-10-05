@@ -2,6 +2,7 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 @Setter
 @Getter
 @Table
+@Component
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "reports")
@@ -16,9 +18,6 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-//    @Column(nullable = false)
-//    private User user;
 
     private String nameProject;
 
@@ -32,17 +31,5 @@ public class Report {
 
     private String reportBugs;
 
-//    public Report(String nameProject, Date date, String reportDepencyChecker, String reportCheckerStyle, String reportPMD, String reportBugs){
-//        this.nameProject = nameProject;
-//        this.date = date;
-//        this.reportDepencyChecker = reportDepencyChecker;
-//        this.reportCheckerStyle = reportCheckerStyle;
-//        this.reportPMD = reportPMD;
-//        this.reportBugs= reportBugs;
-//    }
-//
-//    public Report(){
-//
-//    }
 
 }
