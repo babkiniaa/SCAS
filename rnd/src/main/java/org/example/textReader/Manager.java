@@ -78,7 +78,7 @@ public class Manager {
         }
         System.out.println(" The end ");
 
-        //fileForScan.del();
+        fileForScan.del();
     }
 
     public String freePath(int count, String baseDirectoryPath) {
