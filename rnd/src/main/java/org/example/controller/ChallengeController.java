@@ -48,19 +48,14 @@ public class ChallengeController {
 
     //    Многопоточная версия
     @PostMapping("/api/main")
-    public ResponseEntity<String> CallWork(@RequestParam String url, String name) {
+    public ResponseEntity<String> CallWork(@RequestParam String url, @RequestParam String name) {
 
         executorService.submit(() -> {
             try {
                 manager.setUrl(url);
                 manager.start();
-                reportService.create(reportMapper.ReportToReportDto(Report.builder()
-                        .nameProject(name)
-                        .reportDepencyChecker(manager.getRepOWASP())
-                        .reportPMD(manager.getRepPMD())
-                        .reportCheckerStyle(manager.getRepStyle())
-                        .reportBugs(manager.getRepSpotBug())
-                        .build()));
+                ReportDto reportDto = new ReportDto(name, manager.getRepOWASP(), manager.getRepPMD(), manager.getRepStyle(), manager.getRepSpotBug());
+                reportService.create(reportMapper.reportToEntity(reportDto));
 
             } catch (IOException e) {
                 e.printStackTrace();

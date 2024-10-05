@@ -6,9 +6,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Mapper
 @Component
 public interface ReportMapper {
 
-    ReportDto ReportToReportDto(Report report);
+    Report reportToEntity(ReportDto reportDto);
+    ReportDto reportToDto(Report report);
+    List<ReportDto> reportToListDto(List<Report> reports);
 }
