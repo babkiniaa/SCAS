@@ -42,8 +42,7 @@ public class Manager {
             gitStatusDesktop.cloneRepository();
             FileForScan fileForScan = new FileForScan(currentDir, currentDirUser);
             StaticAnalysis staticAnalysis = new StaticAnalysis(currentDirUser.substring(System.getProperty("user.dir").length() + 6));
-
-//
+            
             System.setProperty("maven.home", "C:\\Program Files\\maven");
 //        System.setProperty("maven.home", "C:\\apache-maven-3.9.0");
 
