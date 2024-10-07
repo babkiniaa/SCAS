@@ -3,7 +3,6 @@ package org.example.textReader;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.maven.Maven;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
@@ -30,8 +29,9 @@ public class Manager {
     public void start() throws IOException {
         BinAnalysis binAnalysis = new BinAnalysis();
         String currentDir = System.getProperty("user.dir") + "/src/main/java/projectDownload1";
-//        String currentDirDesktop = "C:/Users/Ярик/Desktop/down/Download1";
-        String currentDirDesktop = "C:/Users/Дмитрий/Desktop/down/Download1";
+//        String currentDirUser = "C:/Users/Ярик/Desktop/down/Download1";
+//        String currentDirUser = "C:/Users/Дмитрий/Desktop/down/Download1";
+        String currentDirUser = System.getProperty("user.dir") + "/down/Download1";
         currentDir = freePath(0, currentDir);
 
 //        fileForScan.del();
@@ -40,19 +40,20 @@ public class Manager {
 
         GitStatus gitStatus = new GitStatus(url, currentDir);
         gitStatus.cloneRepository();
-        currentDirDesktop = freePath(0, currentDirDesktop);
-        GitStatus gitStatus1 = new GitStatus(url, currentDirDesktop);
+        currentDirUser = freePath(0, currentDirUser);
+        GitStatus gitStatus1 = new GitStatus(url, currentDirUser);
         gitStatus1.cloneRepository();
 
-        FileForScan fileForScan = new FileForScan(currentDir, currentDirDesktop);
-        StaticAnalysis staticAnalysis = new StaticAnalysis(currentDirDesktop.substring(27, currentDirDesktop.length()));
+        FileForScan fileForScan = new FileForScan(currentDir, currentDirUser);
+//        StaticAnalysis staticAnalysis = new StaticAnalysis(currentDirUser.substring(27, currentDirUser.length()));
+        StaticAnalysis staticAnalysis = new StaticAnalysis(currentDirUser.substring(System.getProperty("user.dir").length()+6));
 
 //
 //        System.setProperty("maven.home", "C:\\Program Files\\maven");
         System.setProperty("maven.home", "C:\\apache-maven-3.9.0");
 
         InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(currentDirDesktop + "\\pom.xml"));
+        request.setPomFile(new File(currentDirUser + "\\pom.xml"));
 
         request.setGoals(Collections.singletonList("compile"));
 
@@ -66,13 +67,13 @@ public class Manager {
         }
 //
 
-        staticAnalysis.startOWASP(currentDirDesktop);
+        staticAnalysis.startOWASP(currentDirUser);
         staticAnalysis.startPmd();
         staticAnalysis.startCheckStyle();
 
 //        БИН анализ
         try {
-            binAnalysis.spotbugs(currentDirDesktop);
+            binAnalysis.spotbugs(currentDirUser);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
