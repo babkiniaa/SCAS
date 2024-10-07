@@ -7,6 +7,7 @@ import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.stereotype.Component;
 
 import javax.xml.stream.XMLStreamException;
@@ -25,61 +26,66 @@ public class Manager {
     private String repPMD = " ";
     private String repStyle = " ";
     private String repSpotBug = " ";
+    private String comment = " ";
+    private String currentDir = System.getProperty("user.dir") + "/src/main/java/projectDownload1";
+    private String currentDirUser = System.getProperty("user.dir") + "/down/Download1";
 
     public void start() throws IOException {
         BinAnalysis binAnalysis = new BinAnalysis();
-        String currentDir = System.getProperty("user.dir") + "/src/main/java/projectDownload1";
-//        String currentDirUser = "C:/Users/Ярик/Desktop/down/Download1";
-//        String currentDirUser = "C:/Users/Дмитрий/Desktop/down/Download1";
-        String currentDirUser = System.getProperty("user.dir") + "/down/Download1";
         currentDir = freePath(0, currentDir);
-
-//        fileForScan.del();
-//        url = "https://github.com/ShchekoturovDA/SberTasks2024.git";
-//        String url = "https://github.com/babkiniaa/STASIK.git";
-
         GitStatus gitStatus = new GitStatus(url, currentDir);
-        gitStatus.cloneRepository();
-        currentDirUser = freePath(0, currentDirUser);
-        GitStatus gitStatus1 = new GitStatus(url, currentDirUser);
-        gitStatus1.cloneRepository();
 
-        FileForScan fileForScan = new FileForScan(currentDir, currentDirUser);
-//        StaticAnalysis staticAnalysis = new StaticAnalysis(currentDirUser.substring(27, currentDirUser.length()));
-        StaticAnalysis staticAnalysis = new StaticAnalysis(currentDirUser.substring(System.getProperty("user.dir").length()+6));
+        try {
+            gitStatus.cloneRepository();
+            currentDirUser = freePath(0, currentDirUser);
+            GitStatus gitStatusDesktop = new GitStatus(url, currentDirUser);
+            gitStatusDesktop.cloneRepository();
+            FileForScan fileForScan = new FileForScan(currentDir, currentDirUser);
+            StaticAnalysis staticAnalysis = new StaticAnalysis(currentDirUser.substring(System.getProperty("user.dir").length() + 6));
 
 //
-//        System.setProperty("maven.home", "C:\\Program Files\\maven");
-        System.setProperty("maven.home", "C:\\apache-maven-3.9.0");
+            System.setProperty("maven.home", "C:\\Program Files\\maven");
+//        System.setProperty("maven.home", "C:\\apache-maven-3.9.0");
 
-        InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(currentDirUser + "\\pom.xml"));
+            InvocationRequest request = new DefaultInvocationRequest();
+            request.setPomFile(new File(currentDirUser + "\\pom.xml"));
 
-        request.setGoals(Collections.singletonList("compile"));
+            request.setGoals(Collections.singletonList("compile"));
 
-        Invoker invoker = new DefaultInvoker();
-        try {
-            invoker.execute(request);
-            System.out.println("Maven command executed successfully!");
-        } catch (Exception e) {
-            System.err.println("Error executing Maven command: " + e.getMessage());
-            e.printStackTrace();
+            Invoker invoker = new DefaultInvoker();
+            try {
+                invoker.execute(request);
+            } catch (Exception e) {
+                comment += " Ошибка при работе invoker" + e.getMessage();
+            }
+            try {
+                staticAnalysis.startOWASP(currentDirUser);
+            } catch (Exception e) {
+                comment += " Ошибка при работе OWASP" + e.getMessage();
+            }
+            try {
+                staticAnalysis.startPmd();
+            } catch (Exception e) {
+                comment += " Ошибка при работе PMD" + e.getMessage();;
+            }
+            try {
+                staticAnalysis.startCheckStyle();
+            } catch (Exception e) {
+                comment += " Ошибка при работе CheckerStyle" + e.getMessage();
+            }
+            try {
+                binAnalysis.spotbugs(currentDirUser);
+            } catch (XMLStreamException e) {
+                comment += " Ошибка при работе spotbugs" + e.getMessage();
+            }
+
+            fileForScan.del();
+
+        } catch (GitAPIException e) {
+            comment += "Не удалось загрузить Git, возможно ссылка не корректна" + e.getMessage();
         }
-//
 
-        staticAnalysis.startOWASP(currentDirUser);
-        staticAnalysis.startPmd();
-        staticAnalysis.startCheckStyle();
 
-//        БИН анализ
-        try {
-            binAnalysis.spotbugs(currentDirUser);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        }
-        System.out.println(" The end ");
-
-        fileForScan.del();
     }
 
     public String freePath(int count, String baseDirectoryPath) {
