@@ -8,6 +8,7 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.util.IO;
 import org.springframework.stereotype.Component;
 
 import javax.xml.stream.XMLStreamException;
@@ -59,22 +60,22 @@ public class Manager {
             }
             try {
                 staticAnalysis.startOWASP(currentDirUser);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 comment += " Ошибка при работе OWASP" + e.getMessage();
             }
             try {
                 staticAnalysis.startPmd();
-            } catch (Exception e) {
+            } catch (InterruptedException | IOException e) {
                 comment += " Ошибка при работе PMD" + e.getMessage();;
             }
             try {
                 staticAnalysis.startCheckStyle();
-            } catch (Exception e) {
+            } catch (InterruptedException | IOException e) {
                 comment += " Ошибка при работе CheckerStyle" + e.getMessage();
             }
             try {
                 binAnalysis.spotbugs(currentDirUser);
-            } catch (XMLStreamException e) {
+            } catch (IOException | XMLStreamException e) {
                 comment += " Ошибка при работе spotbugs" + e.getMessage();
             }
 

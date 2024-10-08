@@ -43,7 +43,7 @@ public class StaticAnalysis {
 
     }
 
-    public void startPmd() throws Exception {
+    public void startPmd() throws InterruptedException, IOException {
         // Указываем команду и аргументы
         ProcessBuilder processBuilder = new ProcessBuilder();
         String dirReport = "-DdistPMD=" + nameFile;
@@ -73,7 +73,7 @@ public class StaticAnalysis {
         }
     }
 
-    public void startCheckStyle() throws Exception {
+    public void startCheckStyle() throws InterruptedException, IOException {
         // Указываем команду и аргументы
         ProcessBuilder processBuilder = new ProcessBuilder();
         String dirReport = "-DdistCheckerStyle=" + nameFile;
