@@ -2,15 +2,12 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Builder
 @Setter
 @Getter
 @Table
-@Component
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "reports")

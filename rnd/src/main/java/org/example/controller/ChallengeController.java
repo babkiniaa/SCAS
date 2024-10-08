@@ -1,12 +1,11 @@
 package org.example.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.Mapper.ReportMapper;
 import org.example.dto.ReportDto;
 import org.example.entity.Report;
-import org.example.repository.*;
 import org.example.service.ReportService;
 import org.example.textReader.Manager;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,28 +18,21 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 @RestController
+@RequiredArgsConstructor
 public class ChallengeController {
 
     private final Manager manager;
     private final ReportService reportService;
     private final ExecutorService executorService;;
     private final ReportMapper reportMapper;
-    private final Report report;
 
-    public ChallengeController(Manager manager, ExecutorService executorService, ReportService reportService, ReportMapper reportMapper, Report report) {
-        this.manager = manager;
-        this.executorService = executorService;
-        this.reportService = reportService;
-        this.reportMapper = reportMapper;
-        this.report = report;
-    }
 
     @GetMapping("/reports")
     public List<Report> allReports() {
         return reportService.findAll();
     }
 
-    @GetMapping("/reportGet")
+    @GetMapping("/report/Get")
     public Optional<Report> getReport(@RequestParam Integer id){
         return reportService.findById(id);
     }

@@ -9,7 +9,6 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
 public class ReportDto {
     private String nameProject;
 
