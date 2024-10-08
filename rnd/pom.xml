@@ -27,6 +27,7 @@
         <name>distOWASP</name>
         <name>distPMD</name>
         <name>distCheckerStyle</name>
+        <name>spotout</name>
     </properties>
 
     <dependencies>
@@ -166,6 +167,7 @@
                 <configuration>
                     <configLocation>src/main/resources/checkstyle.xml</configLocation>
                     <outputDirectory>target/checkstyle-reports/${distCheckerStyle}</outputDirectory>
+                    <outputFile>target/checkstyle-reports/${distCheckerStyle}/checkstyle-result.xml</outputFile>
                 </configuration>
                 <executions>
                     <execution>
@@ -191,6 +193,7 @@
                 </dependencies>
                 <configuration>
                     <classFilesDirectory>${dist}</classFilesDirectory>
+                    <spotbugsXmlOutputDirectory>target/spotbugs/${spotout}</spotbugsXmlOutputDirectory>
                 </configuration>
             </plugin>
         </plugins>

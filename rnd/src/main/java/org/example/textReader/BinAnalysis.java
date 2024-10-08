@@ -20,7 +20,7 @@ public class BinAnalysis {
 //        request.setPomFile(new File("C:\\Users\\Ярик\\Desktop\\sast\\pom.xml"));
         request.setPomFile(new File(System.getProperty("user.dir") + "\\pom.xml"));
 
-        String ddist = "-Ddist=" + dir + " spotbugs:check";
+        String ddist = "-Ddist=" + dir + " -Dspotout=" + dir.split("/")[dir.split("/").length - 1] +  " spotbugs:check";
         request.setGoals(Collections.singletonList(ddist));
 
         Invoker invoker = new DefaultInvoker();
