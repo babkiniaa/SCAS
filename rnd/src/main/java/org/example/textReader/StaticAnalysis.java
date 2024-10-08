@@ -15,14 +15,12 @@ public class StaticAnalysis {
 
     private String nameFile = " ";
 
-    public void startOWASP(String scanDir) throws IOException {
-        try {
+    public void startOWASP(String scanDir) throws IOException, InterruptedException {
 
             ProcessBuilder processBuilder = new ProcessBuilder();
             String dirReport = "-DdistOWASP=" + nameFile;
             // Установка директории, в которую нужно перейти
             processBuilder.directory(new File(scanDir));
-
             // Пример команды, которую вы хотите выполнить в новой директории
             processBuilder.command(
 //                    "C:\\Program Files\\maven\\bin\\mvn.cmd",
@@ -31,15 +29,27 @@ public class StaticAnalysis {
                     "org.owasp:dependency-check-maven:check"
             );
 
-            Process process = processBuilder.start();
-            process.destroy();
+            try {
+                // Запускаем процесс
+                Process process = processBuilder.start();
 
-            // Обработка вывода или ошибок процесса, если необходимо
+                // Читаем стандартный вывод
+                BufferedReader reader =
+                        new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        }
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+                // Ожидаем завершения процесса и получаем его результат
+                int exitCode = process.waitFor();
+                process.destroy();
+                System.out.println("\nКоманда завершена с кодом: " + exitCode);
+
+            } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+                throw e;
+            }
 
     }
 
@@ -90,8 +100,6 @@ public class StaticAnalysis {
             // Читаем стандартный вывод
             BufferedReader reader =
                     new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-
             // Ожидаем завершения процесса и получаем его результат
             int exitCode = process.waitFor();
             process.destroy();
