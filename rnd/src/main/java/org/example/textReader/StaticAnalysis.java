@@ -15,7 +15,7 @@ public class StaticAnalysis {
 
     private String nameFile = " ";
 
-    public void startOWASP(String scanDir) {
+    public void startOWASP(String scanDir) throws IOException {
         try {
 
             ProcessBuilder processBuilder = new ProcessBuilder();
@@ -32,28 +32,18 @@ public class StaticAnalysis {
             );
 
             Process process = processBuilder.start();
-//            BufferedReader reader =
-//                    new BufferedReader(new InputStreamReader(process.getInputStream()));
-//
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                System.out.println(line);
-//            }
-//            process.destroy();
-//            processBuilder.directory(new File("C:\\Users\\Ярик\\Desktop\\sast"));
-//            processBuilder.directory(new File(System.getProperty("user.dir")));
-
-
+            process.destroy();
 
             // Обработка вывода или ошибок процесса, если необходимо
 
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
 
     }
 
-    public void startPmd() {
+    public void startPmd() throws Exception {
         // Указываем команду и аргументы
         ProcessBuilder processBuilder = new ProcessBuilder();
         String dirReport = "-DdistPMD=" + nameFile;
@@ -71,10 +61,6 @@ public class StaticAnalysis {
             BufferedReader reader =
                     new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                System.out.println(line);
-//            }
 
             // Ожидаем завершения процесса и получаем его результат
             int exitCode = process.waitFor();
@@ -83,10 +69,11 @@ public class StaticAnalysis {
 
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
-    public void startCheckStyle() {
+    public void startCheckStyle() throws Exception {
         // Указываем команду и аргументы
         ProcessBuilder processBuilder = new ProcessBuilder();
         String dirReport = "-DdistCheckerStyle=" + nameFile;
@@ -104,10 +91,6 @@ public class StaticAnalysis {
             BufferedReader reader =
                     new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                System.out.println(line);
-//            }
 
             // Ожидаем завершения процесса и получаем его результат
             int exitCode = process.waitFor();
@@ -115,6 +98,7 @@ public class StaticAnalysis {
             System.out.println("\nКоманда завершена с кодом: " + exitCode);
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 }
