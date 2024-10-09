@@ -18,7 +18,7 @@ public class StaticAnalysis {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.directory(new File(scanDir));
         processBuilder.command(
-                "C:\\apache-maven-3.9.0\\bin\\mvn.cmd",
+                System.getenv("M2_HOME")+"\\bin\\mvn.cmd",
                 "org.owasp:dependency-check-maven:check"
         );
 
@@ -43,7 +43,7 @@ public class StaticAnalysis {
         ProcessBuilder processBuilder = new ProcessBuilder();
         String dirReport = "-DdistPMD=" + nameFile;
         processBuilder.command(
-                "C:\\apache-maven-3.9.0\\bin\\mvn.cmd",
+                System.getenv("M2_HOME")+"\\bin\\mvn.cmd",
                 dirReport,
                 "pmd:pmd"
         );
@@ -63,7 +63,7 @@ public class StaticAnalysis {
         ProcessBuilder processBuilder = new ProcessBuilder();
         String dirReport = "-DdistCheckerStyle=" + nameFile;
         processBuilder.command(
-                "C:\\apache-maven-3.9.0\\bin\\mvn.cmd",
+                System.getenv("M2_HOME")+"\\bin\\mvn.cmd",
                 dirReport,
                 "checkstyle:checkstyle"
         );

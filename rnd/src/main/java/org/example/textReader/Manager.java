@@ -45,8 +45,7 @@ public class Manager {
             FileForScan fileForScan = new FileForScan(currentDir, currentDirUser);
             StaticAnalysis staticAnalysis = new StaticAnalysis(currentDirUser.substring(System.getProperty("user.dir").length() + 6));
             
-//            System.setProperty("maven.home", "C:\\Program Files\\maven");
-        System.setProperty("maven.home", "C:\\apache-maven-3.9.0");
+            System.setProperty("maven.home", System.getenv("M2_HOME"));
 
             InvocationRequest request = new DefaultInvocationRequest();
             request.setPomFile(new File(currentDirUser + "\\pom.xml"));
@@ -99,6 +98,10 @@ public class Manager {
             } catch (XMLStreamException | IOException e) {
                 comment += "Ошибка в создании отчёта по spotbugs " + e.getMessage();
             }
+            System.out.println(repOWASP);
+            System.out.println(repStyle);
+            System.out.println(repPMD);
+            System.out.println(repSpotBug);
 
             fileForScan.del();
 

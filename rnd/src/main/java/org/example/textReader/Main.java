@@ -9,7 +9,6 @@ public class Main {
         Manager manager = new Manager();
         manager.setUrl("https://github.com/ShchekoturovDA/SberTasks2024.git");
         manager.start();
-
     }
     
 
