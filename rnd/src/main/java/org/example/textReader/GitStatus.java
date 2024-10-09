@@ -5,7 +5,6 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
-import java.io.IOException;
 
 @Getter
 @Setter
@@ -32,4 +31,3 @@ public class GitStatus {
     }
 
 }
-

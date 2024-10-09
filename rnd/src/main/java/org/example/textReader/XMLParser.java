@@ -19,7 +19,6 @@ public class XMLParser {
         String report = "";
         while (reader.hasNext()) {
             XMLEvent nextEvent = reader.nextEvent();
-//            System.out.println(nextEvent);
             if (nextEvent.isStartElement()) {
                 StartElement startElement = nextEvent.asStartElement();
                 switch (startElement.getName().getLocalPart()) {
@@ -60,7 +59,6 @@ public class XMLParser {
         String report = "";
         while (reader.hasNext()) {
             XMLEvent nextEvent = reader.nextEvent();
-//            System.out.println(nextEvent);
             if (nextEvent.isStartElement()) {
                 StartElement startElement = nextEvent.asStartElement();
                 switch (startElement.getName().getLocalPart()) {
@@ -173,3 +171,4 @@ public class XMLParser {
     }
 
 }
+

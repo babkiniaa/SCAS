@@ -1,24 +1,16 @@
-package org.example.entity;
+package org.example.dto;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Setter
 @Getter
-@Table
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "reports")
-public class Report {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+public class ReportDto {
     private String nameProject;
-
-    private Date date;
 
     private String reportDepencyChecker;
 
@@ -27,6 +19,4 @@ public class Report {
     private String reportPMD;
 
     private String reportBugs;
-
-
 }
