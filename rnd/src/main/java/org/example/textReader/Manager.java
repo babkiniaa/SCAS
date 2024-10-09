@@ -45,6 +45,7 @@ public class Manager {
             FileForScan fileForScan = new FileForScan(currentDir, currentDirUser);
             StaticAnalysis staticAnalysis = new StaticAnalysis(dirUser);
             System.setProperty("maven.home", System.getenv("M2_HOME"));
+
             InvocationRequest request = new DefaultInvocationRequest();
             request.setPomFile(new File(currentDirUser + "\\pom.xml"));
 
@@ -73,6 +74,7 @@ public class Manager {
             }
             try {
                 binAnalysis.spotbugs(currentDirUser);
+
             } catch (XMLStreamException e) {
                 comment += " Ошибка при работе spotbugs" + e.getMessage();
             }
