@@ -28,7 +28,6 @@ public class StaticAnalysis {
                     new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
             }
             int exitCode = process.waitFor();
             process.destroy();
@@ -51,6 +50,9 @@ public class StaticAnalysis {
             Process process = processBuilder.start();
             BufferedReader reader =
                     new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+            }
             int exitCode = process.waitFor();
             process.destroy();
         } catch (InterruptedException | IOException e) {
@@ -71,6 +73,9 @@ public class StaticAnalysis {
             Process process = processBuilder.start();
             BufferedReader reader =
                     new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+            }
             int exitCode = process.waitFor();
             process.destroy();
             System.out.println("\nКоманда завершена с кодом: " + exitCode);
