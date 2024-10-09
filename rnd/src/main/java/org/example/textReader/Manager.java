@@ -98,11 +98,6 @@ public class Manager {
             } catch (XMLStreamException | IOException e) {
                 comment += "Ошибка в создании отчёта по spotbugs " + e.getMessage();
             }
-            System.out.println(repOWASP);
-            System.out.println(repStyle);
-            System.out.println(repPMD);
-            System.out.println(repSpotBug);
-
             fileForScan.del();
 
         } catch (GitAPIException e) {
