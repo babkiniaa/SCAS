@@ -10,7 +10,6 @@ import org.jsoup.nodes.Document;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,7 +41,6 @@ public class HTMLParser {
         File dir = new File(path);
         FileFilter fileFilter = new WildcardFileFilter("dependency-check-report.html");
         File[] files = findAll(Objects.requireNonNull(dir.listFiles()));
-        //File[] files = dir.listFiles(fileFilter);
         for (File file : files) {
             Document doc = Jsoup.parse(file);
             report += getAllMatches(doc.body().text(), "Project/Scope:.*\n");

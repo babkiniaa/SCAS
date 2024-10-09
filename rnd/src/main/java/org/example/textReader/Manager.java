@@ -34,7 +34,8 @@ public class Manager {
         BinAnalysis binAnalysis = new BinAnalysis();
         currentDir = freePath(0, currentDir);
         GitStatus gitStatus = new GitStatus(url, currentDir);
-
+        XMLParser xmlParser = new XMLParser();
+        HTMLParser htmlParser = new HTMLParser();
         try {
             gitStatus.cloneRepository();
             currentDirUser = freePath(0, currentDirUser);
@@ -78,9 +79,6 @@ public class Manager {
             } catch (XMLStreamException e) {
                 comment += " Ошибка при работе spotbugs" + e.getMessage();
             }
-
-            XMLParser xmlParser = new XMLParser();
-            HTMLParser htmlParser = new HTMLParser();
             try {
                 repOWASP = htmlParser.parseDep(currentDirUser);
             } catch (IOException e){
