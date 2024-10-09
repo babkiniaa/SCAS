@@ -27,25 +27,24 @@ public class Manager {
     private String repStyle = " ";
     private String repSpotBug = " ";
     private String comment = " ";
-    private String currentDir = System.getProperty("user.dir") + "/src/main/java/projectDownload1";
+    private String currentDir = System.getProperty("user.dir") + "/rnd/src/main/java/Download1";
     private String currentDirUser = System.getProperty("user.dir") + "/down/Download1";
 
     public void start() throws IOException {
         BinAnalysis binAnalysis = new BinAnalysis();
         currentDir = freePath(0, currentDir);
         GitStatus gitStatus = new GitStatus(url, currentDir);
-
+        XMLParser xmlParser = new XMLParser();
+        HTMLParser htmlParser = new HTMLParser();
         try {
             gitStatus.cloneRepository();
             currentDirUser = freePath(0, currentDirUser);
+            String dirUser = currentDirUser.split("/")[currentDirUser.split("/").length - 1];
             GitStatus gitStatusDesktop = new GitStatus(url, currentDirUser);
             gitStatusDesktop.cloneRepository();
             FileForScan fileForScan = new FileForScan(currentDir, currentDirUser);
-            StaticAnalysis staticAnalysis = new StaticAnalysis(currentDirUser.substring(System.getProperty("user.dir").length() + 6));
-
-            System.setProperty("maven.home", "C:\\Program Files\\maven");
-//        System.setProperty("maven.home", "C:\\apache-maven-3.9.0");
-
+            StaticAnalysis staticAnalysis = new StaticAnalysis(dirUser);
+            System.setProperty("maven.home", System.getenv("M2_HOME"));
             InvocationRequest request = new DefaultInvocationRequest();
             request.setPomFile(new File(currentDirUser + "\\pom.xml"));
 
@@ -77,14 +76,31 @@ public class Manager {
             } catch (XMLStreamException e) {
                 comment += " Ошибка при работе spotbugs" + e.getMessage();
             }
-
+            try {
+                repOWASP = htmlParser.parseDep(currentDirUser);
+            } catch (IOException e){
+                comment += "Ошибка в создании отчёта по dependency " + e.getMessage();
+            }
+            try {
+                repPMD = xmlParser.parsePMD(System.getProperty("user.dir") + "\\rnd\\target\\pmd-res\\" + dirUser + "\\pmd.xml");
+            } catch (XMLStreamException | IOException e ) {
+                comment += "Ошибка в создании отчёта по PMD " + e.getMessage();
+            }
+            try {
+                repStyle = xmlParser.parseCheck(System.getProperty("user.dir") +"\\rnd\\target\\checkstyle-reports\\" + dirUser + "\\checkstyle-result.xml");
+            } catch (XMLStreamException | IOException e) {
+                comment += "Ошибка в создании отчёта по Checkstyle " + e.getMessage();
+            }
+            try {
+                repSpotBug = xmlParser.parseSpotBugs(System.getProperty("user.dir") +"\\rnd\\target\\spotbugs\\"+ dirUser +"\\spotbugsXml.xml");
+            } catch (XMLStreamException | IOException e) {
+                comment += "Ошибка в создании отчёта по spotbugs " + e.getMessage();
+            }
             fileForScan.del();
-
         } catch (GitAPIException e) {
             comment += "Не удалось загрузить Git, возможно ссылка не корректна" + e.getMessage();
         }
-
-
+        System.out.println(comment);
     }
 
     public String freePath(int count, String baseDirectoryPath) {
