@@ -1,4 +1,4 @@
-package org.example.textReader;
+package org.github.babkiniaa.scas.textReader;
 
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;

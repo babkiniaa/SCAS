@@ -1,4 +1,4 @@
-package org.example.textReader;
+package org.github.babkiniaa.scas.textReader;
 
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;

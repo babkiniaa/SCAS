@@ -1,11 +1,11 @@
-package org.example.controller;
+package org.github.babkiniaa.scas.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.Mapper.ReportMapper;
-import org.example.dto.ReportDto;
-import org.example.entity.Report;
-import org.example.service.ReportService;
-import org.example.textReader.Manager;
+import org.github.babkiniaa.scas.Mapper.ReportMapper;
+import org.github.babkiniaa.scas.dto.ReportDto;
+import org.github.babkiniaa.scas.entity.Report;
+import org.github.babkiniaa.scas.service.ReportService;
+import org.github.babkiniaa.scas.textReader.Manager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

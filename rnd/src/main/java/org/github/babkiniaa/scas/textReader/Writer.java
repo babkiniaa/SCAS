@@ -1,4 +1,4 @@
-package org.example.textReader;
+package org.github.babkiniaa.scas.textReader;
 
 import java.io.File;
 import java.io.PrintWriter;

@@ -1,4 +1,4 @@
-package org.example.textReader;
+package org.github.babkiniaa.scas.textReader;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
