@@ -11,68 +11,120 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.util.StringUtils;
 
-import java.util.Optional;
-
+/**
+ * Сервис для управления пользователями.
+ *
+ * <p>Этот класс предоставляет методы для регистрации пользователей,
+ * проверки их учетных записей, изменения паролей и управления
+ * пользователями в базе данных.</p>
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final TokenService tokenService;
+  private final UserRepository userRepository;
+  private final RoleRepository roleRepository;
+  private final TokenService tokenService;
 
-    public String registerUser(User user) {
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.getRoles().add(roleRepository.findByName("ROLE_USER"));
-        userRepository.save(user);
-        return tokenService.createToken(user);
-    }
+  /**
+   * Регистрирует нового пользователя.
+   *
+   * <p>Шифрует пароль пользователя, добавляет роль по умолчанию и
+   * создает токен для верификации.</p>
+   *
+   * @param user объект пользователя для регистрации
+   * @return строка, представляющая токен верификации
+   */
+  public String registerUser(User user) {
+    user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+    user.getRoles().add(roleRepository.findByName("ROLE_USER"));
+    userRepository.save(user);
+    return tokenService.createToken(user);
+  }
 
-    @Transactional
-    public boolean verify(String verificationCode) {
-        User user = tokenService.getByVerifyCode(verificationCode).getUser();
-        user.setEnable(true);
-        userRepository.save(user);
-        tokenService.deleteByToken(verificationCode);
-        return true;
-    }
+  /**
+   * Проверяет учетную запись пользователя по верификационному коду.
+   *
+   * <p>Активирует учетную запись пользователя и удаляет токен верификации.</p>
+   *
+   * @param verificationCode код для верификации пользователя
+   * @return {@code true}, если верификация прошла успешно
+   */
+  @Transactional
+  public boolean verify(String verificationCode) {
+    User user = tokenService.getByVerifyCode(verificationCode).getUser();
+    user.setEnable(true);
+    userRepository.save(user);
+    tokenService.deleteByToken(verificationCode);
+    return true;
+  }
 
-    @Transactional
-    public boolean verifyForChangePassword(String verificationCode) {
-        return tokenService.getByVerifyCode(verificationCode) != null;
-    }
+  @Transactional
+  public boolean verifyForChangePassword(String verificationCode) {
+    return tokenService.getByVerifyCode(verificationCode) != null;
+  }
 
-    @Transactional
-    public String changePassword(String email){
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return tokenService.createToken(user);
-    }
+  /**
+   * Генерирует новый токен для изменения пароля.
+   *
+   * <p>Ищет пользователя по электронной почте и создает токен.</p>
+   *
+   * @param email адрес электронной почты пользователя
+   * @return строка, представляющая токен для изменения пароля
+   */
+  @Transactional
+  public String changePassword(String email) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    return tokenService.createToken(user);
+  }
 
-    @Transactional
-    public void changePasswordUser(User user, String password) {
-        user.setPassword(new BCryptPasswordEncoder().encode(password));
-        tokenService.delete(tokenService.getByUser(user));
-        userRepository.save(user);
-    }
+  /**
+   * Изменяет пароль пользователя.
+   *
+   * <p>Шифрует новый пароль и сохраняет его в базе данных,
+   * а также удаляет старый токен.</p>
+   *
+   * @param user объект пользователя, чей пароль нужно изменить
+   * @param password новый пароль
+   */
+  @Transactional
+  public void changePasswordUser(User user, String password) {
+    user.setPassword(new BCryptPasswordEncoder().encode(password));
+    tokenService.delete(tokenService.getByUser(user));
+    userRepository.save(user);
+  }
 
-    public Page<User> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable);
-    }
+  public Page<User> getAllUsers(Pageable pageable) {
+    return userRepository.findAll(pageable);
+  }
 
-    @Transactional
-    public void blockUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-        user.setEnable(false);
-        userRepository.save(user);
-    }
+  /**
+   * Блокирует пользователя по его идентификатору.
+   *
+   * <p>Устанавливает флаг активности пользователя в {@code false}.</p>
+   *
+   * @param userId идентификатор пользователя, которого нужно заблокировать
+   */
+  @Transactional
+  public void blockUser(Long userId) {
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+    user.setEnable(false);
+    userRepository.save(user);
+  }
 
-    @Scheduled(cron = "0 0 * * * ?")
-    public void deleteExpiredUsers() {
-        if (!tokenService.getByBeforeExpiryDate().getUser().isEnable()){
-            userRepository.delete(tokenService.getByBeforeExpiryDate().getUser());
-            tokenService.delete(tokenService.getByBeforeExpiryDate());
-        }
+  /**
+   * Удаляет пользователей, у которых время на подтверждение почты истекло.
+   * <p>Запланированное выполнение каждый час. Удаляет пользователей,
+   * у которых истек токен верификации.</p>
+   */
+  @Scheduled(cron = "0 0 * * * ?")
+  public void deleteExpiredUsers() {
+    if (!tokenService.getByBeforeExpiryDate().getUser().isEnable()) {
+      userRepository.delete(tokenService.getByBeforeExpiryDate().getUser());
+      tokenService.delete(tokenService.getByBeforeExpiryDate());
     }
+  }
 }

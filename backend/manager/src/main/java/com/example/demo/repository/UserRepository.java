@@ -1,19 +1,21 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.User;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
+/**
+ * Репозиторий для работы с сущностью {@link User}.
+ * Предоставляет методы для выполнения операций с базой данных,
+ * включая доступ к пользователям и их учетным данным.
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmailOrLogin(String email, String login);
+  Optional<User> findByEmailOrLogin(String email, String login);
 
-    User findByVerificationCode(String code);
+  Optional<User> findByEmail(String email);
 
-    Optional<User> findByEmail(String email);
-
-    Optional<User> findByLogin(String login);
+  Optional<User> findByLogin(String login);
 
 }

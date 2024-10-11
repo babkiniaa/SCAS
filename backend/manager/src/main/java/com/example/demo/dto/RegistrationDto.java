@@ -9,25 +9,29 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/**
+ * DTO (Data Transfer Object) для регистрации нового пользователя.
+ * Содержит поля для email, логина, пароля и подтверждения пароля, а также аннотации для валидации.
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class RegistrationDto {
 
-    @Email
-    @UniqueEmail
-    @NotEmpty(message = "The field is not filled in")
-    private String email;
+  @Email
+  @UniqueEmail
+  @NotEmpty(message = "The field is not filled in")
+  private String email;
 
-    @Password
-    @NotEmpty(message = "The field is not filled in")
-    private String password;
+  @Password
+  @NotEmpty(message = "The field is not filled in")
+  private String password;
 
-    @Password
-    @NotEmpty(message = "The field is not filled in")
-    private String passwordConfirm;
+  @Password
+  @NotEmpty(message = "The field is not filled in")
+  private String passwordConfirm;
 
-    @UniqueLogin
-    @NotEmpty(message = "The field is not filled in")
-    private String login;
+  @UniqueLogin
+  @NotEmpty(message = "The field is not filled in")
+  private String login;
 }

@@ -3,79 +3,112 @@ package com.example.demo.controllers;
 import com.example.demo.dto.LoginDto;
 import com.example.demo.dto.RegistrationDto;
 import com.example.demo.entity.User;
-import com.example.demo.exception.PasswordException;
 import com.example.demo.mappers.UserMapper;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
 import java.io.UnsupportedEncodingException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-
-@Controller
+/**
+ * Контроллер для обработки запросов регистрации, входа в систему и верификации пользователей.
+ * Обеспечивает основные функции аутентификации и регистрации пользователей.
+ */
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("auth")
+@RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:9000")
 public class AuthController {
 
-    private final UserService userService;
-    private final UserMapper userMapper;
-    private final EmailService emailService;
+  private final AuthenticationManager authenticationManager;
+  private final UserService userService;
+  private final UserMapper userMapper;
+  private final EmailService emailService;
 
-    @GetMapping("/register")
-    public String showReg(Model model, @RequestParam(value = "message", required = false) String message) {
-        model.addAttribute("user", new RegistrationDto());
-        model.addAttribute("loginForm", new LoginDto());
-        model.addAttribute("toggleClass", "sign-up");
-        model.addAttribute("message", message);
-        return "auth";
+  /**
+   * Регистрация нового пользователя.
+   * Метод принимает данные регистрации, проверяет их на валидность,
+   * сравнивает пароли,
+   * регистрирует пользователя и отправляет ему письмо для подтверждения аккаунта.
+   *
+   * @param registrationDto данные для регистрации пользователя.
+   * @param result объект для обработки ошибок валидации.
+   * @param request объект запроса, необходимый для формирования ссылки для подтверждения.
+   * @return ResponseEntity с сообщением об успешной отправке письма для подтверждения или ошибках.
+   * @throws UnsupportedEncodingException если возникли ошибки при кодировании текста в email.
+   * @throws MessagingException если возникли проблемы с отправкой email.
+   */
+  @PostMapping("/register")
+  public ResponseEntity<?> registerUser(
+          @Valid @RequestBody RegistrationDto registrationDto,
+          BindingResult result,
+          HttpServletRequest request
+  ) throws UnsupportedEncodingException, MessagingException {
+    if (result.hasErrors()) {
+      return ResponseEntity.badRequest().body("Validation errors occurred.");
     }
-
-    @PostMapping("/register")
-    public String registerUser(Model model, @Valid @ModelAttribute("user") RegistrationDto registrationDto, BindingResult result, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException, PasswordException {
-        if (result.hasErrors()) {
-            model.addAttribute("loginForm", new LoginDto());
-            model.addAttribute("toggleClass", "sign-up");
-            return "auth";
-        }
-
-        if (!registrationDto.getPassword().equals(registrationDto.getPasswordConfirm())) {
-            model.addAttribute("errorMessage", "Passwords don't match.");
-            model.addAttribute("loginForm", new LoginDto());
-            model.addAttribute("toggleClass", "sign-up");
-            throw new PasswordException("Passwords don't match.");
-        }
-
-        User user = userMapper.toEntity(registrationDto);
-        String verificationCode = userService.registerUser(user);
-        emailService.sendVerificationEmail(user.getEmail(), verificationCode, request);
-        return "redirect:/auth/register?message=Verification email sent to your email address";
+    if (!registrationDto.getPassword().equals(registrationDto.getPasswordConfirm())) {
+      return ResponseEntity.badRequest().body("Passwords don't match.");
     }
+    User user = userMapper.toEntity(registrationDto);
+    String verificationCode = userService.registerUser(user);
+    emailService.sendVerificationEmail(user.getEmail(), verificationCode, request);
+    return ResponseEntity.ok("Verification email sent to your email address");
+  }
 
-    @GetMapping("/login")
-    public String showLoginForm(Model model) {
-        model.addAttribute("loginForm", new LoginDto());
-        model.addAttribute("user", new RegistrationDto());
-        model.addAttribute("toggleClass", "sign-in");
-        return "auth";
+  /**
+   * Логин пользователя. Метод аутентифицирует пользователя по его логину и паролю.
+   * При успешной аутентификации устанавливается контекст безопасности для текущей сессии.
+   *
+   * @param loginDto объект с данными для аутентификации (логин и пароль).
+   * @return ResponseEntity с сообщением об успешной аутентификации или ошибке.
+   */
+  @PostMapping("/login")
+  public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+    try {
+      UsernamePasswordAuthenticationToken authenticationToken =
+              new UsernamePasswordAuthenticationToken(
+                loginDto.getUsername(),
+                loginDto.getPassword()
+      );
+      Authentication authentication = authenticationManager.authenticate(authenticationToken);
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+      return ResponseEntity.ok("Login successful");
+    } catch (AuthenticationException e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
+  }
 
-
-    @GetMapping("/verify")
-    public String verifyUser(@Param("code") String code, Model model) {
-        if (userService.verify(code)) {
-            model.addAttribute("message", "Verification successful. You can now log in.");
-            return "redirect:/auth/login";
-        } else {
-            model.addAttribute("message", "Verification failed.");
-            return "redirect:/auth/login";
-        }
+  /**
+   * Верификация пользователя. Метод принимает код подтверждения из email и проверяет его.
+   * При успешной верификации пользователь может войти в систему.
+   *
+   * @param code код подтверждения, отправленный на email пользователя.
+   * @return ResponseEntity с сообщением об успешной верификации или ошибке.
+   */
+  @GetMapping("/verify")
+  public ResponseEntity<?> verifyUser(@RequestParam("code") String code) {
+    if (userService.verify(code)) {
+      return ResponseEntity.ok("Verification successful. You can now log in.");
+    } else {
+      return ResponseEntity.badRequest().body("Verification failed.");
     }
+  }
 }
