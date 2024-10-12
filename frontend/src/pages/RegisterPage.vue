@@ -1,28 +1,30 @@
 <template>
-<q-page class="q-pa-md bg-white flex flex-center">
-  <q-card class="q-pa-md bg-blue-grey-2 q-ma-auto" style="max-width: 400px; border-radius: 16px;">
-    <q-card-section class="text-center">
-      <div class="text-h4 text-indigo-14 text-weight-bolder">SCAS</div>
-    </q-card-section>
-    <q-card-section>
-      <div class="text-h5 text-indigo-14 text-center text-weight-bolder">Registration</div>
-    </q-card-section>
-    <q-form @submit="submitRegister">
-      <q-card-section>
-        <q-input filled v-model="email" label="Email" />
-        <q-input filled v-model="login" label="Login" />
-        <q-input filled v-model="password" type="password" label="Password" />
-        <q-input filled v-model="passwordConfirm" type="password" label="Confirm Password" />
+<q-page-container>
+  <q-page class="flex flex-center bg-grey-2">
+    <q-card class="q-pa-md shadow-2 my_card" bordered style="max-width: 400px;">
+      <q-card-section class="text-center">
+        <div class="text-grey-9 text-h5 text-weight-bold">Registration</div>
+        <div class="text-grey-8">Create an account to get started</div>
       </q-card-section>
-      <q-card-actions align="center">
-        <q-btn type="submit" label="Sing up" color="primary" />
-      </q-card-actions>
-    </q-form>
-    <q-card-section align="center">
-      <q-btn flat @click="goToLogin" label="Already have an account? Login" div class ="text-h6 text-indigo-14 text-center text-weight-bolder" />
-    </q-card-section>
-  </q-card>
-</q-page>
+      <q-form @submit="submitRegister">
+        <q-card-section>
+          <q-input dense outlined v-model="email" label="Email Address"></q-input>
+          <q-input dense outlined class="q-mt-md" v-model="login" label="Login"></q-input>
+          <q-input dense outlined class="q-mt-md" v-model="password" type="password" label="Password"></q-input>
+          <q-input dense outlined class="q-mt-md" v-model="passwordConfirm" type="password" label="Confirm Password"></q-input>
+        </q-card-section>
+        <q-card-actions>
+          <q-btn type="submit" style="border-radius: 8px;" color="dark" rounded size="md" label="Sign up" no-caps class="full-width"></q-btn>
+        </q-card-actions>
+      </q-form>
+      <q-card-section class="text-center q-pt-none">
+        <div class="text-grey-8">Already have an account?
+          <q-btn flat @click="goToLogin" label="Login." div class="text-dark text-weight-bold" style="text-decoration: none" />
+        </div>
+      </q-card-section>
+    </q-card>
+  </q-page>
+  </q-page-container>
 </template>
 <script>
 import { registerUser } from 'src/services/authServices'
