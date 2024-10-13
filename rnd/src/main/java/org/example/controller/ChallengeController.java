@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.example.entity.Report;
 import org.example.repository.ReportRepository;
 import org.example.textReader.Manager;
@@ -39,7 +40,7 @@ public class ChallengeController {
             try {
                 manager.setUrl(url);
                 manager.start();
-            } catch (IOException e) {
+            } catch (IOException | GitAPIException e) {
                 e.printStackTrace();
             }
         });

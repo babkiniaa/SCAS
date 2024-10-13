@@ -3,10 +3,7 @@ package org.example.textReader;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +27,7 @@ public class Manager {
     private String currentDir = System.getProperty("user.dir") + "/rnd/src/main/java/Download1";
     private String currentDirUser = System.getProperty("user.dir") + "/down/Download1";
 
-    public void start() throws IOException {
+    public void start() throws IOException, GitAPIException {
         BinAnalysis binAnalysis = new BinAnalysis();
         currentDir = freePath(0, currentDir);
         GitStatus gitStatus = new GitStatus(url, currentDir);
@@ -64,7 +61,8 @@ public class Manager {
             try {
                 staticAnalysis.startPmd();
             } catch (Exception e) {
-                comment += " Ошибка при работе PMD" + e.getMessage();;
+                comment += " Ошибка при работе PMD" + e.getMessage();
+                ;
             }
             try {
                 staticAnalysis.startCheckStyle();
@@ -73,34 +71,33 @@ public class Manager {
             }
             try {
                 binAnalysis.spotbugs(currentDirUser);
-            } catch (XMLStreamException e) {
+            } catch (XMLStreamException | MavenInvocationException e) {
                 comment += " Ошибка при работе spotbugs" + e.getMessage();
             }
             try {
                 repOWASP = htmlParser.parseDep(currentDirUser);
-            } catch (IOException e){
+            } catch (IOException e) {
                 comment += "Ошибка в создании отчёта по dependency " + e.getMessage();
             }
             try {
                 repPMD = xmlParser.parsePMD(System.getProperty("user.dir") + "\\rnd\\target\\pmd-res\\" + dirUser + "\\pmd.xml");
-            } catch (XMLStreamException | IOException e ) {
+            } catch (XMLStreamException | IOException e) {
                 comment += "Ошибка в создании отчёта по PMD " + e.getMessage();
             }
             try {
-                repStyle = xmlParser.parseCheck(System.getProperty("user.dir") +"\\rnd\\target\\checkstyle-reports\\" + dirUser + "\\checkstyle-result.xml");
+                repStyle = xmlParser.parseCheck(System.getProperty("user.dir") + "\\rnd\\target\\checkstyle-reports\\" + dirUser + "\\checkstyle-result.xml");
             } catch (XMLStreamException | IOException e) {
                 comment += "Ошибка в создании отчёта по Checkstyle " + e.getMessage();
             }
             try {
-                repSpotBug = xmlParser.parseSpotBugs(System.getProperty("user.dir") +"\\rnd\\target\\spotbugs\\"+ dirUser +"\\spotbugsXml.xml");
+                repSpotBug = xmlParser.parseSpotBugs(System.getProperty("user.dir") + "\\rnd\\target\\spotbugs\\" + dirUser + "\\spotbugsXml.xml");
             } catch (XMLStreamException | IOException e) {
                 comment += "Ошибка в создании отчёта по spotbugs " + e.getMessage();
             }
             fileForScan.del();
         } catch (GitAPIException e) {
-            comment += "Не удалось загрузить Git, возможно ссылка не корректна" + e.getMessage();
+            throw e;
         }
-        System.out.println(comment);
     }
 
     public String freePath(int count, String baseDirectoryPath) {
