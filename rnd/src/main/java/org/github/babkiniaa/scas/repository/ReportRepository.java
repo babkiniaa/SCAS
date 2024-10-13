@@ -1,7 +1,7 @@
-package org.example.repository;
+package org.github.babkiniaa.scas.repository;
 
 
-import org.example.entity.Report;
+import org.github.babkiniaa.scas.entity.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

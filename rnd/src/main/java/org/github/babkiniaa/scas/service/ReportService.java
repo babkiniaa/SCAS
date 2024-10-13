@@ -1,10 +1,10 @@
-package org.example.service;
+package org.github.babkiniaa.scas.service;
 
 import lombok.AllArgsConstructor;
-import org.example.Mapper.ReportMapper;
-import org.example.dto.ReportDto;
-import org.example.entity.Report;
-import org.example.repository.*;
+import org.github.babkiniaa.scas.Mapper.ReportMapper;
+import org.github.babkiniaa.scas.dto.ReportDto;
+import org.github.babkiniaa.scas.entity.Report;
+import org.github.babkiniaa.scas.repository.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

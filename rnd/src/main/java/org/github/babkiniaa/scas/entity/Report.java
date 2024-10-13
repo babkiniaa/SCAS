@@ -1,16 +1,24 @@
-package org.example.dto;
+package org.github.babkiniaa.scas.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Setter
 @Getter
+@Table
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportDto {
+@Entity(name = "reports")
+public class Report {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     private String nameProject;
+
+    private Date date;
 
     private String reportDepencyChecker;
 
@@ -19,4 +27,6 @@ public class ReportDto {
     private String reportPMD;
 
     private String reportBugs;
+
+
 }
