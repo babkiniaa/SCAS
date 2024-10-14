@@ -1,9 +1,12 @@
 package org.github.babkiniaa.scas.controller;
 
 import lombok.RequiredArgsConstructor;
+
+import org.github.babkiniaa.scas.analysis.StaticAnalysis;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
+import org.github.babkiniaa.scas.dto.ReportIdDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.mapper.ReportMapper;
 import org.github.babkiniaa.scas.service.ReportService;
@@ -23,6 +26,7 @@ public class ChallengeController {
     private final ReportService reportService;
     private final ExecutorService executorService;;
     private final ReportMapper reportMapper;
+    private final StaticAnalysis staticAnalysis;
     private final GitStatus gitStatus;
 
 
@@ -34,6 +38,14 @@ public class ChallengeController {
     @GetMapping("/report/Get")
     public Optional<Report> getReport(@RequestParam Integer id){
         return reportService.findById(id);
+    }
+
+    @PostMapping("/checkstyle/start")
+    public ResponseEntity<?> reportCheckstyle(@RequestBody ReportIdDto reportIdDto) throws Exception {
+        String report = "";
+        staticAnalysis.startCheckStyle(reportIdDto.getId().toString());
+        reportService.updateCheckStyle(reportIdDto.getId(), report);
+        return ResponseEntity.ok(" Checkstyle отработал ");
     }
 
     @PostMapping("/report-download")
