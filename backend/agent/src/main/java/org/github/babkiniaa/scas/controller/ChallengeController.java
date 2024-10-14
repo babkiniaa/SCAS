@@ -1,12 +1,16 @@
 package org.github.babkiniaa.scas.controller;
 
 import lombok.RequiredArgsConstructor;
+
 import org.github.babkiniaa.scas.analysis.StaticAnalysis;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.dto.ReportIdDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.mapper.ReportMapper;
 import org.github.babkiniaa.scas.service.ReportService;
+import org.github.babkiniaa.scas.textReader.GitStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +27,8 @@ public class ChallengeController {
     private final ExecutorService executorService;;
     private final ReportMapper reportMapper;
     private final StaticAnalysis staticAnalysis;
+    private final GitStatus gitStatus;
+
 
     @GetMapping("/reports")
     public List<Report> allReports() {
@@ -42,4 +48,13 @@ public class ChallengeController {
         return ResponseEntity.ok(" Checkstyle отработал ");
     }
 
+    @PostMapping("/report-download")
+    public Integer downloadUrl(@RequestBody ProjectDto projectDto) throws GitAPIException {
+        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/";
+        String currentDirUser = System.getProperty("user.dir") + "/down/";
+        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
+        gitStatus.cloneRepository(projectDto.getUrl(), currentDirUser);
+        gitStatus.cloneRepository(projectDto.getUrl(), currentDir);
+        return reportService.create(reportDto).getId();
+    }
 }
