@@ -1,6 +1,7 @@
 package org.github.babkiniaa.scas.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.github.babkiniaa.scas.analysis.StaticAnalysis;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.mapper.ReportMapper;
@@ -23,7 +24,7 @@ public class ChallengeController {
     private final ReportService reportService;
     private final ExecutorService executorService;;
     private final ReportMapper reportMapper;
-
+    private final StaticAnalysis staticAnalysis;
 
     @GetMapping("/reports")
     public List<Report> allReports() {
@@ -33,6 +34,14 @@ public class ChallengeController {
     @GetMapping("/report/Get")
     public Optional<Report> getReport(@RequestParam Integer id){
         return reportService.findById(id);
+    }
+
+    @PostMapping("/pmd/start")
+    public ResponseEntity<?> reportOwasp(@RequestParam String patch, @RequestParam Integer id) throws Exception {
+        String report = "";
+        staticAnalysis.startPmd(patch);
+        reportService.updatePmd(id, report);
+        return (ResponseEntity<?>) ResponseEntity.ok();
     }
 
 }

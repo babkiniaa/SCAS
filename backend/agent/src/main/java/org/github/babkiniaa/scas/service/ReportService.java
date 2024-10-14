@@ -35,6 +35,19 @@ public class ReportService {
         return reportRepository.findById(id);
     }
 
+    public Report updatePmd(Integer id, String rep) {
+        ReportDto reportDto = new ReportDto();
+        if (!findById(id).isEmpty()) {
+            Report report = findById(id).get();
+            reportDto.setNameReport(report.getNameReports());
+            reportDto.setReportDependencyChecker(report.getReportDependencyChecker());
+            reportDto.setReportCheckerStyle(report.getReportCheckerStyle());
+            reportDto.setReportPMD(rep);
+            reportDto.setReportBugs(report.getReportBugs());
+        }
+        return update(reportDto);
+    }
+
     public void create(Report reportToEntity) {
     }
 }
