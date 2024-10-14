@@ -19,7 +19,6 @@ public class BinAnalysis {
         Invoker invoker = new DefaultInvoker();
         try {
             invoker.execute(request);
-            System.out.println("Maven command executed successfully!");
         } catch (Exception e) {
             throw e;
         }
