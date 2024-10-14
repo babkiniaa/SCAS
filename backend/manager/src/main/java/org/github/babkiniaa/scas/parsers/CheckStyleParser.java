@@ -11,11 +11,6 @@ import java.io.FileNotFoundException;
 
 public class CheckStyleParser extends XmlParser {
     @Override
-    String checkAttribute(StartElement startElement, String attributeName, String pref) {
-        return super.checkAttribute(startElement, attributeName, pref);
-    }
-
-    @Override
     public String parse(String path) {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         XMLEventReader reader = null;
@@ -36,14 +31,14 @@ public class CheckStyleParser extends XmlParser {
                 StartElement startElement = nextEvent.asStartElement();
                 switch (startElement.getName().getLocalPart()) {
                     case "file":
-                        report += checkAttribute(startElement, "name", "\nFile: ");
+                        report += super.checkAttribute(startElement, "name", "\nFile: ");
                         break;
                     case "error":
-                        report += checkAttribute(startElement, "source", "\nError: ");
-                        report += checkAttribute(startElement, "message", "\nExplanation: ");
-                        report += checkAttribute(startElement, "line", "\nBegining in line: ");
-                        report += checkAttribute(startElement, "column", "\nBegining in column: ");
-                        report += checkAttribute(startElement, "severity", "\nSeverity is ");
+                        report += super.checkAttribute(startElement, "source", "\nError: ");
+                        report += super.checkAttribute(startElement, "message", "\nExplanation: ");
+                        report += super.checkAttribute(startElement, "line", "\nBegining in line: ");
+                        report += super.checkAttribute(startElement, "column", "\nBegining in column: ");
+                        report += super.checkAttribute(startElement, "severity", "\nSeverity is ");
                 }
             }
             if (nextEvent.isEndElement()) {

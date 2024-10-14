@@ -11,11 +11,6 @@ import java.io.FileNotFoundException;
 
 public class SpotBugsParser extends XmlParser {
     @Override
-    String checkAttribute(StartElement startElement, String attributeName, String pref) {
-        return super.checkAttribute(startElement, attributeName, pref);
-    }
-
-    @Override
     public String parse(String path) {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         XMLEventReader reader = null;
@@ -46,12 +41,12 @@ public class SpotBugsParser extends XmlParser {
                         }
                         break;
                     case "BugInstance":
-                        report += checkAttribute(startElement, "name", "\nBug id in CWE: ");
+                        report += super.checkAttribute(startElement, "name", "\nBug id in CWE: ");
                         break;
                     case "SourceLine":
-                        report += checkAttribute(startElement, "sourcefile", "\nBug from file: ");
-                        report += checkAttribute(startElement, "classname", "\nBug from class: ");
-                        report += checkAttribute(startElement, "sourcepath", "\nWith path: ");
+                        report += super.checkAttribute(startElement, "sourcefile", "\nBug from file: ");
+                        report += super.checkAttribute(startElement, "classname", "\nBug from class: ");
+                        report += super.checkAttribute(startElement, "sourcepath", "\nWith path: ");
                 }
             }
             if (nextEvent.isEndElement()) {
