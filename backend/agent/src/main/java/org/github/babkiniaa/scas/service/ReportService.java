@@ -31,20 +31,49 @@ public class ReportService {
         return reportRepository.save(reportMapper.reportToEntity(reportDto));
     }
 
-    public Optional<Report> findById(Integer id) {
+      public Optional<Report> findById(Integer id) {
         return reportRepository.findById(id);
     }
-
-    public Report updateSpotbugs(Integer id, String rep) {
+  
+    public Report updateOWASP(Integer id, String rep) {
         ReportDto reportDto = new ReportDto();
+        if (!findById(id).isEmpty()) {
+            Report report = findById(id).get();
+            reportDto = reportMapper.reportToDto(report);
+            reportDto.setReportDependencyChecker(rep);
+        }
+        return update(reportDto);
+    }
+
+   public Report updateSpotbugs(Integer id, String rep) {
+     ReportDto reportDto = new ReportDto();
         if (!findById(id).isEmpty()) {
             Report report = findById(id).get();
             reportDto = reportMapper.reportToDto(report);
             reportDto.setReportBugs(rep);
         }
         return update(reportDto);
+   }
+
+  public Report updatePmd(Integer id, String rep) {
+        ReportDto reportDto = new ReportDto();
+        if (!findById(id).isEmpty()) {
+            Report report = findById(id).get();
+            reportDto = reportMapper.reportToDto(report);
+            reportDto.setReportPMD(rep);
+        }
+        return update(reportDto);
     }
 
+    public Report updateCheckStyle(Integer id, String rep) {
+        ReportDto reportDto = new ReportDto();
+        if (!findById(id).isEmpty()) {
+            Report report = findById(id).get();
+            reportDto = reportMapper.reportToDto(report);
+            reportDto.setReportCheckerStyle(rep);
+        }
+        return update(reportDto);
+    }
     public void create(Report reportToEntity) {
     }
 }

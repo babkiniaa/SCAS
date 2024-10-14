@@ -9,9 +9,12 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportIdDto {
-    private Integer id;
-    private String name;
+public class ProjectDto {
+    private String nameProject;
 
+    private String description;
+
+    private String url;
+
+    private boolean visibility;
 }
-
