@@ -31,6 +31,10 @@ public class ReportService {
         return reportRepository.save(reportMapper.reportToEntity(reportDto));
     }
 
+      public Optional<Report> findById(Integer id) {
+        return reportRepository.findById(id);
+    }
+  
     public Report updateOWASP(Integer id, String rep) {
         ReportDto reportDto = new ReportDto();
         if (!findById(id).isEmpty()) {
@@ -41,11 +45,17 @@ public class ReportService {
         return update(reportDto);
     }
 
-    public Optional<Report> findById(Integer id) {
-        return reportRepository.findById(id);
-    }
+   public Report updateSpotbugs(Integer id, String rep) {
+     ReportDto reportDto = new ReportDto();
+        if (!findById(id).isEmpty()) {
+            Report report = findById(id).get();
+            reportDto = reportMapper.reportToDto(report);
+            reportDto.setReportBugs(rep);
+        }
+        return update(reportDto);
+   }
 
-    public Report updatePmd(Integer id, String rep) {
+  public Report updatePmd(Integer id, String rep) {
         ReportDto reportDto = new ReportDto();
         if (!findById(id).isEmpty()) {
             Report report = findById(id).get();
