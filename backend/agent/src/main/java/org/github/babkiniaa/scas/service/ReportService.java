@@ -31,6 +31,16 @@ public class ReportService {
         return reportRepository.save(reportMapper.reportToEntity(reportDto));
     }
 
+    public Report updateOWASP(Integer id, String rep) {
+        ReportDto reportDto = new ReportDto();
+        if (!findById(id).isEmpty()) {
+            Report report = findById(id).get();
+            reportMapper.reportToDto(report);
+            reportDto.setReportDependencyChecker(rep);
+        }
+        return update(reportDto);
+    }
+
     public Optional<Report> findById(Integer id) {
         return reportRepository.findById(id);
     }

@@ -12,4 +12,6 @@ import lombok.Setter;
 public class ReportIdDto {
     private Integer id;
     private String name;
+
 }
+
