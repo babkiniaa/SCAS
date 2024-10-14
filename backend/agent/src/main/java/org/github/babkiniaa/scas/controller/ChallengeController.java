@@ -3,14 +3,12 @@ package org.github.babkiniaa.scas.controller;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.analysis.StaticAnalysis;
 import org.github.babkiniaa.scas.dto.ReportDto;
+import org.github.babkiniaa.scas.dto.ReportIdDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.mapper.ReportMapper;
 import org.github.babkiniaa.scas.service.ReportService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,7 +20,8 @@ import java.util.concurrent.ExecutorService;
 public class ChallengeController {
 
     private final ReportService reportService;
-    private final ExecutorService executorService;;
+    private final ExecutorService executorService;
+    ;
     private final ReportMapper reportMapper;
     private final StaticAnalysis staticAnalysis;
 
@@ -32,15 +31,16 @@ public class ChallengeController {
     }
 
     @GetMapping("/report/Get")
-    public Optional<Report> getReport(@RequestParam Integer id){
+    public Optional<Report> getReport(@RequestParam Integer id) {
         return reportService.findById(id);
     }
 
     @PostMapping("/pmd/start")
-    public ResponseEntity<?> reportOwasp(@RequestParam String patch, @RequestParam Integer id) throws Exception {
+    public ResponseEntity<?> reportOwasp(@RequestBody ReportIdDto reportidDto) throws Exception {
         String report = "";
+        String patch = System.getProperty("user.dir") + "/down/" + reportidDto.getId();
         staticAnalysis.startPmd(patch);
-        reportService.updatePmd(id, report);
+        reportService.updatePmd(reportidDto.getId(), report);
         return (ResponseEntity<?>) ResponseEntity.ok();
     }
 
