@@ -44,7 +44,15 @@ public class ReportService {
     public Optional<Report> findById(Integer id) {
         return reportRepository.findById(id);
     }
-
+    public Report updateCheckStyle(Integer id, String rep) {
+        ReportDto reportDto = new ReportDto();
+        if (!findById(id).isEmpty()) {
+            Report report = findById(id).get();
+            reportDto = reportMapper.reportToDto(report);
+            reportDto.setReportCheckerStyle(rep);
+        }
+        return update(reportDto);
+    }
     public void create(Report reportToEntity) {
     }
 }
