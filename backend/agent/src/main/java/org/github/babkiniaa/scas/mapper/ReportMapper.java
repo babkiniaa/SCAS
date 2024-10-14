@@ -12,6 +12,8 @@ import java.util.List;
 public interface ReportMapper {
 
     Report reportToEntity(ReportDto reportDto);
+
     ReportDto reportToDto(Report report);
+
     List<ReportDto> reportToListDto(List<Report> reports);
 }
