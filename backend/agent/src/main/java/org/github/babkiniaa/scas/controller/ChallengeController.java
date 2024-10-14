@@ -37,9 +37,9 @@ public class ChallengeController {
     }
 
     @PostMapping("/checkstyle/start")
-    public ResponseEntity<?> reportCheckstyle(@RequestParam String patch, @RequestParam Integer id) throws Exception {
+    public ResponseEntity<?> reportCheckstyle(@RequestParam String nameFile, @RequestParam Integer id) throws Exception {
         String report = "";
-        staticAnalysis.startCheckStyle(patch);
+        staticAnalysis.startCheckStyle(nameFile);
         reportService.updateCheckStyle(id, report);
         return (ResponseEntity<?>) ResponseEntity.ok();
     }
