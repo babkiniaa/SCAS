@@ -3,14 +3,12 @@ package org.github.babkiniaa.scas.controller;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.analysis.StaticAnalysis;
 import org.github.babkiniaa.scas.dto.ReportDto;
+import org.github.babkiniaa.scas.dto.ReportIdDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.mapper.ReportMapper;
 import org.github.babkiniaa.scas.service.ReportService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,11 +35,11 @@ public class ChallengeController {
     }
 
     @PostMapping("/checkstyle/start")
-    public ResponseEntity<?> reportCheckstyle(@RequestParam String nameFile, @RequestParam Integer id) throws Exception {
+    public ResponseEntity<?> reportCheckstyle(@RequestBody ReportIdDto reportIdDto) throws Exception {
         String report = "";
-        staticAnalysis.startCheckStyle(nameFile);
-        reportService.updateCheckStyle(id, report);
-        return (ResponseEntity<?>) ResponseEntity.ok();
+        staticAnalysis.startCheckStyle(reportIdDto.getId().toString());
+        reportService.updateCheckStyle(reportIdDto.getId(), report);
+        return ResponseEntity.ok(" Checkstyle отработал ");
     }
 
 }

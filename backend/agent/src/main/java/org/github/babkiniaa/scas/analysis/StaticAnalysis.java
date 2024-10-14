@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.analysis;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +11,7 @@ import java.io.InputStreamReader;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Component
 public class StaticAnalysis {
 
     public void startCheckStyle(String nameFile) throws Exception {
@@ -29,7 +31,6 @@ public class StaticAnalysis {
             }
             int exitCode = process.waitFor();
             process.destroy();
-            System.out.println("\nКоманда завершена с кодом: " + exitCode);
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
             throw e;
