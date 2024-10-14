@@ -23,7 +23,8 @@ import java.util.concurrent.ExecutorService;
 public class ChallengeController {
 
     private final ReportService reportService;
-    private final ExecutorService executorService;;
+    private final ExecutorService executorService;
+    ;
     private final ReportMapper reportMapper;
     private final StaticAnalysis staticAnalysis;
     private final GitStatus gitStatus;
@@ -34,10 +35,18 @@ public class ChallengeController {
     }
 
     @GetMapping("/report/Get")
-    public Optional<Report> getReport(@RequestParam Integer id){
+    public Optional<Report> getReport(@RequestParam Integer id) {
         return reportService.findById(id);
     }
 
+    @PostMapping("/pmd-start")
+    public ResponseEntity<?> reportOwasp(@RequestBody ReportIdDto reportidDto) throws Exception {
+        String report = "";
+        String patch = System.getProperty("user.dir") + "/down/" + reportidDto.getId();
+        staticAnalysis.startPmd(patch);
+        reportService.updatePmd(reportidDto.getId(), report);
+        return (ResponseEntity<?>) ResponseEntity.ok();
+    }
 
     @PostMapping("/owasp-start")
     public ResponseEntity<?> reportOwasp(@RequestBody ReportIdDto reportidDto) throws IOException, InterruptedException {
@@ -46,8 +55,9 @@ public class ChallengeController {
         staticAnalysis.startOWASP(patch);
         reportService.updateOWASP(reportidDto.getId(), report);
         return ResponseEntity.ok("OWASP отработал успешно");
+    }
 
-    @PostMapping("/checkstyle/start")
+    @PostMapping("/checkstyle-start")
     public ResponseEntity<?> reportCheckstyle(@RequestBody ReportIdDto reportIdDto) throws Exception {
         String report = "";
         staticAnalysis.startCheckStyle(reportIdDto.getId().toString());
@@ -65,4 +75,5 @@ public class ChallengeController {
         gitStatus.cloneRepository(projectDto.getUrl(), currentDir);
         return reportService.create(reportDto).getId();
     }
+
 }

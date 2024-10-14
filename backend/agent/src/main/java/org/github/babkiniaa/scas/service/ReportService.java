@@ -35,7 +35,7 @@ public class ReportService {
         ReportDto reportDto = new ReportDto();
         if (!findById(id).isEmpty()) {
             Report report = findById(id).get();
-            reportMapper.reportToDto(report);
+            reportDto = reportMapper.reportToDto(report);
             reportDto.setReportDependencyChecker(rep);
         }
         return update(reportDto);
@@ -44,6 +44,17 @@ public class ReportService {
     public Optional<Report> findById(Integer id) {
         return reportRepository.findById(id);
     }
+
+    public Report updatePmd(Integer id, String rep) {
+        ReportDto reportDto = new ReportDto();
+        if (!findById(id).isEmpty()) {
+            Report report = findById(id).get();
+            reportDto = reportMapper.reportToDto(report);
+            reportDto.setReportPMD(rep);
+        }
+        return update(reportDto);
+    }
+
     public Report updateCheckStyle(Integer id, String rep) {
         ReportDto reportDto = new ReportDto();
         if (!findById(id).isEmpty()) {
