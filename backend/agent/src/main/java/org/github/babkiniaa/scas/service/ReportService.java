@@ -35,11 +35,8 @@ public class ReportService {
         ReportDto reportDto = new ReportDto();
         if (!findById(id).isEmpty()) {
             Report report = findById(id).get();
-            reportDto.setNameReport(report.getNameReports());
+            reportMapper.reportToDto(report);
             reportDto.setReportDependencyChecker(rep);
-            reportDto.setReportCheckerStyle(report.getReportCheckerStyle());
-            reportDto.setReportPMD(report.getReportPMD());
-            reportDto.setReportBugs(report.getReportBugs());
         }
         return update(reportDto);
     }
