@@ -19,4 +19,8 @@ public class ReportDto {
     private String reportPMD;
 
     private String reportBugs;
+
+    public ReportDto (String nameReport){
+        this.nameReport = nameReport;
+    }
 }
