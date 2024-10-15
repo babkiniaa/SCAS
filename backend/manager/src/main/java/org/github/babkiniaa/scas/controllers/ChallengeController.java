@@ -10,12 +10,20 @@ import org.apache.maven.shared.invoker.Invoker;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import org.github.babkiniaa.scas.analysis.BinAnalysis;
+import org.github.babkiniaa.scas.analysis.StaticAnalysis;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.dto.ReportIdDto;
 import org.github.babkiniaa.scas.entity.Report;
 
+import org.github.babkiniaa.scas.parsers.CheckStyleParser;
+import org.github.babkiniaa.scas.parsers.DependencyCheckParser;
+import org.github.babkiniaa.scas.parsers.PmdParser;
+import org.github.babkiniaa.scas.parsers.SpotBugsParser;
 import org.github.babkiniaa.scas.service.ReportService;
+import org.github.babkiniaa.scas.textReader.DeleteFile;
+import org.github.babkiniaa.scas.textReader.GitStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
