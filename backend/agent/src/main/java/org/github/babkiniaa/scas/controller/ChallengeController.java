@@ -95,7 +95,9 @@ public class ChallengeController {
         String report;
         String patch = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
         staticAnalysis.startOWASP(patch);
+
         report = dependencyCheckParser.parse(patch);
+
         reportService.updateOWASP(reportIdDto.getId(), report);
         return ResponseEntity.ok("OWASP отработал успешно");
     }
