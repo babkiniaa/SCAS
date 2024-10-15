@@ -1,9 +1,9 @@
-package org.github.babkiniaa.scas.Mapper;
+package org.github.babkiniaa.scas.mapper;
 
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.mapstruct.Mapper;
-import org.springframework.stereotype.Component;
+//import org.springframework.stereotype.Component;
 
 import java.util.List;
 
