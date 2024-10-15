@@ -62,7 +62,7 @@ public class ChallengeController {
     @PostMapping("/spotbugs-start")
     public ResponseEntity<?> reportSpotBugs(@RequestBody ReportIdDto reportIdDto) {
         String report;
-        String patch = System.getProperty("user.dir") + "/backend/agent/src/target/spotbugs/" + reportIdDto.getId() + "/spotbugsXml.xml";
+        String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportIdDto.getId() + "/spotbugsXml.xml";
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
 
@@ -80,7 +80,7 @@ public class ChallengeController {
     public ResponseEntity<?> reportPmd(@RequestBody ReportIdDto reportIdDto) throws Exception {
         String report;
         staticAnalysis.startPmd(reportIdDto.getId().toString());
-        String patch = System.getProperty("user.dir") + "/backend/agent/src/target/pmd-res/" + reportIdDto.getId() + "/pmd.xml";
+        String patch = System.getProperty("user.dir") + "/backend/agent/target/pmd-res/" + reportIdDto.getId() + "/pmd.xml";
         report = pmdParser.parse(patch);
         reportService.updatePmd(reportIdDto.getId(), report);
         return ResponseEntity.ok("pmd отработал");
@@ -99,7 +99,7 @@ public class ChallengeController {
     @PostMapping("/checkstyle-start")
     public ResponseEntity<?> reportCheckstyle(@RequestBody ReportIdDto reportIdDto) throws Exception {
         String report;
-        String patch = System.getProperty("user.dir") + "/backend/agent/src/target/checkstyle-reports/" + reportIdDto.getId() + "/checkstyle-result.xml";
+        String patch = System.getProperty("user.dir") + "/backend/agent/target/checkstyle-reports/" + reportIdDto.getId() + "/checkstyle-result.xml";
         staticAnalysis.startCheckStyle(reportIdDto.getId().toString());
         report = checkStyleParser.parse(patch);
         reportService.updateCheckStyle(reportIdDto.getId(), report);

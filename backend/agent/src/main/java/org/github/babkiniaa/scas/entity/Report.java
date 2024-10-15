@@ -22,13 +22,13 @@ public class Report {
     private String nameReports;
 
     private Date date;
-
+    @Column(columnDefinition = "TEXT")
     private String reportDependencyChecker;
-
+    @Column(columnDefinition = "TEXT")
     private String reportCheckerStyle;
-
+    @Column(columnDefinition = "TEXT")
     private String reportPMD;
-
+    @Column(columnDefinition = "TEXT")
     private String reportBugs;
 
 

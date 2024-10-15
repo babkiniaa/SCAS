@@ -187,6 +187,7 @@
                 <configuration>
                     <configLocation>src/main/resources/checkstyle.xml</configLocation>
                     <outputDirectory>target/checkstyle-reports/${distCheckerStyle}</outputDirectory>
+                    <outputFile>target/checkstyle-reports/${distCheckerStyle}/checkstyle-result.xml</outputFile>
                 </configuration>
                 <executions>
                     <execution>

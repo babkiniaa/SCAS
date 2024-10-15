@@ -18,7 +18,7 @@ public class Project {
     private int id;
 
     private String nameProject;
-
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String url;
