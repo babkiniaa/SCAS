@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>manager</module>
+        <module>master</module>
     </modules>
 
     <properties>
