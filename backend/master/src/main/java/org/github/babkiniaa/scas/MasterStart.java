@@ -9,15 +9,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringBootApplication
-public class MasterStart
-{
+public class MasterStart {
     public static void main(String[] args) {
         SpringApplication.run(MasterStart.class, args);
 
     }
 
-    @Bean
-    public ExecutorService executorService() {
-        return Executors.newCachedThreadPool();
-    }
 }
