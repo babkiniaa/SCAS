@@ -1,5 +1,6 @@
 package org.github.babkiniaa.scas.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.entity.Report;
@@ -28,8 +29,20 @@ public class ReportService {
         return reportRepository.findAll();
     }
 
-    public Report update(ReportDto reportDto) {
-        return reportRepository.save(reportMapper.reportToEntity(reportDto));
+    public Report update(ReportDto reportDto, Integer id) {
+        Report report = reportMapper.reportToEntity(reportDto);
+        report.setId(id);
+        return reportRepository.save(report);
+    }
+
+    public void delete(Integer id) {
+        Optional<Report> reportOpt = reportRepository.findById(id);
+
+        if (reportOpt.isPresent()) {
+            reportRepository.delete(reportOpt.get());
+        } else {
+            throw new EntityNotFoundException("Report with ID " + id + " not found.");
+        }
     }
 
     public Optional<Report> findById(Integer id) {
@@ -43,7 +56,7 @@ public class ReportService {
             reportDto = reportMapper.reportToDto(report);
             reportDto.setReportDependencyChecker(rep);
         }
-        return update(reportDto);
+        return update(reportDto, id);
     }
 
     public Report updateSpotbugs(Integer id, String rep) {
@@ -53,7 +66,7 @@ public class ReportService {
             reportDto = reportMapper.reportToDto(report);
             reportDto.setReportBugs(rep);
         }
-        return update(reportDto);
+        return update(reportDto, id);
     }
 
     public Report updatePmd(Integer id, String rep) {
@@ -63,7 +76,7 @@ public class ReportService {
             reportDto = reportMapper.reportToDto(report);
             reportDto.setReportPMD(rep);
         }
-        return update(reportDto);
+        return update(reportDto, id);
     }
 
     public Report updateCheckStyle(Integer id, String rep) {
@@ -73,7 +86,7 @@ public class ReportService {
             reportDto = reportMapper.reportToDto(report);
             reportDto.setReportCheckerStyle(rep);
         }
-        return update(reportDto);
+        return update(reportDto, id);
     }
 
     public void create(Report reportToEntity) {

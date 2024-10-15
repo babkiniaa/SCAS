@@ -213,6 +213,7 @@
                 </dependencies>
                 <configuration>
                     <classFilesDirectory>${dist}</classFilesDirectory>
+                    <spotbugsXmlOutputDirectory>target/spotbugs/${spotout}</spotbugsXmlOutputDirectory>
                 </configuration>
             </plugin>
         </plugins>

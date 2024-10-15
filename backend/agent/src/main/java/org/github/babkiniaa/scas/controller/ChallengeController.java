@@ -57,7 +57,11 @@ public class ChallengeController {
     public Optional<Report> getReport(@RequestParam Integer id) {
         return reportService.findById(id);
     }
-
+    @PostMapping("/delete-reports")
+    public ResponseEntity<?> deleteReport(@RequestBody ReportIdDto reportIdDto){
+        reportService.delete(reportIdDto.getId());
+        return ResponseEntity.ok("Удалил отчет");
+    }
     @SneakyThrows
     @PostMapping("/spotbugs-start")
     public ResponseEntity<?> reportSpotBugs(@RequestBody ReportIdDto reportIdDto) {
