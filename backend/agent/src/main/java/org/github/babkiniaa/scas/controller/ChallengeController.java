@@ -11,10 +11,11 @@ import org.apache.maven.shared.invoker.Invoker;
 import org.github.babkiniaa.scas.analysis.BinAnalysis;
 import org.github.babkiniaa.scas.analysis.StaticAnalysis;
 import org.eclipse.jgit.api.errors.GitAPIException;
+
+import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.dto.ReportIdDto;
 import org.github.babkiniaa.scas.entity.Report;
-import org.github.babkiniaa.scas.mapper.ReportMapper;
 import org.github.babkiniaa.scas.service.ReportService;
 import org.github.babkiniaa.scas.textReader.GitStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,8 @@ import java.util.concurrent.ExecutorService;
 public class ChallengeController {
 
     private final ReportService reportService;
-    private final ExecutorService executorService;
-    private final BinAnalysis  binAnalysis;
-    private final ReportMapper reportMapper;
+//    private final ExecutorService executorService;
+    private final BinAnalysis binAnalysis;
     private final StaticAnalysis staticAnalysis;
     private final GitStatus gitStatus;
 
@@ -66,20 +66,19 @@ public class ChallengeController {
     }
 
     @PostMapping("/pmd-start")
-    public ResponseEntity<?> reportOwasp(@RequestBody ReportIdDto reportidDto) throws Exception {
+    public ResponseEntity<?> reportPmd(@RequestBody ReportIdDto reportIdDto) throws Exception {
         String report = "";
-        String patch = System.getProperty("user.dir") + "/down/" + reportidDto.getId();
-        staticAnalysis.startPmd(patch);
-        reportService.updatePmd(reportidDto.getId(), report);
-        return (ResponseEntity<?>) ResponseEntity.ok();
+        staticAnalysis.startPmd(reportIdDto.getId().toString());
+        reportService.updatePmd(reportIdDto.getId(), report);
+        return ResponseEntity.ok(" OWASP");
     }
 
     @PostMapping("/owasp-start")
-    public ResponseEntity<?> reportOwasp(@RequestBody ReportIdDto reportidDto) throws IOException, InterruptedException {
+    public ResponseEntity<?> reportOwasp(@RequestBody ReportIdDto reportIdDto) throws IOException, InterruptedException {
         String report = "";
-        String patch = System.getProperty("user.dir") + "/down/" + reportidDto.getId();
+        String patch = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
         staticAnalysis.startOWASP(patch);
-        reportService.updateOWASP(reportidDto.getId(), report);
+        reportService.updateOWASP(reportIdDto.getId(), report);
         return ResponseEntity.ok("OWASP отработал успешно");
     }
 
@@ -94,12 +93,13 @@ public class ChallengeController {
 
     @PostMapping("/report-download")
     public Integer downloadUrl(@RequestBody ProjectDto projectDto) throws GitAPIException {
-        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + reportidDto.getId();
-        String currentDirUser = System.getProperty("user.dir") + "/down/" + reportidDto.getId();
         ReportDto reportDto = new ReportDto(projectDto.getNameProject());
+        Integer idReport = reportService.create(reportDto).getId();
+        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + idReport;
+        String currentDirUser = System.getProperty("user.dir") + "/down/" + idReport;
         gitStatus.cloneRepository(projectDto.getUrl(), currentDirUser);
         gitStatus.cloneRepository(projectDto.getUrl(), currentDir);
-        return reportService.create(reportDto).getId();
+        return idReport;
     }
 
 }

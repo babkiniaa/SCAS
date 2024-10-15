@@ -12,9 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 @Component
-
 @NoArgsConstructor
-@AllArgsConstructor
 public class StaticAnalysis {
 
     public void startPmd(String nameFile) throws Exception {

@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ProjectMapper {
     Project projectToEntity(ProjectDto projectDto);
 

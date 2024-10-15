@@ -10,6 +10,7 @@ import org.github.babkiniaa.scas.mapper.ReportMapper;
 import org.github.babkiniaa.scas.repository.ProjectRepository;
 import org.github.babkiniaa.scas.repository.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,9 +1,10 @@
 package org.github.babkiniaa.scas.parsers;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
