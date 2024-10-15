@@ -16,7 +16,12 @@ import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.dto.ReportIdDto;
 import org.github.babkiniaa.scas.entity.Report;
+import org.github.babkiniaa.scas.parsers.CheckStyleParser;
+import org.github.babkiniaa.scas.parsers.DependencyCheckParser;
+import org.github.babkiniaa.scas.parsers.PmdParser;
+import org.github.babkiniaa.scas.parsers.SpotBugsParser;
 import org.github.babkiniaa.scas.service.ReportService;
+import org.github.babkiniaa.scas.textReader.DeleteFile;
 import org.github.babkiniaa.scas.textReader.GitStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +38,15 @@ import java.util.concurrent.ExecutorService;
 public class ChallengeController {
 
     private final ReportService reportService;
-//    private final ExecutorService executorService;
+    //    private final ExecutorService executorService;
     private final BinAnalysis binAnalysis;
     private final StaticAnalysis staticAnalysis;
     private final GitStatus gitStatus;
+    private final DeleteFile deleteFile;
+    private final DependencyCheckParser dependencyCheckParser;
+    private final CheckStyleParser checkStyleParser;
+    private final PmdParser pmdParser;
+    private final SpotBugsParser spotBugsParser;
 
     @GetMapping("/reports")
     public List<Report> allReports() {
@@ -50,9 +60,9 @@ public class ChallengeController {
 
     @SneakyThrows
     @PostMapping("/spotbugs-start")
-    public ResponseEntity<?> reportSpotBugs(@RequestBody ReportIdDto reportIdDto) throws IOException, InterruptedException {
-        String report = "";
-        String patch = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
+    public ResponseEntity<?> reportSpotBugs(@RequestBody ReportIdDto reportIdDto) {
+        String report;
+        String patch = System.getProperty("user.dir") + "/backend/agent/src/target/spotbugs/" + reportIdDto.getId() + "/spotbugsXml.xml";
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
 
@@ -61,33 +71,39 @@ public class ChallengeController {
         Invoker invoker = new DefaultInvoker();
         invoker.execute(request);
         binAnalysis.spotbugs(patch);
+        report = spotBugsParser.parse(patch);
         reportService.updateSpotbugs(reportIdDto.getId(), report);
         return ResponseEntity.ok("spotBugs отработал");
     }
 
     @PostMapping("/pmd-start")
     public ResponseEntity<?> reportPmd(@RequestBody ReportIdDto reportIdDto) throws Exception {
-        String report = "";
+        String report;
         staticAnalysis.startPmd(reportIdDto.getId().toString());
+        String patch = System.getProperty("user.dir") + "/backend/agent/src/target/pmd-res/" + reportIdDto.getId() + "/pmd.xml";
+        report = pmdParser.parse(patch);
         reportService.updatePmd(reportIdDto.getId(), report);
-        return ResponseEntity.ok(" OWASP");
+        return ResponseEntity.ok("pmd отработал");
     }
 
     @PostMapping("/owasp-start")
     public ResponseEntity<?> reportOwasp(@RequestBody ReportIdDto reportIdDto) throws IOException, InterruptedException {
-        String report = "";
+        String report;
         String patch = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
         staticAnalysis.startOWASP(patch);
+        report = dependencyCheckParser.parse(patch);
         reportService.updateOWASP(reportIdDto.getId(), report);
         return ResponseEntity.ok("OWASP отработал успешно");
     }
 
     @PostMapping("/checkstyle-start")
     public ResponseEntity<?> reportCheckstyle(@RequestBody ReportIdDto reportIdDto) throws Exception {
-        String report = "";
+        String report;
+        String patch = System.getProperty("user.dir") + "/backend/agent/src/target/checkstyle-reports/" + reportIdDto.getId() + "/checkstyle-result.xml";
         staticAnalysis.startCheckStyle(reportIdDto.getId().toString());
+        report = checkStyleParser.parse(patch);
         reportService.updateCheckStyle(reportIdDto.getId(), report);
-        return ResponseEntity.ok(" Checkstyle отработал ");
+        return ResponseEntity.ok("Checkstyle отработал");
 
     }
 
@@ -100,6 +116,14 @@ public class ChallengeController {
         gitStatus.cloneRepository(projectDto.getUrl(), currentDirUser);
         gitStatus.cloneRepository(projectDto.getUrl(), currentDir);
         return idReport;
+    }
+
+    @PostMapping("/delete-file")
+    public ResponseEntity<?> deleteFile(@RequestBody ReportIdDto reportIdDto) throws IOException {
+        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + reportIdDto.getId();
+        String currentDirUser = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
+        deleteFile.del(currentDir, currentDirUser);
+        return ResponseEntity.ok("Все удалили");
     }
 
 }
