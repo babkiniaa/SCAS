@@ -23,7 +23,11 @@ public class CheckStyleParser extends XmlParser {
             throw new RuntimeException(e);
         }
         String report = "";
+        boolean shut = false;
         while (reader.hasNext()) {
+            if(shut){
+                break;
+            }
             XMLEvent nextEvent = null;
             try {
                 nextEvent = reader.nextEvent();
@@ -34,12 +38,12 @@ public class CheckStyleParser extends XmlParser {
                 StartElement startElement = nextEvent.asStartElement();
                 switch (startElement.getName().getLocalPart()) {
                     case "file":
-                        String fileName = super.checkAttribute(startElement, "name", "\nFile: ")
-                                .substring((System.getProperty("user.dir") + "/backend/agent/src/main/java/").length());
+                        String fileName = super.checkAttribute(startElement, "name", "")
+                                .substring((System.getProperty("user.dir") + "/backend/agent/src/main/java/").length() + 1);
                         if (!fileName.split("\\\\")[0].equals("org")){
-                            report += fileName;
+                            report += "\nFile: " + fileName;
                         } else {
-                            startElement = nextEvent.asStartElement();
+                            shut = true;
                         }
                         break;
                     case "error":

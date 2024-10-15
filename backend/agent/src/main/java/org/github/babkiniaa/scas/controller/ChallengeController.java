@@ -82,7 +82,6 @@ public class ChallengeController {
         staticAnalysis.startPmd(reportIdDto.getId().toString());
         String patch = System.getProperty("user.dir") + "/backend/agent/target/pmd-res/" + reportIdDto.getId() + "/pmd.xml";
         report = pmdParser.parse(patch);
-        System.out.println(report);
         reportService.updatePmd(reportIdDto.getId(), report);
         return ResponseEntity.ok("pmd отработал");
     }
@@ -103,7 +102,6 @@ public class ChallengeController {
         String patch = System.getProperty("user.dir") + "/backend/agent/target/checkstyle-reports/" + reportIdDto.getId() + "/checkstyle-result.xml";
         staticAnalysis.startCheckStyle(reportIdDto.getId().toString());
         report = checkStyleParser.parse(patch);
-        System.out.println(report);
         reportService.updateCheckStyle(reportIdDto.getId(), report);
         return ResponseEntity.ok("Checkstyle отработал");
 
