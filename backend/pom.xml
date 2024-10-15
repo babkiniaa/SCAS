@@ -17,6 +17,9 @@
     <modules>
         <module>manager</module>
         <module>master</module>
+        <module>agent</module>
+        <module>manager</module>
+        <module>master</module>
     </modules>
 
     <properties>
