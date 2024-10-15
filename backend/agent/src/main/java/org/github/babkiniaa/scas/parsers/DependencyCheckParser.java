@@ -4,6 +4,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class DependencyCheckParser implements Parser {
 
     public static String getAllMatches(String text, String regex) {

@@ -1,5 +1,7 @@
 package org.github.babkiniaa.scas.parsers;
 
+import org.springframework.stereotype.Component;
+
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -9,6 +11,7 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+@Component
 public class CheckStyleParser extends XmlParser {
     @Override
     public String parse(String path) {
