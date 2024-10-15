@@ -14,10 +14,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @EnableScheduling
 @SpringBootApplication
-public class DemoApplication {
+public class ManagerStart {
 
   public static void main(String[] args) {
-    SpringApplication.run(DemoApplication.class, args);
+    SpringApplication.run(ManagerStart.class, args);
   }
 
 }
