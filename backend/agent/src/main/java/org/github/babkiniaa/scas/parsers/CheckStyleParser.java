@@ -34,7 +34,13 @@ public class CheckStyleParser extends XmlParser {
                 StartElement startElement = nextEvent.asStartElement();
                 switch (startElement.getName().getLocalPart()) {
                     case "file":
-                        report += super.checkAttribute(startElement, "name", "\nFile: ");
+                        String fileName = super.checkAttribute(startElement, "name", "\nFile: ")
+                                .substring((System.getProperty("user.dir") + "/backend/agent/src/main/java/").length());
+                        if (!fileName.split("\\\\")[0].equals("org")){
+                            report += fileName;
+                        } else {
+                            startElement = nextEvent.asStartElement();
+                        }
                         break;
                     case "error":
                         report += super.checkAttribute(startElement, "source", "\nError: ");
