@@ -145,6 +145,7 @@ export default {
     },
 
     async submitCreateProject () {
+      this.$router.push({ name: 'analysis', params: 1 })
       try {
         const response = await createProject({
           name: this.projectName,
@@ -153,8 +154,9 @@ export default {
           gitHubLink: this.gitHubLink,
           description: this.projectDescription
         })
+        const projectId = response.data.id
         this.$q.notify({ message: response.data, color: 'green' })
-        this.$router.push('/analysis')
+        this.$router.push({ name: 'analysis', params: { projectId } })
       } catch (error) {
         this.$q.notify({ message: error.response.data, color: 'red' })
       }
