@@ -3,7 +3,7 @@ package org.github.babkiniaa.scas.service;
 import lombok.AllArgsConstructor;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.entity.Project;
-import org.github.babkiniaa.scas.Mapper.ProjectMapper;
+import org.github.babkiniaa.scas.mapper.ProjectMapper;
 import org.github.babkiniaa.scas.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

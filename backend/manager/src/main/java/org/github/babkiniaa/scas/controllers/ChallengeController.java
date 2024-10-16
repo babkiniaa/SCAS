@@ -62,7 +62,6 @@ public class ChallengeController {
     public ResponseEntity<?> start(@RequestBody ProjectDto projectDto) throws Exception {
         ReportDto reportDto = new ReportDto(projectDto.getNameProject());
         int idReport = reportService.create(reportDto).getId();
-        System.out.println(reportService.findById(idReport).get().getNameReport());
         ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
 
         downloadUrl(projectDto.getUrl(), reportIdDto);
