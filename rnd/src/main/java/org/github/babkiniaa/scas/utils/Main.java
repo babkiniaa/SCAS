@@ -1,4 +1,4 @@
-package org.github.babkiniaa.scas.textReader;
+package org.github.babkiniaa.scas.utils;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
