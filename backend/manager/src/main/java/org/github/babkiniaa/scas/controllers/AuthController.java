@@ -1,9 +1,12 @@
 package org.github.babkiniaa.scas.controllers;
 
+import org.github.babkiniaa.scas.dto.JwtResponse;
 import org.github.babkiniaa.scas.dto.LoginDto;
 import org.github.babkiniaa.scas.dto.RegistrationDto;
 import org.github.babkiniaa.scas.entity.User;
+import org.github.babkiniaa.scas.exception.NotFoundUser;
 import org.github.babkiniaa.scas.mappers.UserMapper;
+import org.github.babkiniaa.scas.service.AuthService;
 import org.github.babkiniaa.scas.service.EmailService;
 import org.github.babkiniaa.scas.service.UserService;
 import jakarta.mail.MessagingException;
@@ -11,13 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "http://localhost:9000")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
+    private final AuthService authService;
     private final UserService userService;
     private final UserMapper userMapper;
     private final EmailService emailService;
@@ -81,19 +78,8 @@ public class AuthController {
      * @return ResponseEntity с сообщением об успешной аутентификации или ошибке.
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        try {
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(
-                            loginDto.getUsername(),
-                            loginDto.getPassword()
-                    );
-            Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return ResponseEntity.ok("Login successful");
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
+    public JwtResponse login(@RequestBody LoginDto loginDto) throws NotFoundUser {
+        return authService.login(loginDto);
     }
 
     /**

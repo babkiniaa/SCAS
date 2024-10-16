@@ -1,6 +1,7 @@
 package org.github.babkiniaa.scas.mappers;
 
 
+import org.github.babkiniaa.scas.dto.ProfileDto;
 import org.github.babkiniaa.scas.dto.RegistrationDto;
 import org.github.babkiniaa.scas.entity.User;
 import org.mapstruct.Mapper;
@@ -14,5 +15,6 @@ import org.mapstruct.Mapper;
 public interface UserMapper {
 
     User toEntity(RegistrationDto userRegistrationDto);
+    ProfileDto toProfile(User user);
 
 }

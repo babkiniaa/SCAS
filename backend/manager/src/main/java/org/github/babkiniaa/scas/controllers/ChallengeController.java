@@ -18,11 +18,13 @@ import org.github.babkiniaa.scas.parsers.DependencyCheckParser;
 import org.github.babkiniaa.scas.parsers.PmdParser;
 import org.github.babkiniaa.scas.parsers.SpotBugsParser;
 import org.github.babkiniaa.scas.service.ReportService;
+
 import org.github.babkiniaa.scas.textReader.DeleteFile;
 import org.github.babkiniaa.scas.textReader.GitStatus;
 import org.springframework.http.HttpStatus;
 
 import org.github.babkiniaa.scas.utils.DeleteFileUtil;
+
 import org.github.babkiniaa.scas.utils.GitUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +38,16 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/analysis")
 public class ChallengeController {
 
     private final ReportService reportService;
     private final BinAnalysis binAnalysis;
     private final StaticAnalysis staticAnalysis;
     private final GitUtil gitStatus;
+
     private final DeleteFileUtil deleteFile;
+
     private final DependencyCheckParser dependencyCheckParser;
     private final CheckStyleParser checkStyleParser;
     private final PmdParser pmdParser;

@@ -9,7 +9,7 @@
       <q-form @submit="submitRegister">
         <q-card-section>
           <q-input dense outlined v-model="email" label="Email Address"></q-input>
-          <q-input dense outlined class="q-mt-md" v-model="login" label="Login"></q-input>
+          <q-input dense outlined class="q-mt-md" v-model="username" label="Login"></q-input>
           <q-input dense outlined class="q-mt-md" v-model="password" type="password" label="Password"></q-input>
           <q-input dense outlined class="q-mt-md" v-model="passwordConfirm" type="password" label="Confirm Password"></q-input>
         </q-card-section>
@@ -32,7 +32,7 @@ export default {
   data () {
     return {
       email: '',
-      login: '',
+      username: '',
       password: '',
       passwordConfirm: ''
     }
@@ -42,7 +42,7 @@ export default {
       try {
         const response = await registerUser({
           email: this.email,
-          login: this.login,
+          username: this.username,
           password: this.password,
           passwordConfirm: this.passwordConfirm
         })

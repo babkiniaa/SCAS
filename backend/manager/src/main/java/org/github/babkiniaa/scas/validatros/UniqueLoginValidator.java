@@ -16,7 +16,7 @@ public class UniqueLoginValidator implements ConstraintValidator<UniqueLogin, St
     }
 
     @Override
-    public boolean isValid(String login, ConstraintValidatorContext constraintValidatorContext) {
-        return userRepository.findByLogin(login).isEmpty();
+    public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
+        return userRepository.findByUsername(username).isEmpty();
     }
 }

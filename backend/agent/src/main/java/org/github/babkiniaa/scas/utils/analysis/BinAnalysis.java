@@ -17,7 +17,7 @@ public class BinAnalysis {
         String ddist = "-Ddist=" + dir + " -Dspotout=" + dir.split("/")[dir.split("/").length - 1] + " spotbugs:check";
         request.setPomFile(new File(System.getProperty("user.dir") + "\\backend\\agent\\pom.xml"));
         request.setGoals(Collections.singletonList(ddist));
-        
+      
         try {
             invoker.execute(request);
         } catch (Exception e) {

@@ -28,19 +28,19 @@
           <q-item-section avatar>
             <q-icon name="home" />
           </q-item-section>
-          <q-item-section class="text-white">Home</q-item-section>
+          <q-item-section class="text-black">Home</q-item-section>
         </q-item>
         <q-item clickable v-ripple @click="goToCreateProject">
           <q-item-section avatar>
             <q-icon name="add_circle" />
           </q-item-section>
-          <q-item-section class="text-white">Create Project</q-item-section>
+          <q-item-section class="text-black">Create Project</q-item-section>
         </q-item>
         <q-item clickable v-ripple @click="goToAllProjects">
           <q-item-section avatar>
             <q-icon name="folder_open" />
           </q-item-section>
-          <q-item-section class="text-white">All Projects</q-item-section>
+          <q-item-section class="text-black">All Projects</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
@@ -145,6 +145,7 @@ export default {
     },
 
     async submitCreateProject () {
+      this.$router.push({ name: 'analysis', params: 1 })
       try {
         const response = await createProject({
           name: this.projectName,
@@ -153,8 +154,9 @@ export default {
           gitHubLink: this.gitHubLink,
           description: this.projectDescription
         })
+        const projectId = response.data.id
         this.$q.notify({ message: response.data, color: 'green' })
-        this.$router.push('/analysis')
+        this.$router.push({ name: 'analysis', params: { projectId } })
       } catch (error) {
         this.$q.notify({ message: error.response.data, color: 'red' })
       }
