@@ -1,9 +1,8 @@
-package org.github.babkiniaa.scas.textReader;
+package org.github.babkiniaa.scas.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;

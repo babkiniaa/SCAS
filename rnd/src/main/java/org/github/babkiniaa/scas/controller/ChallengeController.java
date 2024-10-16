@@ -5,7 +5,7 @@ import org.github.babkiniaa.scas.Mapper.ReportMapper;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.service.ReportService;
-import org.github.babkiniaa.scas.textReader.Manager;
+import org.github.babkiniaa.scas.utils.Manager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
