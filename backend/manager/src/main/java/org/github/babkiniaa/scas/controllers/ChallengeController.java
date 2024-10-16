@@ -22,8 +22,8 @@ import org.github.babkiniaa.scas.parsers.DependencyCheckParser;
 import org.github.babkiniaa.scas.parsers.PmdParser;
 import org.github.babkiniaa.scas.parsers.SpotBugsParser;
 import org.github.babkiniaa.scas.service.ReportService;
-import org.github.babkiniaa.scas.textReader.DeleteFile;
-import org.github.babkiniaa.scas.textReader.GitStatus;
+import org.github.babkiniaa.scas.utils.DeleteFile;
+import org.github.babkiniaa.scas.utils.GitUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,7 +42,7 @@ public class ChallengeController {
     //    private final ExecutorService executorService;
     private final BinAnalysis binAnalysis;
     private final StaticAnalysis staticAnalysis;
-    private final GitStatus gitStatus;
+    private final GitUtil gitStatus;
     private final DeleteFile deleteFile;
     private final DependencyCheckParser dependencyCheckParser;
     private final CheckStyleParser checkStyleParser;

@@ -1,4 +1,4 @@
-package org.github.babkiniaa.scas.textReader;
+package org.github.babkiniaa.scas.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

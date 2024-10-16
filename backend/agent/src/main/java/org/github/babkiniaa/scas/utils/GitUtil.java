@@ -1,14 +1,12 @@
-package org.github.babkiniaa.scas.textReader;
+package org.github.babkiniaa.scas.utils;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.springframework.stereotype.Component;
 import java.io.File;
 
-@Component
-public class GitStatus {
+public class GitUtil {
 
-  public void cloneRepository(String url, String cloneDirectoryPath) throws GitAPIException {
+  public static void cloneRepository(String url, String cloneDirectoryPath) throws GitAPIException {
     File cloneDirectory = new File(cloneDirectoryPath);
 
     try {
@@ -17,7 +15,6 @@ public class GitStatus {
               .setDirectory(cloneDirectory)
               .call();
       git.close();
-      git = null;
     } catch (GitAPIException e) {
       throw e;
     }
