@@ -33,5 +33,5 @@ public class RegistrationDto {
 
     @UniqueLogin
     @NotEmpty(message = "The field is not filled in")
-    private String login;
+    private String username;
 }

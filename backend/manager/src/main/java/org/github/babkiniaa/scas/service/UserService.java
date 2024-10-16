@@ -128,7 +128,11 @@ public class UserService {
     }
 
 
-    public Optional<User> findByEmailOrLogin(String username, String username1) {
-        return userRepository.findByEmailOrLogin(username, username1);
+    public Optional<User> findByEmailOrUsername(String email, String username) {
+        return userRepository.findByEmailOrUsername(email, username);
+    }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }
