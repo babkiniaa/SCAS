@@ -22,15 +22,18 @@ public class PmdParser extends XmlParser {
             throw new RuntimeException(e);
         }
         String report = "";
+
         while (reader.hasNext()) {
-            XMLEvent nextEvent = null;
+            XMLEvent nextEvent;
             try {
                 nextEvent = reader.nextEvent();
             } catch (XMLStreamException e) {
                 throw new RuntimeException(e);
             }
+
             if (nextEvent.isStartElement()) {
                 StartElement startElement = nextEvent.asStartElement();
+
                 switch (startElement.getName().getLocalPart()) {
                     case "file":
                         report += super.checkAttribute(startElement, "name", "\nFile: ");

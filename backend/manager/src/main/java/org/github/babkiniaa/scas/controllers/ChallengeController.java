@@ -6,8 +6,8 @@ import org.apache.maven.shared.invoker.*;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 
-import org.github.babkiniaa.scas.analysis.BinAnalysis;
-import org.github.babkiniaa.scas.analysis.StaticAnalysis;
+import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
+import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.dto.ReportIdDto;
@@ -21,6 +21,9 @@ import org.github.babkiniaa.scas.service.ReportService;
 import org.github.babkiniaa.scas.textReader.DeleteFile;
 import org.github.babkiniaa.scas.textReader.GitStatus;
 import org.springframework.http.HttpStatus;
+
+import org.github.babkiniaa.scas.utils.DeleteFileUtil;
+import org.github.babkiniaa.scas.utils.GitUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +41,8 @@ public class ChallengeController {
     private final ReportService reportService;
     private final BinAnalysis binAnalysis;
     private final StaticAnalysis staticAnalysis;
-    private final GitStatus gitStatus;
-    private final DeleteFile deleteFile;
+    private final GitUtil gitStatus;
+    private final DeleteFileUtil deleteFile;
     private final DependencyCheckParser dependencyCheckParser;
     private final CheckStyleParser checkStyleParser;
     private final PmdParser pmdParser;
@@ -111,12 +114,12 @@ public class ChallengeController {
         String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportIdDto.getId() + "/spotbugsXml.xml";
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
-
-        request.setPomFile(new File(patch + "\\pom.xml"));
+        String patchPom = System.getProperty("user.dir") + "/down" +  reportIdDto.getId();
+        request.setPomFile(new File(patchPom + "/pom.xml"));
         request.setGoals(Collections.singletonList("compile"));
         Invoker invoker = new DefaultInvoker();
         invoker.execute(request);
-        binAnalysis.spotbugs(patch);
+        binAnalysis.spotbugs(System.getProperty("user.dir") + "/down/" + reportIdDto.getId());
         report = spotBugsParser.parse(patch);
         reportService.updateSpotbugs(reportIdDto.getId(), report);
     }

@@ -1,4 +1,4 @@
-package org.github.babkiniaa.scas.analysis;
+package org.github.babkiniaa.scas.utils.analysis;
 
 import org.apache.maven.shared.invoker.*;
 import org.springframework.stereotype.Component;
@@ -9,13 +9,15 @@ import java.util.Collections;
 
 @Component
 public class BinAnalysis {
-    public void spotbugs(String dir) throws XMLStreamException, MavenInvocationException {
+
+    public static void spotbugs(String dir) throws XMLStreamException, MavenInvocationException {
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(System.getProperty("user.dir") + "\\backend\\agent\\pom.xml"));
-        String ddist = "-Ddist=" + dir + " -Dspotout=" + dir.split("/")[dir.split("/").length - 1] + " spotbugs:check";
-        request.setGoals(Collections.singletonList(ddist));
         Invoker invoker = new DefaultInvoker();
+        String ddist = "-Ddist=" + dir + " -Dspotout=" + dir.split("/")[dir.split("/").length - 1] + " spotbugs:check";
+        request.setPomFile(new File(System.getProperty("user.dir") + "\\backend\\agent\\pom.xml"));
+        request.setGoals(Collections.singletonList(ddist));
+        
         try {
             invoker.execute(request);
         } catch (Exception e) {

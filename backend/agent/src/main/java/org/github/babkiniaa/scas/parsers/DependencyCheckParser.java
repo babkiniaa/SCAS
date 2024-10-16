@@ -18,20 +18,24 @@ public class DependencyCheckParser implements Parser {
     public static String getAllMatches(String text, String regex) {
         String matches = "";
         Matcher m = Pattern.compile("(?=(" + regex + "))").matcher(text);
+
         while (m.find()) {
             matches += m.group(1);
         }
+
         return matches;
     }
 
     File[] findAll(File[] files) {
         File[] ret = null;
+
         for (File file : files) {
             if (file.isDirectory()) {
                 ret = ArrayUtils.addAll(ret, findAll(file.listFiles()));
                 ret = ArrayUtils.addAll(ret, file.listFiles((FileFilter) new WildcardFileFilter("dependency-check-report.html")));
             }
         }
+
         return ret;
     }
 
@@ -41,6 +45,7 @@ public class DependencyCheckParser implements Parser {
         File dir = new File(path);
         FileFilter fileFilter = new WildcardFileFilter("dependency-check-report.html");
         File[] files = findAll(dir.listFiles());
+
         for (File file : files) {
             Document doc = null;
             try {

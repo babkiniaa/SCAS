@@ -1,4 +1,4 @@
-package org.github.babkiniaa.scas.textReader;
+package org.github.babkiniaa.scas.utils;
 
 import lombok.*;
 import org.eclipse.jgit.api.Git;
