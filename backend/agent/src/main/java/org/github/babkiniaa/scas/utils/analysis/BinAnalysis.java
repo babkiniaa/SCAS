@@ -13,11 +13,11 @@ public class BinAnalysis {
     public static void spotbugs(String dir) throws XMLStreamException, MavenInvocationException {
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
+        Invoker invoker = new DefaultInvoker();
         String ddist = "-Ddist=" + dir + " -Dspotout=" + dir.split("/")[dir.split("/").length - 1] + " spotbugs:check";
         request.setPomFile(new File(System.getProperty("user.dir") + "\\backend\\agent\\pom.xml"));
         request.setGoals(Collections.singletonList(ddist));
-        Invoker invoker = new DefaultInvoker();
-
+        
         try {
             invoker.execute(request);
         } catch (Exception e) {

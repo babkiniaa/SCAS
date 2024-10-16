@@ -19,6 +19,7 @@ public class CheckStyleParser extends XmlParser {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         XMLEventReader reader = null;
         String report = "";
+
         try {
             reader = xmlInputFactory.createXMLEventReader(new FileInputStream(path));
         } catch (XMLStreamException | FileNotFoundException e) {
