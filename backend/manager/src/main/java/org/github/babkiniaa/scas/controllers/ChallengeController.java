@@ -75,7 +75,7 @@ public class ChallengeController {
         request.setGoals(Collections.singletonList("compile"));
         Invoker invoker = new DefaultInvoker();
         invoker.execute(request);
-        binAnalysis.spotbugs(patch);
+        binAnalysis.spotbugs(System.getProperty("user.dir") + "/down/" + reportIdDto.getId());
         report = spotBugsParser.parse(patch);
         reportService.updateSpotbugs(reportIdDto.getId(), report);
         return ResponseEntity.ok("spotBugs отработал");

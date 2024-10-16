@@ -9,6 +9,7 @@ import java.util.Collections;
 
 @Component
 public class BinAnalysis {
+    
     public void spotbugs(String dir) throws XMLStreamException, MavenInvocationException {
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
