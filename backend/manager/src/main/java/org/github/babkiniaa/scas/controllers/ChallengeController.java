@@ -10,8 +10,8 @@ import org.apache.maven.shared.invoker.Invoker;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 
-import org.github.babkiniaa.scas.analysis.BinAnalysis;
-import org.github.babkiniaa.scas.analysis.StaticAnalysis;
+import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
+import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.dto.ReportIdDto;
