@@ -19,7 +19,7 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String nameReports;
+    private String nameReport;
 
     private Date date;
     @Column(columnDefinition = "TEXT")

@@ -1,17 +1,10 @@
 package org.github.babkiniaa.scas.utils.analysis;
 
-import lombok.NoArgsConstructor;
-
-import org.springframework.stereotype.Component;
-
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-@Component
-@NoArgsConstructor
 public class StaticAnalysis {
 
     public static void startPmd(String nameFile) throws Exception {

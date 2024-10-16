@@ -2,11 +2,9 @@ package org.github.babkiniaa.scas.utils;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 
-@Component
 public class GitUtil {
 
     public static void cloneRepository(String url, String cloneDirectoryPath) throws GitAPIException {

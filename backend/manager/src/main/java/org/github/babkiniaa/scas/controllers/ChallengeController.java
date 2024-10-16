@@ -18,14 +18,9 @@ import org.github.babkiniaa.scas.parsers.DependencyCheckParser;
 import org.github.babkiniaa.scas.parsers.PmdParser;
 import org.github.babkiniaa.scas.parsers.SpotBugsParser;
 import org.github.babkiniaa.scas.service.ReportService;
-
-import org.github.babkiniaa.scas.textReader.DeleteFile;
-import org.github.babkiniaa.scas.textReader.GitStatus;
-import org.springframework.http.HttpStatus;
-
 import org.github.babkiniaa.scas.utils.DeleteFileUtil;
-
 import org.github.babkiniaa.scas.utils.GitUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,12 +37,6 @@ import java.util.Optional;
 public class ChallengeController {
 
     private final ReportService reportService;
-    private final BinAnalysis binAnalysis;
-    private final StaticAnalysis staticAnalysis;
-    private final GitUtil gitStatus;
-
-    private final DeleteFileUtil deleteFile;
-
     private final DependencyCheckParser dependencyCheckParser;
     private final CheckStyleParser checkStyleParser;
     private final PmdParser pmdParser;
@@ -73,9 +62,10 @@ public class ChallengeController {
     public ResponseEntity<?> start(@RequestBody ProjectDto projectDto) throws Exception {
         ReportDto reportDto = new ReportDto(projectDto.getNameProject());
         Integer idReport = reportService.create(reportDto).getId();
+        System.out.println(reportService.findById(idReport).get().getNameReport());
         ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
 
-        downloadUrl(projectDto);
+        downloadUrl(projectDto.getUrl(), reportIdDto);
         for (String check : projectDto.getListOfChecks()) {
             switch (check) {
                 case "owasp-start":
@@ -124,7 +114,7 @@ public class ChallengeController {
         request.setGoals(Collections.singletonList("compile"));
         Invoker invoker = new DefaultInvoker();
         invoker.execute(request);
-        binAnalysis.spotbugs(System.getProperty("user.dir") + "/down/" + reportIdDto.getId());
+        BinAnalysis.spotbugs(System.getProperty("user.dir") + "/down/" + reportIdDto.getId());
         report = spotBugsParser.parse(patch);
         reportService.updateSpotbugs(reportIdDto.getId(), report);
     }
@@ -133,7 +123,7 @@ public class ChallengeController {
         String report;
         String patch = System.getProperty("user.dir") + "/backend/agent/target/pmd-res/" + reportIdDto.getId() + "/pmd.xml";
 
-        staticAnalysis.startPmd(reportIdDto.getId().toString());
+        StaticAnalysis.startPmd(reportIdDto.getId().toString());
         report = pmdParser.parse(patch);
         reportService.updatePmd(reportIdDto.getId(), report);
     }
@@ -142,7 +132,7 @@ public class ChallengeController {
         String report;
         String patch = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
 
-        staticAnalysis.startOWASP(patch);
+        StaticAnalysis.startOWASP(patch);
         report = dependencyCheckParser.parse(patch);
         reportService.updateOWASP(reportIdDto.getId(), report);
     }
@@ -152,26 +142,25 @@ public class ChallengeController {
         String report;
         String patch = System.getProperty("user.dir") + "/backend/agent/target/checkstyle-reports/" + reportIdDto.getId() + "/checkstyle-result.xml";
 
-        staticAnalysis.startCheckStyle(reportIdDto.getId().toString());
+        StaticAnalysis.startCheckStyle(reportIdDto.getId().toString());
         report = checkStyleParser.parse(patch);
         reportService.updateCheckStyle(reportIdDto.getId(), report);
     }
 
-    private void downloadUrl(ProjectDto projectDto) throws GitAPIException {
-        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
-        Integer idReport = reportService.create(reportDto).getId();
+    private void downloadUrl(String url, ReportIdDto reportIdDto) throws GitAPIException {
+        Integer idReport = reportIdDto.getId();
         String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + idReport;
         String currentDirUser = System.getProperty("user.dir") + "/down/" + idReport;
 
-        gitStatus.cloneRepository(projectDto.getUrl(), currentDirUser);
-        gitStatus.cloneRepository(projectDto.getUrl(), currentDir);
+        GitUtil.cloneRepository(url, currentDirUser);
+        GitUtil.cloneRepository(url, currentDir);
     }
 
     private void deleteFile(ReportIdDto reportIdDto) throws IOException {
         String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + reportIdDto.getId();
         String currentDirUser = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
 
-        deleteFile.del(currentDir, currentDirUser);
+        DeleteFileUtil.del(currentDir, currentDirUser);
     }
 
 }

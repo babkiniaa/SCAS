@@ -1,13 +1,11 @@
 package org.github.babkiniaa.scas.utils.analysis;
 
 import org.apache.maven.shared.invoker.*;
-import org.springframework.stereotype.Component;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.util.Collections;
 
-@Component
 public class BinAnalysis {
 
     public static void spotbugs(String dir) throws XMLStreamException, MavenInvocationException {

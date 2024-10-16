@@ -22,6 +22,7 @@ public class ReportService {
     private final ReportMapper reportMapper;
 
     public Report create(ReportDto reportDto) {
+        Report report = reportMapper.reportToEntity(reportDto);
         return reportRepository.save(reportMapper.reportToEntity(reportDto));
     }
 
