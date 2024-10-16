@@ -16,5 +16,7 @@ public class ProjectDto {
 
     private String url;
 
+    private String[] listOfChecks;
+
     private boolean visibility;
 }
