@@ -141,15 +141,16 @@
             <version>3.3.4</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>org.github.babkiniaa.scas</groupId>
-            <artifactId>agent</artifactId>
+            <artifactId>master</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.github.babkiniaa.scas</groupId>
-            <artifactId>master</artifactId>
+            <artifactId>agent</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

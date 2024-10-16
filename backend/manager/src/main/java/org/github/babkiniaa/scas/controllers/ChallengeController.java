@@ -61,7 +61,7 @@ public class ChallengeController {
     @PostMapping("/init")
     public ResponseEntity<?> start(@RequestBody ProjectDto projectDto) throws Exception {
         ReportDto reportDto = new ReportDto(projectDto.getNameProject());
-        Integer idReport = reportService.create(reportDto).getId();
+        int idReport = reportService.create(reportDto).getId();
         System.out.println(reportService.findById(idReport).get().getNameReport());
         ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
 

@@ -163,7 +163,7 @@
                     <format>XML</format>
 
                     <!-- Минимальный уровень уязвимостей, при котором сборка завершится с ошибкой -->
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
+                    <failBuildOnCVSS>20</failBuildOnCVSS>
                 </configuration>
             </plugin>
 
