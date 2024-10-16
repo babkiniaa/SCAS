@@ -13,16 +13,7 @@ import lombok.Setter;
  * Сущность, представляющая роль пользователя в системе.
  * Каждая роль используется для управления правами доступа пользователей.
  */
-@Entity
-@Setter
-@Getter
-@Table
-public class Role {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column
-    private String name;
+public enum Role {
+    USER,
+    ADMIN
 }

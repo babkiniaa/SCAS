@@ -1,7 +1,6 @@
 package org.github.babkiniaa.scas.service;
 
 import org.github.babkiniaa.scas.entity.User;
-import org.github.babkiniaa.scas.repository.RoleRepository;
 import org.github.babkiniaa.scas.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * Сервис для управления пользователями.
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final TokenService tokenService;
 
     /**
@@ -38,7 +38,6 @@ public class UserService {
      */
     public String registerUser(User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.getRoles().add(roleRepository.findByName("ROLE_USER"));
         userRepository.save(user);
         return tokenService.createToken(user);
     }
@@ -126,5 +125,10 @@ public class UserService {
             userRepository.delete(tokenService.getByBeforeExpiryDate().getUser());
             tokenService.delete(tokenService.getByBeforeExpiryDate());
         }
+    }
+
+
+    public Optional<User> findByEmailOrLogin(String username, String username1) {
+        return userRepository.findByEmailOrLogin(username, username1);
     }
 }

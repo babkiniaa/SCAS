@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutorService;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/analysis")
 public class ChallengeController {
 
     private final ReportService reportService;

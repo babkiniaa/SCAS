@@ -1,18 +1,22 @@
 package org.github.babkiniaa.scas.config;
 
-
-
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.github.babkiniaa.scas.security.JwtTokenFilter;
+import org.github.babkiniaa.scas.security.JwtTokenProvider;
+import org.github.babkiniaa.scas.security.JwtUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -25,6 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class Config implements WebMvcConfigurer {
 
     @Override
@@ -35,44 +40,43 @@ public class Config implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
-    /**
-     * Конфигурирует цепочку фильтров безопасности для обработки HTTP-запросов.
-     * Включает CORS, отключает CSRF, настраивает авторизацию по URL
-     * и обрабатывает логику выхода из системы.
-     * - Разрешает доступ к маршрутам "/auth/**" и "/password/**" без авторизации.
-     * - Требует авторизацию для всех остальных запросов.
-     * - Настраивает выход из системы через "/logout",
-     * с последующим перенаправлением на "/auth/login".
-     *
-     * @param httpSecurity объект для настройки параметров безопасности.
-     * @return настроенная цепочка фильтров безопасности.
-     * @throws Exception если происходит ошибка конфигурации безопасности.
-     */
+
+    private final JwtTokenProvider tokenProvider;
+
+    private final JwtUserDetailService jwtUserDetailService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("admin/**").hasRole("ADMIN")
-                        .requestMatchers("/auth/**", "/password/**").permitAll()
-                        .anyRequest().authenticated())
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/auth/login")
-                        .permitAll()
-                );
-        return httpSecurity.build();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
-            throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @SneakyThrows
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration){
+        return configuration.getAuthenticationManager();
+    }
+
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(sessionManagement ->
+                        sessionManagement
+                                .sessionCreationPolicy(
+                                        SessionCreationPolicy.STATELESS
+                                )
+                )
+                .authorizeHttpRequests(configurer ->
+                        configurer.requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .anyRequest().authenticated())
+                .anonymous(AbstractHttpConfigurer::disable)
+                .addFilterBefore(new JwtTokenFilter(tokenProvider, jwtUserDetailService),
+                        UsernamePasswordAuthenticationFilter.class);
+
+        return httpSecurity.build();
     }
 }
