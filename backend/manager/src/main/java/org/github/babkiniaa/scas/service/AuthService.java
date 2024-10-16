@@ -20,10 +20,10 @@ public class AuthService {
     public JwtResponse login(LoginDto loginRequest) throws NotFoundUser {
         JwtResponse jwtResponse = new JwtResponse();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        User user = userService.findByEmailOrLogin(loginRequest.getUsername(), loginRequest.getUsername()).orElseThrow(() -> new NotFoundUser("Не найден пользователь"));
-        jwtResponse.setUsername(user.getLogin());
-        jwtResponse.setAccessToken(jwtTokenProvider.createAccessToken(user.getId(), user.getLogin(), user.getEmail(), user.getRole()));
-        jwtResponse.setRefreshToken(jwtTokenProvider.createRefreshToken(user.getId(), user.getLogin()));
+        User user = userService.findByEmailOrUsername(loginRequest.getUsername(), loginRequest.getUsername()).orElseThrow(() -> new NotFoundUser("Не найден пользователь"));
+        jwtResponse.setUsername(user.getUsername());
+        jwtResponse.setAccessToken(jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), user.getEmail(), user.getRole()));
+        jwtResponse.setRefreshToken(jwtTokenProvider.createRefreshToken(user.getId(), user.getUsername()));
         return jwtResponse;
     }
 }

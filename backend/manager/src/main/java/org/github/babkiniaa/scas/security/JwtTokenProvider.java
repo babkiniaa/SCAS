@@ -20,7 +20,7 @@ public class JwtTokenProvider {
 
     private static final String KEY_FOR_USER_ID = "id";
 
-    private static final String KEY_FOR_USER_FIO = "fio";
+    private static final String KEY_FOR_USER_EMAIL = "email";
 
     private static final String KEY_FOR_USER_ROLE = "role";
 
@@ -40,8 +40,8 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createAccessToken(long userId, String username, String fio, Role role) {
-        Claims claims = Jwts.claims().subject(username).add(KEY_FOR_USER_ID, userId).add(KEY_FOR_USER_FIO, fio)
+    public String createAccessToken(long userId, String username, String email, Role role) {
+        Claims claims = Jwts.claims().subject(username).add(KEY_FOR_USER_ID, userId).add(KEY_FOR_USER_EMAIL, email)
                 .add(KEY_FOR_USER_ROLE, START_FOR_USER_ROLE + role.name()).build();
         Date now = new Date();
         Date validity = new Date(now.getTime() + getAccess());
