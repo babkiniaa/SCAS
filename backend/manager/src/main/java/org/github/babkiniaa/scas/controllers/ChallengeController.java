@@ -1,12 +1,8 @@
 package org.github.babkiniaa.scas.controllers;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.*;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 
@@ -22,11 +18,18 @@ import org.github.babkiniaa.scas.parsers.DependencyCheckParser;
 import org.github.babkiniaa.scas.parsers.PmdParser;
 import org.github.babkiniaa.scas.parsers.SpotBugsParser;
 import org.github.babkiniaa.scas.service.ReportService;
-import org.github.babkiniaa.scas.utils.DeleteFile;
+
+import org.github.babkiniaa.scas.textReader.DeleteFile;
+import org.github.babkiniaa.scas.textReader.GitStatus;
+import org.springframework.http.HttpStatus;
+
+import org.github.babkiniaa.scas.utils.DeleteFileUtil;
+
 import org.github.babkiniaa.scas.utils.GitUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -39,11 +42,12 @@ import java.util.Optional;
 public class ChallengeController {
 
     private final ReportService reportService;
-    //    private final ExecutorService executorService;
     private final BinAnalysis binAnalysis;
     private final StaticAnalysis staticAnalysis;
     private final GitUtil gitStatus;
-    private final DeleteFile deleteFile;
+
+    private final DeleteFileUtil deleteFile;
+
     private final DependencyCheckParser dependencyCheckParser;
     private final CheckStyleParser checkStyleParser;
     private final PmdParser pmdParser;
@@ -60,13 +64,57 @@ public class ChallengeController {
     }
 
     @PostMapping("/delete-reports")
-    public ResponseEntity<?> deleteReport(@RequestBody ReportIdDto reportIdDto){
+    public ResponseEntity<?> deleteReport(@RequestBody ReportIdDto reportIdDto) {
         reportService.delete(reportIdDto.getId());
         return ResponseEntity.ok("Удалил отчет");
     }
-    @SneakyThrows
-    @PostMapping("/spotbugs-start")
-    public ResponseEntity<?> reportSpotBugs(@RequestBody ReportIdDto reportIdDto) {
+
+    @PostMapping("/init")
+    public ResponseEntity<?> start(@RequestBody ProjectDto projectDto) throws Exception {
+        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
+        Integer idReport = reportService.create(reportDto).getId();
+        ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
+
+        downloadUrl(projectDto);
+        for (String check : projectDto.getListOfChecks()) {
+            switch (check) {
+                case "owasp-start":
+                    try {
+                        reportOwasp(reportIdDto);
+                    } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
+                    }
+                    break;
+                case "pmd-start":
+                    try {
+                        reportPmd(reportIdDto);
+                    } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
+                    }
+                    break;
+                case "checkstyle-start":
+                    try {
+                        reportCheckstyle(reportIdDto);
+                    } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Checkstyle: " + e.getMessage());
+                    }
+
+                    break;
+                case "spotbugs-start":
+                    try {
+                        reportSpotBugs(reportIdDto);
+                    } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении SpotBugs: " + e.getMessage());
+                    }
+                    break;
+            }
+        }
+        deleteFile(reportIdDto);
+
+        return ResponseEntity.ok("init отработал");
+    }
+
+    private void reportSpotBugs(ReportIdDto reportIdDto) throws MavenInvocationException, XMLStreamException {
         String report;
         String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportIdDto.getId() + "/spotbugsXml.xml";
         System.setProperty("maven.home", System.getenv("M2_HOME"));
@@ -79,59 +127,51 @@ public class ChallengeController {
         binAnalysis.spotbugs(System.getProperty("user.dir") + "/down/" + reportIdDto.getId());
         report = spotBugsParser.parse(patch);
         reportService.updateSpotbugs(reportIdDto.getId(), report);
-        return ResponseEntity.ok("spotBugs отработал");
     }
 
-    @PostMapping("/pmd-start")
-    public ResponseEntity<?> reportPmd(@RequestBody ReportIdDto reportIdDto) throws Exception {
+    private void reportPmd(ReportIdDto reportIdDto) throws Exception {
         String report;
-        staticAnalysis.startPmd(reportIdDto.getId().toString());
         String patch = System.getProperty("user.dir") + "/backend/agent/target/pmd-res/" + reportIdDto.getId() + "/pmd.xml";
+
+        staticAnalysis.startPmd(reportIdDto.getId().toString());
         report = pmdParser.parse(patch);
         reportService.updatePmd(reportIdDto.getId(), report);
-        return ResponseEntity.ok("pmd отработал");
     }
 
-    @PostMapping("/owasp-start")
-    public ResponseEntity<?> reportOwasp(@RequestBody ReportIdDto reportIdDto) throws IOException, InterruptedException {
+    private void reportOwasp(ReportIdDto reportIdDto) throws IOException, InterruptedException {
         String report;
         String patch = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
+
         staticAnalysis.startOWASP(patch);
-
         report = dependencyCheckParser.parse(patch);
-
         reportService.updateOWASP(reportIdDto.getId(), report);
-        return ResponseEntity.ok("OWASP отработал успешно");
     }
 
-    @PostMapping("/checkstyle-start")
-    public ResponseEntity<?> reportCheckstyle(@RequestBody ReportIdDto reportIdDto) throws Exception {
+
+    private void reportCheckstyle(ReportIdDto reportIdDto) throws Exception {
         String report;
         String patch = System.getProperty("user.dir") + "/backend/agent/target/checkstyle-reports/" + reportIdDto.getId() + "/checkstyle-result.xml";
+
         staticAnalysis.startCheckStyle(reportIdDto.getId().toString());
         report = checkStyleParser.parse(patch);
         reportService.updateCheckStyle(reportIdDto.getId(), report);
-        return ResponseEntity.ok("Checkstyle отработал");
-
     }
 
-    @PostMapping("/report-download")
-    public Integer downloadUrl(@RequestBody ProjectDto projectDto) throws GitAPIException {
+    private void downloadUrl(ProjectDto projectDto) throws GitAPIException {
         ReportDto reportDto = new ReportDto(projectDto.getNameProject());
         Integer idReport = reportService.create(reportDto).getId();
         String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + idReport;
         String currentDirUser = System.getProperty("user.dir") + "/down/" + idReport;
+
         gitStatus.cloneRepository(projectDto.getUrl(), currentDirUser);
         gitStatus.cloneRepository(projectDto.getUrl(), currentDir);
-        return idReport;
     }
 
-    @PostMapping("/delete-file")
-    public ResponseEntity<?> deleteFile(@RequestBody ReportIdDto reportIdDto) throws IOException {
+    private void deleteFile(ReportIdDto reportIdDto) throws IOException {
         String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + reportIdDto.getId();
         String currentDirUser = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
+
         deleteFile.del(currentDir, currentDirUser);
-        return ResponseEntity.ok("Все удалили");
     }
 
 }

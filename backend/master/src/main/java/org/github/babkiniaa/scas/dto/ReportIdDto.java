@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReportIdDto {
     private Integer id;
+
     private String name;
 
 }

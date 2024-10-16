@@ -9,17 +9,17 @@ import java.io.File;
 @Component
 public class GitUtil {
 
-  public static void cloneRepository(String url, String cloneDirectoryPath) throws GitAPIException {
-    File cloneDirectory = new File(cloneDirectoryPath);
+    public static void cloneRepository(String url, String cloneDirectoryPath) throws GitAPIException {
+        File cloneDirectory = new File(cloneDirectoryPath);
 
-    try {
-      Git git = Git.cloneRepository()
-              .setURI(url)
-              .setDirectory(cloneDirectory)
-              .call();
-      git.close();
-    } catch (GitAPIException e) {
-      throw e;
+        try {
+            Git git = Git.cloneRepository()
+                    .setURI(url)
+                    .setDirectory(cloneDirectory)
+                    .call();
+            git.close();
+        } catch (GitAPIException e) {
+            throw e;
+        }
     }
-  }
 }

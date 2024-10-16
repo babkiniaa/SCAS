@@ -13,25 +13,30 @@ import java.io.FileNotFoundException;
 
 @Component
 public class CheckStyleParser extends XmlParser {
+
     @Override
     public String parse(String path) {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         XMLEventReader reader = null;
+        String report = "";
+
         try {
             reader = xmlInputFactory.createXMLEventReader(new FileInputStream(path));
         } catch (XMLStreamException | FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        String report = "";
+
         while (reader.hasNext()) {
-            XMLEvent nextEvent = null;
+            XMLEvent nextEvent;
             try {
                 nextEvent = reader.nextEvent();
             } catch (XMLStreamException e) {
                 throw new RuntimeException(e);
             }
+
             if (nextEvent.isStartElement()) {
                 StartElement startElement = nextEvent.asStartElement();
+
                 switch (startElement.getName().getLocalPart()) {
                     case "file":
                         report += super.checkAttribute(startElement, "name", "\nFile: ");
@@ -50,7 +55,5 @@ public class CheckStyleParser extends XmlParser {
         }
 
         return report;
-
-
     }
 }
