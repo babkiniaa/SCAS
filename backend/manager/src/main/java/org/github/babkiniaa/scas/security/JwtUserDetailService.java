@@ -21,7 +21,7 @@ public class JwtUserDetailService implements UserDetailsService {
     @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByEmailOrLogin(username, username)
+        User user = userService.findByEmailOrUsername(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if (!user.isEnable()) {
             throw new UsernameNotFoundException("Email not verified");

@@ -59,6 +59,7 @@ public class ChallengeController {
     public Optional<Report> getReport(@RequestParam Integer id) {
         return reportService.findById(id);
     }
+
     @PostMapping("/delete-reports")
     public ResponseEntity<?> deleteReport(@RequestBody ReportIdDto reportIdDto){
         reportService.delete(reportIdDto.getId());
@@ -71,7 +72,6 @@ public class ChallengeController {
         String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportIdDto.getId() + "/spotbugsXml.xml";
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
-
         request.setPomFile(new File(patch + "\\pom.xml"));
         request.setGoals(Collections.singletonList("compile"));
         Invoker invoker = new DefaultInvoker();
