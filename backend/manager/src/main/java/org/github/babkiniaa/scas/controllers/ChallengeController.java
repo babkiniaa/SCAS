@@ -70,8 +70,8 @@ public class ChallengeController {
         String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportIdDto.getId() + "/spotbugsXml.xml";
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
-
-        request.setPomFile(new File(patch + "\\pom.xml"));
+        String patchPom = System.getProperty("user.dir") + "/down" +  reportIdDto.getId();
+        request.setPomFile(new File(patchPom + "/pom.xml"));
         request.setGoals(Collections.singletonList("compile"));
         Invoker invoker = new DefaultInvoker();
         invoker.execute(request);
