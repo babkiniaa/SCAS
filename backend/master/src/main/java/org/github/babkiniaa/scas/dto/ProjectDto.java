@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.babkiniaa.scas.entity.Report;
 
 @Setter
 @Getter
@@ -19,4 +20,6 @@ public class ProjectDto {
     private String[] listOfChecks;
 
     private boolean visibility;
+
+    private Report report;
 }

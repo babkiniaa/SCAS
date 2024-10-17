@@ -23,9 +23,6 @@ public class ProjectService {
         return projectRepository.save(projectMapper.projectToEntity(projectDto));
     }
 
-    public List<Project> findByUrl(String url) {
-        return projectRepository.findByUrl(url);
-    }
 
     public List<Project> findAll() {
         return projectRepository.findAll();

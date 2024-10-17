@@ -6,7 +6,10 @@ import org.apache.maven.shared.invoker.*;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import org.github.babkiniaa.scas.entity.Project;
+import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.service.ProjectService;
+import org.github.babkiniaa.scas.service.UserService;
 import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
 import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.github.babkiniaa.scas.utils.DeleteFileUtil;
@@ -22,11 +25,10 @@ import org.github.babkiniaa.scas.parsers.PmdParser;
 import org.github.babkiniaa.scas.parsers.SpotBugsParser;
 import org.github.babkiniaa.scas.service.ReportService;
 
-
 import org.springframework.http.HttpStatus;
 
-
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.stream.XMLStreamException;
@@ -48,10 +50,16 @@ public class ChallengeController {
     private final CheckStyleParser checkStyleParser;
     private final PmdParser pmdParser;
     private final SpotBugsParser spotBugsParser;
+    private final UserService userService;
 
     @GetMapping("/reports")
     public List<Report> allReports() {
         return reportService.findAll();
+    }
+
+    @GetMapping("/projects")
+    public List<Project> allProjects() {
+        return projectService.findAll();
     }
 
     @GetMapping("/report/Get")
@@ -67,15 +75,20 @@ public class ChallengeController {
 
     @PostMapping("/init")
     public ResponseEntity<?> start(@RequestBody ProjectDto projectDto) throws Exception {
-        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
-        
-        if (projectService.findByUrl(projectDto.getUrl()).isEmpty()) {
-            Integer idProject = projectService.create(projectDto).getId();
-        }
-        Integer idReport = reportService.create(reportDto).getId();
-        ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
 
-        downloadUrl(projectDto);
+        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
+
+        Integer idReport = reportService.create(reportDto).getId();
+        projectDto.setReport(reportService.findById(idReport).get());
+        Integer idProject = projectService.create(projectDto).getId();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username).get();
+        List<Project> projectList = user.getProjectList();
+        projectList.add(projectService.findById(idProject).get());
+        user.setProjectList(projectList);
+
+        ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
+        downloadUrl(projectDto.getUrl(), idProject);
         for (String check : projectDto.getListOfChecks()) {
             switch (check) {
                 case "owasp-start":
@@ -157,14 +170,12 @@ public class ChallengeController {
         reportService.updateCheckStyle(reportIdDto.getId(), report);
     }
 
-    private void downloadUrl(ProjectDto projectDto) throws GitAPIException {
-        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
-        Integer idReport = reportService.create(reportDto).getId();
+    private void downloadUrl(String url, Integer idReport) throws GitAPIException {
         String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + idReport;
         String currentDirUser = System.getProperty("user.dir") + "/down/" + idReport;
 
-        GitUtil.cloneRepository(projectDto.getUrl(), currentDirUser);
-        GitUtil.cloneRepository(projectDto.getUrl(), currentDir);
+        GitUtil.cloneRepository(url, currentDirUser);
+        GitUtil.cloneRepository(url, currentDir);
     }
 
     private void deleteFile(ReportIdDto reportIdDto) throws IOException {

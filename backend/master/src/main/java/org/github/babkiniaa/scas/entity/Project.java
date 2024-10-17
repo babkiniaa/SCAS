@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
@@ -22,6 +23,7 @@ public class Project {
     private int id;
 
     private String nameProject;
+
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -29,11 +31,14 @@ public class Project {
 
     private boolean visibility;
 
-    @CreatedDate
-    private Instant date;
+    @CreationTimestamp
+    private Date date;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToOne
+    @JoinColumn(name = "report_id")
+    private Report report;
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @JoinColumn(name = "user_id")
+//    private User user;
 
 }
