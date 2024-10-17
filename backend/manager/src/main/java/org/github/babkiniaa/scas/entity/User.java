@@ -3,7 +3,9 @@ package org.github.babkiniaa.scas.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -41,4 +43,8 @@ public class User {
 
     @Column
     private boolean isEnable = false;
+
+    @Column
+    @OneToMany
+    private List<Project> projectList = new ArrayList<>();
 }

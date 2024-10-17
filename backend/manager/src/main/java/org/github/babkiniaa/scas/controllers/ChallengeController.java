@@ -6,6 +6,7 @@ import org.apache.maven.shared.invoker.*;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import org.github.babkiniaa.scas.service.ProjectService;
 import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
 import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.github.babkiniaa.scas.utils.DeleteFileUtil;
@@ -41,6 +42,7 @@ import java.util.Optional;
 public class ChallengeController {
 
     private final ReportService reportService;
+    private final ProjectService projectService;
 
     private final DependencyCheckParser dependencyCheckParser;
     private final CheckStyleParser checkStyleParser;
@@ -66,6 +68,10 @@ public class ChallengeController {
     @PostMapping("/init")
     public ResponseEntity<?> start(@RequestBody ProjectDto projectDto) throws Exception {
         ReportDto reportDto = new ReportDto(projectDto.getNameProject());
+        
+        if (projectService.findByUrl(projectDto.getUrl()).isEmpty()) {
+            Integer idProject = projectService.create(projectDto).getId();
+        }
         Integer idReport = reportService.create(reportDto).getId();
         ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
 

@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.Instant;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -24,5 +28,12 @@ public class Project {
     private String url;
 
     private boolean visibility;
+
+    @CreatedDate
+    private Instant date;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }
