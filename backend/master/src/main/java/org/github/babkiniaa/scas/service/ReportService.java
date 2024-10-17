@@ -29,9 +29,8 @@ public class ReportService {
         return reportRepository.findAll();
     }
 
-    public Report update(ReportDto reportDto, Integer id) {
+    public Report update(ReportDto reportDto) {
         Report report = reportMapper.reportToEntity(reportDto);
-        report.setId(id);
         return reportRepository.save(report);
     }
 
@@ -50,43 +49,47 @@ public class ReportService {
     }
 
     public Report updateOWASP(Integer id, String rep) {
-        ReportDto reportDto = new ReportDto();
+        Report report = new Report();
         if (!findById(id).isEmpty()) {
-            Report report = findById(id).get();
-            reportDto = reportMapper.reportToDto(report);
-            reportDto.setReportDependencyChecker(rep);
+            report = findById(id).get();
+            report.setReportDependencyChecker(rep);
+            save(report);
         }
-        return update(reportDto, id);
+        return report;
     }
 
     public Report updateSpotbugs(Integer id, String rep) {
-        ReportDto reportDto = new ReportDto();
+        Report report = new Report();
         if (!findById(id).isEmpty()) {
-            Report report = findById(id).get();
-            reportDto = reportMapper.reportToDto(report);
-            reportDto.setReportBugs(rep);
+            report = findById(id).get();
+            report.setReportBugs(rep);
+            save(report);
         }
-        return update(reportDto, id);
+        return report;
     }
 
     public Report updatePmd(Integer id, String rep) {
-        ReportDto reportDto = new ReportDto();
+        Report report = new Report();
         if (!findById(id).isEmpty()) {
-            Report report = findById(id).get();
-            reportDto = reportMapper.reportToDto(report);
-            reportDto.setReportPMD(rep);
+            report = findById(id).get();
+            report.setReportPMD(rep);
+            save(report);
         }
-        return update(reportDto, id);
+        return report;
     }
 
     public Report updateCheckStyle(Integer id, String rep) {
-        ReportDto reportDto = new ReportDto();
+        Report report = new Report();
         if (!findById(id).isEmpty()) {
-            Report report = findById(id).get();
-            reportDto = reportMapper.reportToDto(report);
-            reportDto.setReportCheckerStyle(rep);
+            report = findById(id).get();
+            report.setReportCheckerStyle(rep);
+            save(report);
         }
-        return update(reportDto, id);
+        return report;
+    }
+
+    public Report save(Report report){
+        return reportRepository.save(report);
     }
 
     public void create(Report reportToEntity) {
