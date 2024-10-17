@@ -62,7 +62,7 @@ public class ChallengeController {
         return projectService.findAll();
     }
 
-    @GetMapping("/report/Get")
+    @GetMapping("/report/get")
     public Optional<Report> getReport(@RequestParam Integer id) {
         return reportService.findById(id);
     }
@@ -93,21 +93,21 @@ public class ChallengeController {
             switch (check) {
                 case "owasp-start":
                     try {
-                        reportOwasp(reportIdDto);
+                        reportOwasp(idReport);
                     } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
                     }
                     break;
                 case "pmd-start":
                     try {
-                        reportPmd(reportIdDto);
+                        reportPmd(idReport);
                     } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
                     }
                     break;
                 case "checkstyle-start":
                     try {
-                        reportCheckstyle(reportIdDto);
+                        reportCheckstyle(idReport);
                     } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Checkstyle: " + e.getMessage());
                     }
@@ -115,59 +115,59 @@ public class ChallengeController {
                     break;
                 case "spotbugs-start":
                     try {
-                        reportSpotBugs(reportIdDto);
+                        reportSpotBugs(idReport);
                     } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении SpotBugs: " + e.getMessage());
                     }
                     break;
             }
         }
-        deleteFile(reportIdDto);
+        deleteFile(idReport);
 
         return ResponseEntity.ok("init отработал");
     }
 
-    private void reportSpotBugs(ReportIdDto reportIdDto) throws MavenInvocationException, XMLStreamException {
+    private void reportSpotBugs(Integer reportId) throws MavenInvocationException, XMLStreamException {
         String report;
-        String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportIdDto.getId() + "/spotbugsXml.xml";
+        String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportId + "/spotbugsXml.xml";
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
-        String patchPom = System.getProperty("user.dir") + "/down" +  reportIdDto.getId();
+        String patchPom = System.getProperty("user.dir") + "/down" +  reportId;
         request.setPomFile(new File(patchPom + "/pom.xml"));
         request.setGoals(Collections.singletonList("compile"));
         Invoker invoker = new DefaultInvoker();
         invoker.execute(request);
-        BinAnalysis.spotbugs(System.getProperty("user.dir") + "/down/" + reportIdDto.getId());
+        BinAnalysis.spotbugs(System.getProperty("user.dir") + "/down/" + reportId);
         report = spotBugsParser.parse(patch);
-        reportService.updateSpotbugs(reportIdDto.getId(), report);
+        reportService.updateSpotbugs(reportId, report);
     }
 
-    private void reportPmd(ReportIdDto reportIdDto) throws Exception {
+    private void reportPmd(Integer reportId) throws Exception {
         String report;
-        String patch = System.getProperty("user.dir") + "/backend/agent/target/pmd-res/" + reportIdDto.getId() + "/pmd.xml";
+        String patch = System.getProperty("user.dir") + "/backend/agent/target/pmd-res/" + reportId + "/pmd.xml";
 
-        StaticAnalysis.startPmd(reportIdDto.getId().toString());
+        StaticAnalysis.startPmd(String.valueOf(reportId));
         report = pmdParser.parse(patch);
-        reportService.updatePmd(reportIdDto.getId(), report);
+        reportService.updatePmd(reportId, report);
     }
 
-    private void reportOwasp(ReportIdDto reportIdDto) throws IOException, InterruptedException {
+    private void reportOwasp(Integer reportId) throws IOException, InterruptedException {
         String report;
-        String patch = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
+        String patch = System.getProperty("user.dir") + "/down/" + reportId;
 
         StaticAnalysis.startOWASP(patch);
         report = dependencyCheckParser.parse(patch);
-        reportService.updateOWASP(reportIdDto.getId(), report);
+        reportService.updateOWASP(reportId, report);
     }
 
 
-    private void reportCheckstyle(ReportIdDto reportIdDto) throws Exception {
+    private void reportCheckstyle(Integer reportId) throws Exception {
         String report;
-        String patch = System.getProperty("user.dir") + "/backend/agent/target/checkstyle-reports/" + reportIdDto.getId() + "/checkstyle-result.xml";
+        String patch = System.getProperty("user.dir") + "/backend/agent/target/checkstyle-reports/" + reportId + "/checkstyle-result.xml";
 
-        StaticAnalysis.startCheckStyle(reportIdDto.getId().toString());
+        StaticAnalysis.startCheckStyle(reportId.toString());
         report = checkStyleParser.parse(patch);
-        reportService.updateCheckStyle(reportIdDto.getId(), report);
+        reportService.updateCheckStyle(reportId, report);
     }
 
     private void downloadUrl(String url, Integer idReport) throws GitAPIException {
@@ -178,9 +178,9 @@ public class ChallengeController {
         GitUtil.cloneRepository(url, currentDir);
     }
 
-    private void deleteFile(ReportIdDto reportIdDto) throws IOException {
-        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + reportIdDto.getId();
-        String currentDirUser = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
+    private void deleteFile(Integer reportId) throws IOException {
+        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + reportId;
+        String currentDirUser = System.getProperty("user.dir") + "/down/" + reportId;
 
         DeleteFileUtil.del(currentDir, currentDirUser);
     }
