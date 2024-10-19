@@ -138,10 +138,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
             <!--          OWASP - dependency                                          -->
             <!--          mvn org.owasp:dependency-check-maven:check -DscanDirectory= -->
             <plugin>
