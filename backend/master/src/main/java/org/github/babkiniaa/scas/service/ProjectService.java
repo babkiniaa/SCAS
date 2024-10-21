@@ -23,6 +23,7 @@ public class ProjectService {
         return projectRepository.save(projectMapper.projectToEntity(projectDto));
     }
 
+
     public List<Project> findAll() {
         return projectRepository.findAll();
     }

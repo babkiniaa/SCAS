@@ -6,8 +6,15 @@ import org.apache.maven.shared.invoker.*;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import org.github.babkiniaa.scas.entity.Project;
+import org.github.babkiniaa.scas.entity.User;
+import org.github.babkiniaa.scas.security.AuthenticationFacade;
+import org.github.babkiniaa.scas.service.ProjectService;
+import org.github.babkiniaa.scas.service.UserService;
 import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
 import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
+import org.github.babkiniaa.scas.utils.DeleteFileUtil;
+import org.github.babkiniaa.scas.utils.GitUtil;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.dto.ReportIdDto;
@@ -19,14 +26,10 @@ import org.github.babkiniaa.scas.parsers.PmdParser;
 import org.github.babkiniaa.scas.parsers.SpotBugsParser;
 import org.github.babkiniaa.scas.service.ReportService;
 
-import org.github.babkiniaa.scas.textReader.DeleteFile;
-import org.github.babkiniaa.scas.textReader.GitStatus;
 import org.springframework.http.HttpStatus;
 
-import org.github.babkiniaa.scas.utils.DeleteFileUtil;
-
-import org.github.babkiniaa.scas.utils.GitUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.stream.XMLStreamException;
@@ -42,23 +45,25 @@ import java.util.Optional;
 public class ChallengeController {
 
     private final ReportService reportService;
-    private final BinAnalysis binAnalysis;
-    private final StaticAnalysis staticAnalysis;
-    private final GitUtil gitStatus;
-
-    private final DeleteFileUtil deleteFile;
-
+    private final ProjectService projectService;
+    private final AuthenticationFacade authenticationFacade;
     private final DependencyCheckParser dependencyCheckParser;
     private final CheckStyleParser checkStyleParser;
     private final PmdParser pmdParser;
     private final SpotBugsParser spotBugsParser;
+    private final UserService userService;
 
     @GetMapping("/reports")
     public List<Report> allReports() {
         return reportService.findAll();
     }
 
-    @GetMapping("/report/Get")
+    @GetMapping("/projects")
+    public List<Project> allProjects() {
+        return projectService.findAll();
+    }
+
+    @GetMapping("/report/get")
     public Optional<Report> getReport(@RequestParam Integer id) {
         return reportService.findById(id);
     }
@@ -71,30 +76,42 @@ public class ChallengeController {
 
     @PostMapping("/init")
     public ResponseEntity<?> start(@RequestBody ProjectDto projectDto) throws Exception {
-        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
-        Integer idReport = reportService.create(reportDto).getId();
-        ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
 
-        downloadUrl(projectDto);
+        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
+
+        Integer idReport = reportService.create(reportDto).getId();
+        projectDto.setReport(reportService.findById(idReport).get());
+        Integer idProject = projectService.create(projectDto).getId();
+        String username = authenticationFacade.getCurrentUserName();
+        User user = userService.findByUsername(username).get();
+        List<Project> projectList = user.getProjectList();
+        projectList.add(projectService.findById(idProject).get());
+        user.setProjectList(projectList);
+
+        ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
+        GitUtil.downloadUrl(projectDto.getUrl(), idProject);
         for (String check : projectDto.getListOfChecks()) {
             switch (check) {
                 case "owasp-start":
                     try {
-                        reportOwasp(reportIdDto);
+                        String owaspRep = reportOwasp(idReport);
+                        reportService.updateOWASP(idReport, owaspRep);
                     } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
                     }
                     break;
                 case "pmd-start":
                     try {
-                        reportPmd(reportIdDto);
+                        String pmdRep = reportPmd(idReport);
+                        reportService.updatePmd(idReport, pmdRep);
                     } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
                     }
                     break;
                 case "checkstyle-start":
                     try {
-                        reportCheckstyle(reportIdDto);
+                        String checkRep = reportCheckstyle(idReport);
+                        reportService.updateCheckStyle(idReport, checkRep);
                     } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Checkstyle: " + e.getMessage());
                     }
@@ -102,76 +119,64 @@ public class ChallengeController {
                     break;
                 case "spotbugs-start":
                     try {
-                        reportSpotBugs(reportIdDto);
+                        String spotRep = reportSpotBugs(idReport);
+                        reportService.updateSpotbugs(idReport, spotRep);
                     } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении SpotBugs: " + e.getMessage());
                     }
                     break;
             }
         }
-        deleteFile(reportIdDto);
+        DeleteFileUtil.deleteFile(idReport);
 
         return ResponseEntity.ok("init отработал");
     }
 
-    private void reportSpotBugs(ReportIdDto reportIdDto) throws MavenInvocationException, XMLStreamException {
+    private String reportSpotBugs(Integer reportId) throws MavenInvocationException, XMLStreamException {
         String report;
-        String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportIdDto.getId() + "/spotbugsXml.xml";
+        String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportId + "/spotbugsXml.xml";
         System.setProperty("maven.home", System.getenv("M2_HOME"));
         InvocationRequest request = new DefaultInvocationRequest();
-        String patchPom = System.getProperty("user.dir") + "/down" +  reportIdDto.getId();
+        String patchPom = System.getProperty("user.dir") + "/down" +  reportId;
         request.setPomFile(new File(patchPom + "/pom.xml"));
         request.setGoals(Collections.singletonList("compile"));
         Invoker invoker = new DefaultInvoker();
         invoker.execute(request);
-        binAnalysis.spotbugs(System.getProperty("user.dir") + "/down/" + reportIdDto.getId());
+        BinAnalysis.spotbugs(System.getProperty("user.dir") + "/down/" + reportId);
         report = spotBugsParser.parse(patch);
-        reportService.updateSpotbugs(reportIdDto.getId(), report);
+        return report;
+
     }
 
-    private void reportPmd(ReportIdDto reportIdDto) throws Exception {
+    private String reportPmd(Integer reportId) throws Exception {
         String report;
-        String patch = System.getProperty("user.dir") + "/backend/agent/target/pmd-res/" + reportIdDto.getId() + "/pmd.xml";
+        String patch = System.getProperty("user.dir") + "/backend/agent/target/pmd-res/" + reportId + "/pmd.xml";
 
-        staticAnalysis.startPmd(reportIdDto.getId().toString());
+        StaticAnalysis.startPmd(String.valueOf(reportId));
         report = pmdParser.parse(patch);
-        reportService.updatePmd(reportIdDto.getId(), report);
+        return report;
+
     }
 
-    private void reportOwasp(ReportIdDto reportIdDto) throws IOException, InterruptedException {
+    private String reportOwasp(Integer reportId) throws IOException, InterruptedException {
         String report;
-        String patch = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
+        String patch = System.getProperty("user.dir") + "/down/" + reportId;
 
-        staticAnalysis.startOWASP(patch);
+        StaticAnalysis.startOWASP(patch);
         report = dependencyCheckParser.parse(patch);
-        reportService.updateOWASP(reportIdDto.getId(), report);
+        return report;
     }
 
 
-    private void reportCheckstyle(ReportIdDto reportIdDto) throws Exception {
+    private String reportCheckstyle(Integer reportId) throws Exception {
         String report;
-        String patch = System.getProperty("user.dir") + "/backend/agent/target/checkstyle-reports/" + reportIdDto.getId() + "/checkstyle-result.xml";
+        String patch = System.getProperty("user.dir") + "/backend/agent/target/checkstyle-reports/" + reportId + "/checkstyle-result.xml";
 
-        staticAnalysis.startCheckStyle(reportIdDto.getId().toString());
+        StaticAnalysis.startCheckStyle(reportId.toString());
         report = checkStyleParser.parse(patch);
-        reportService.updateCheckStyle(reportIdDto.getId(), report);
+        return report;
     }
 
-    private void downloadUrl(ProjectDto projectDto) throws GitAPIException {
-        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
-        Integer idReport = reportService.create(reportDto).getId();
-        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + idReport;
-        String currentDirUser = System.getProperty("user.dir") + "/down/" + idReport;
 
-        gitStatus.cloneRepository(projectDto.getUrl(), currentDirUser);
-        gitStatus.cloneRepository(projectDto.getUrl(), currentDir);
-    }
-
-    private void deleteFile(ReportIdDto reportIdDto) throws IOException {
-        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + reportIdDto.getId();
-        String currentDirUser = System.getProperty("user.dir") + "/down/" + reportIdDto.getId();
-
-        deleteFile.del(currentDir, currentDirUser);
-    }
 
 }

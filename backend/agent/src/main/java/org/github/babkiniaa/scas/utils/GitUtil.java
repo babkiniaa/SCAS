@@ -22,4 +22,12 @@ public class GitUtil {
             throw e;
         }
     }
+
+    public static void downloadUrl(String url, Integer idReport) throws GitAPIException {
+        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + idReport;
+        String currentDirUser = System.getProperty("user.dir") + "/down/" + idReport;
+
+        GitUtil.cloneRepository(url, currentDirUser);
+        GitUtil.cloneRepository(url, currentDir);
+    }
 }

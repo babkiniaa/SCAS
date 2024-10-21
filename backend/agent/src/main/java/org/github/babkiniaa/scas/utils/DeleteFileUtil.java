@@ -33,4 +33,11 @@ public class DeleteFileUtil {
         }
         file.delete();
     }
+
+    public static void deleteFile(Integer reportId) throws IOException {
+        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + reportId;
+        String currentDirUser = System.getProperty("user.dir") + "/down/" + reportId;
+
+        DeleteFileUtil.del(currentDir, currentDirUser);
+    }
 }

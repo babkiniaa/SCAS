@@ -26,24 +26,27 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-        <!--  https://mvnrepository.com/artifact/org.mapstruct/mapstruct  -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.5.Final</version>
-        </dependency>
-        <!--  https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor  -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.5.5.Final</version>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.34</version>
             <scope>provided</scope>
         </dependency>
+        <!--  https://mvnrepository.com/artifact/org.mapstruct/mapstruct  -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.5.Final</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--  https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor  -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.5.5.Final</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
@@ -82,13 +85,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+
 </project>
