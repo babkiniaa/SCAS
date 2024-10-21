@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
+
 public class DependencyCheckParser implements Parser {
 
     public static String getAllMatches(String text, String regex) {

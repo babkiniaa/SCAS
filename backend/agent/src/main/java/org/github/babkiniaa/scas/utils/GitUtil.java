@@ -6,28 +6,28 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 
-@Component
+
 public class GitUtil {
 
-    public static void cloneRepository(String url, String cloneDirectoryPath) throws GitAPIException {
-        File cloneDirectory = new File(cloneDirectoryPath);
+  public static void cloneRepository(String url, String cloneDirectoryPath) throws GitAPIException {
+    File cloneDirectory = new File(cloneDirectoryPath);
 
-        try {
-            Git git = Git.cloneRepository()
-                    .setURI(url)
-                    .setDirectory(cloneDirectory)
-                    .call();
-            git.close();
-        } catch (GitAPIException e) {
-            throw e;
-        }
+    try {
+      Git git = Git.cloneRepository()
+              .setURI(url)
+              .setDirectory(cloneDirectory)
+              .call();
+      git.close();
+    } catch (GitAPIException e) {
+      throw e;
     }
+  }
 
-    public static void downloadUrl(String url, Integer idReport) throws GitAPIException {
-        String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + idReport;
-        String currentDirUser = System.getProperty("user.dir") + "/down/" + idReport;
+  public static void downloadUrl(String url, Integer idReport) throws GitAPIException {
+    String currentDir = System.getProperty("user.dir") + "/backend/agent/src/main/java/" + idReport;
+    String currentDirUser = System.getProperty("user.dir") + "/down/" + idReport;
 
-        GitUtil.cloneRepository(url, currentDirUser);
-        GitUtil.cloneRepository(url, currentDir);
-    }
+    GitUtil.cloneRepository(url, currentDirUser);
+    GitUtil.cloneRepository(url, currentDir);
+  }
 }
