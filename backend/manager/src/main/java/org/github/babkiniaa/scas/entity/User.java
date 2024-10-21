@@ -2,14 +2,12 @@ package org.github.babkiniaa.scas.entity;
 
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Сущность, представляющая пользователя в системе.
@@ -21,30 +19,33 @@ import lombok.Setter;
 @Entity(name = "users")
 @RequiredArgsConstructor
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column
-    private String email;
+  @Column
+  private String email;
 
-    @Column
-    private String username;
+  @Column
+  private String username;
 
-    @Column
-    private String password;
+  @Column
+  private String about;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+  @Column
+  private String password;
 
-    @Column
-    private String verificationCode;
+  @Column
+  @Enumerated(EnumType.STRING)
+  private Role role = Role.USER;
 
-    @Column
-    private boolean isEnable = false;
+  @Column
+  private String verificationCode;
 
-    @Column
-    @OneToMany
-    private List<Project> projectList = new ArrayList<>();
+  @Column
+  private boolean isEnable = false;
+
+  @Column
+  @OneToMany
+  private List<Project> projectList = new ArrayList<>();
 }

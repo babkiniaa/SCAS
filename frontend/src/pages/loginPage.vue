@@ -9,7 +9,7 @@
       </q-card-section>
       <q-form @submit="submitLogin">
         <q-card-section>
-          <q-input dense outlined v-model="username" label="Login or Email Address"></q-input>
+          <q-input dense outlined v-model="username" label="Email Address"></q-input>
           <q-input dense outlined class="q-mt-md" v-model="password" type="password" label="Password"></q-input>
         </q-card-section>
         <q-card-actions>
@@ -41,10 +41,11 @@ export default {
           password: this.password
         })
         const token = response.data.accessToken
-        console.log(token)
         localStorage.setItem('jwtToken', token)
-        console.log(localStorage.getItem('jwtToken'))
+        const currentUserId = response.data.currentId
+        localStorage.setItem('currentId', currentUserId)
         this.$q.notify({ message: response.data, color: 'green' })
+        this.$router.push('/home')
       } catch (error) {
         this.$q.notify({ message: error.response.data, color: 'red' })
       }

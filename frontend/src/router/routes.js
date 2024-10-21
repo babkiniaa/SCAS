@@ -10,7 +10,8 @@ const routes = [
       { path: '/home', component: () => import('pages/MainPage.vue') },
       { path: '/create-project', component: () => import('pages/CreateProjectPage.vue') },
       { path: '/analysis', name: 'analysis', component: () => import('pages/AnalysisPage.vue'), props: true },
-      { path: 'profille', component: () => import('pages/ProfillePage.vue') }  
+      { path: '/edit', component: () => import('pages/EditPage.vue') },
+      { path: '/profile/:id', name: 'profile', component: () => import('pages/ProfPage.vue'), props: true }
     ]
   },
   {

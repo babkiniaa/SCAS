@@ -6,7 +6,7 @@
         <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
         <q-space />
         <q-btn dense round icon="search" @click="search" aria-label="Search" class="text-white" />
-        <q-avatar size="42px" class="q-ml-md">
+        <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
           <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
           <q-icon v-else name="person" class="text-white" />
         </q-avatar>
@@ -75,6 +75,7 @@
 export default {
   data () {
     return {
+      userId: null,
       drawer: true,
       miniState: true,
       user: {
@@ -106,6 +107,10 @@ export default {
       this.$router.push('/view-five-last-projects')
     },
     search () {
+    },
+    goToProfile () {
+      const userId = localStorage.getItem('currentId')
+      this.$router.push(`/profile/${userId}`)
     }
   }
 }

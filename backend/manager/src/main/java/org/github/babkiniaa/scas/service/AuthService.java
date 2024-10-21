@@ -17,13 +17,27 @@ public class AuthService {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * Выполняет аутентификацию пользователя и генерирует JWT токены (access и refresh).
+     * Использует данные, переданные в запросе, для аутентификации и возвращает токены.
+     *
+     * @param loginRequest объект с данными для входа (username и пароль)
+     * @return объект JwtResponse, содержащий идентификатор пользователя, access и refresh токены
+     * @throws NotFoundUser если пользователь не найден по email или имени пользователя
+     */
     public JwtResponse login(LoginDto loginRequest) throws NotFoundUser {
         JwtResponse jwtResponse = new JwtResponse();
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        User user = userService.findByEmailOrUsername(loginRequest.getUsername(), loginRequest.getUsername()).orElseThrow(() -> new NotFoundUser("Не найден пользователь"));
-        jwtResponse.setUsername(user.getUsername());
-        jwtResponse.setAccessToken(jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), user.getEmail(), user.getRole()));
-        jwtResponse.setRefreshToken(jwtTokenProvider.createRefreshToken(user.getId(), user.getUsername()));
+
+        authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        User user = userService
+                .findByEmailOrUsername(loginRequest.getUsername(), loginRequest.getUsername())
+                .orElseThrow(() -> new NotFoundUser("Не найден пользователь"));
+        jwtResponse.setCurrentId(user.getId());
+        jwtResponse.setAccessToken(jwtTokenProvider.createAccessToken(user.getId(),  user.getEmail(), user.getRole()));
+        jwtResponse.setRefreshToken(jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail()));
+
         return jwtResponse;
     }
+
 }

@@ -31,7 +31,7 @@ public class Project {
 
     private boolean visibility;
 
-    @CreationTimestamp
+
     private Date date;
 
     @OneToOne
