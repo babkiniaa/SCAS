@@ -6,7 +6,7 @@
         <q-toolbar-title class="text-white">Vulnerability search "{{ projectName }}"</q-toolbar-title>
         <q-space />
         <q-btn dense round icon="search" aria-label="Search" class="text-white" />
-        <q-avatar size="42px" class="q-ml-md">
+        <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
           <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
           <q-icon v-else name="person" class="text-white" />
         </q-avatar>
@@ -118,6 +118,10 @@ export default {
     },
     goToCreateProject () {
       this.$router.push('/create-project')
+    },
+    goToProfile () {
+      const userId = localStorage.getItem('currentId')
+      this.$router.push(`/profile/${userId}`)
     }
   }
 }

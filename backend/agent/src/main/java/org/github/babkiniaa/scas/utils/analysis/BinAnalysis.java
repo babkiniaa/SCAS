@@ -7,7 +7,6 @@ import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.util.Collections;
 
-@Component
 public class BinAnalysis {
 
     public static void spotbugs(String dir) throws XMLStreamException, MavenInvocationException {

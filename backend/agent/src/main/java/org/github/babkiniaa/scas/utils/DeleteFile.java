@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-@Component
+
 public class DeleteFile {
     public void del(String cloneDirectoryPath, String cloneDirectoryPathDeskstop) throws IOException {
         File f = new File(cloneDirectoryPath);

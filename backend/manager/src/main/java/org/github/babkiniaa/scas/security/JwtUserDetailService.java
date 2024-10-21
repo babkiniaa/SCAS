@@ -18,14 +18,23 @@ public class JwtUserDetailService implements UserDetailsService {
 
     private final JwtMapper jwtMapper;
 
+    /**
+     * Загружает данные пользователя по его email.
+     * Используется для аутентификации пользователя в системе.
+     *
+     * @param email email пользователя, по которому происходит вход
+     * @return объект UserDetails, содержащий данные пользователя для аутентификации
+     * @throws UsernameNotFoundException если пользователь не найден по указанному email
+     */
     @SneakyThrows
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByEmailOrUsername(username, username)
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userService.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if (!user.isEnable()) {
             throw new UsernameNotFoundException("Email not verified");
         }
+
         return jwtMapper.toJwt(user);
     }
 

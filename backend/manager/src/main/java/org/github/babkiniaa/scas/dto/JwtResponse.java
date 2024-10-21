@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class JwtResponse {
 
-    private String username;
+    private long currentId;
 
     private String accessToken;
 

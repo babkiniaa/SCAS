@@ -32,6 +32,9 @@ public class User {
     private String username;
 
     @Column
+    private String about;
+
+    @Column
     private String password;
 
     @Column

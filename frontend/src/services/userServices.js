@@ -6,7 +6,6 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('jwtToken')
-    console.log(token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -16,8 +15,8 @@ api.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-export function getUserProfile () {
-  return api.get('/profile')
+export function getUserProfile (id) {
+  return api.get(`/profile/${id}`)
 }
 export function updateUserProfile (userData) {
   return api.put('/profile', userData)

@@ -1,11 +1,19 @@
 package org.github.babkiniaa.scas.service;
 
+import org.github.babkiniaa.scas.dto.JwtResponse;
+import org.github.babkiniaa.scas.dto.LoginDto;
+import org.github.babkiniaa.scas.dto.ProfileDto;
 import org.github.babkiniaa.scas.entity.User;
+import org.github.babkiniaa.scas.exception.NotFoundUser;
+import org.github.babkiniaa.scas.mappers.UserMapper;
 import org.github.babkiniaa.scas.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.github.babkiniaa.scas.security.JwtTokenProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +34,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final UserMapper userMapper;
 
     /**
      * Регистрирует нового пользователя.
@@ -132,7 +141,44 @@ public class UserService {
         return userRepository.findByEmailOrUsername(email, username);
     }
 
+    /**
+     * Находит пользователя по имени пользователя (username).
+     *
+     * @param username имя пользователя (username)
+     * @return Optional с найденным пользователем или пустое значение, если пользователь не найден
+     */
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    /**
+     * Обновляет данные пользователя в базе данных.
+     * Метод оборачивается в транзакцию, чтобы изменения были атомарными.
+     *
+     * @param user пользователь, данные которого нужно обновить
+     */
+    @Transactional
+    public void update(User user) {
+        userRepository.save(user);
+    }
+
+    /**
+     * Находит пользователя по email.
+     *
+     * @param email email пользователя
+     * @return Optional с найденным пользователем или пустое значение, если пользователь не найден
+     */
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    /**
+     * Находит пользователя по его идентификатору.
+     *
+     * @param id идентификатор пользователя
+     * @return Optional с найденным пользователем или пустое значение, если пользователь не найден
+     */
+    public Optional<User> findById(long id) {
+        return userRepository.findById(id);
     }
 }
