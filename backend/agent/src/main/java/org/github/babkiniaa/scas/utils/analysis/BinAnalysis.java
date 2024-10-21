@@ -24,4 +24,5 @@ public class BinAnalysis {
             throw e;
         }
     }
+
 }
