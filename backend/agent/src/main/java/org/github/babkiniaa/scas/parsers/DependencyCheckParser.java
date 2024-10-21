@@ -4,8 +4,6 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
