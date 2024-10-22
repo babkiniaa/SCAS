@@ -44,8 +44,4 @@ public class User {
 
   @Column
   private boolean isEnable = false;
-
-  @Column
-  @OneToMany
-  private List<Project> projectList = new ArrayList<>();
 }

@@ -11,7 +11,8 @@ const routes = [
       { path: '/create-project', component: () => import('pages/CreateProjectPage.vue') },
       { path: '/analysis', name: 'analysis', component: () => import('pages/AnalysisPage.vue'), props: true },
       { path: '/edit', component: () => import('pages/EditPage.vue') },
-      { path: '/profile/:id', name: 'profile', component: () => import('pages/ProfPage.vue'), props: true }
+      { path: '/profile/:id', name: 'profile', component: () => import('pages/ProfPage.vue'), props: true },
+      { path: '/projects', component: () => import('pages/AllProjectPage.vue') }
     ]
   },
   {

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.github.babkiniaa.scas.entity.Report;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -22,4 +24,6 @@ public class ProjectDto {
     private boolean visibility;
 
     private Report report;
+
+    private LocalDateTime createdDate;
 }

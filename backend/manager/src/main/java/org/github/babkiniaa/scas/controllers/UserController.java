@@ -2,14 +2,20 @@ package org.github.babkiniaa.scas.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.github.babkiniaa.scas.Mapper.ProjectMapper;
+import org.github.babkiniaa.scas.dto.GetProjectDto;
 import org.github.babkiniaa.scas.dto.ProfileDto;
+import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.exception.NotFoundUser;
 import org.github.babkiniaa.scas.mappers.UserMapper;
 import org.github.babkiniaa.scas.security.AuthenticationFacade;
+import org.github.babkiniaa.scas.service.ProjectService;
 import org.github.babkiniaa.scas.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Контроллер для обработки запросов, связанных с пользователями.
@@ -59,5 +65,4 @@ public class UserController {
 
     return ResponseEntity.ok("ok");
   }
-
 }

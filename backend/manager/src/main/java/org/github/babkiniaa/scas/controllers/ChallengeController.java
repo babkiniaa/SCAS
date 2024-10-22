@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.apache.maven.shared.invoker.*;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
-
 import org.github.babkiniaa.scas.entity.Project;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.security.AuthenticationFacade;
@@ -29,7 +27,6 @@ import org.github.babkiniaa.scas.service.ReportService;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.stream.XMLStreamException;
@@ -74,63 +71,63 @@ public class ChallengeController {
         return ResponseEntity.ok("Удалил отчет");
     }
 
-    @PostMapping("/init")
-    public ResponseEntity<?> start(@RequestBody ProjectDto projectDto) throws Exception {
-
-        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
-
-        Integer idReport = reportService.create(reportDto).getId();
-        projectDto.setReport(reportService.findById(idReport).get());
-        Integer idProject = projectService.create(projectDto).getId();
-        String username = authenticationFacade.getCurrentUserName();
-        User user = userService.findByUsername(username).get();
-        List<Project> projectList = user.getProjectList();
-        projectList.add(projectService.findById(idProject).get());
-        user.setProjectList(projectList);
-
-        ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
-        GitUtil.downloadUrl(projectDto.getUrl(), idProject);
-        for (String check : projectDto.getListOfChecks()) {
-            switch (check) {
-                case "owasp-start":
-                    try {
-                        String owaspRep = reportOwasp(idReport);
-                        reportService.updateOWASP(idReport, owaspRep);
-                    } catch (Exception e) {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
-                    }
-                    break;
-                case "pmd-start":
-                    try {
-                        String pmdRep = reportPmd(idReport);
-                        reportService.updatePmd(idReport, pmdRep);
-                    } catch (Exception e) {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
-                    }
-                    break;
-                case "checkstyle-start":
-                    try {
-                        String checkRep = reportCheckstyle(idReport);
-                        reportService.updateCheckStyle(idReport, checkRep);
-                    } catch (Exception e) {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Checkstyle: " + e.getMessage());
-                    }
-
-                    break;
-                case "spotbugs-start":
-                    try {
-                        String spotRep = reportSpotBugs(idReport);
-                        reportService.updateSpotbugs(idReport, spotRep);
-                    } catch (Exception e) {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении SpotBugs: " + e.getMessage());
-                    }
-                    break;
-            }
-        }
-        DeleteFileUtil.deleteFile(idReport);
-
-        return ResponseEntity.ok("init отработал");
-    }
+//    @PostMapping("/init")
+//    public ResponseEntity<?> start(@RequestBody ProjectDto projectDto) throws Exception {
+//
+//        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
+//
+//        Integer idReport = reportService.create(reportDto).getId();
+//        projectDto.setReport(reportService.findById(idReport).get());
+//        Integer idProject = projectService.create(projectDto, user.getId()).getId();
+//        String username = authenticationFacade.getCurrentUserName();
+//        User user = userService.findByUsername(username).get();
+//        List<Project> projectList = user.getProjectList();
+//        projectList.add(projectService.findById(idProject).get());
+//        user.setProjectList(projectList);
+//
+//        ReportIdDto reportIdDto = new ReportIdDto(idReport, reportDto.getNameReport());
+//        GitUtil.downloadUrl(projectDto.getUrl(), idProject);
+//        for (String check : projectDto.getListOfChecks()) {
+//            switch (check) {
+//                case "owasp-start":
+//                    try {
+//                        String owaspRep = reportOwasp(idReport);
+//                        reportService.updateOWASP(idReport, owaspRep);
+//                    } catch (Exception e) {
+//                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
+//                    }
+//                    break;
+//                case "pmd-start":
+//                    try {
+//                        String pmdRep = reportPmd(idReport);
+//                        reportService.updatePmd(idReport, pmdRep);
+//                    } catch (Exception e) {
+//                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Pmd: " + e.getMessage());
+//                    }
+//                    break;
+//                case "checkstyle-start":
+//                    try {
+//                        String checkRep = reportCheckstyle(idReport);
+//                        reportService.updateCheckStyle(idReport, checkRep);
+//                    } catch (Exception e) {
+//                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении Checkstyle: " + e.getMessage());
+//                    }
+//
+//                    break;
+//                case "spotbugs-start":
+//                    try {
+//                        String spotRep = reportSpotBugs(idReport);
+//                        reportService.updateSpotbugs(idReport, spotRep);
+//                    } catch (Exception e) {
+//                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при выполнении SpotBugs: " + e.getMessage());
+//                    }
+//                    break;
+//            }
+//        }
+//        DeleteFileUtil.deleteFile(idReport);
+//
+//        return ResponseEntity.ok("init отработал");
+//    }
 
     private String reportSpotBugs(Integer reportId) throws MavenInvocationException, XMLStreamException {
         String report;
