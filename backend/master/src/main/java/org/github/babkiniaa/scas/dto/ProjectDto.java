@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectDto {
-    private String nameProject;
+    private String name;
 
     private String description;
 
@@ -21,7 +21,7 @@ public class ProjectDto {
 
     private String[] listOfChecks;
 
-    private boolean visibility;
+    private boolean visibility = true;
 
     private Report report;
 

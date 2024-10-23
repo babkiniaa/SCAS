@@ -104,7 +104,8 @@ export default {
       this.$router.push('/create-project')
     },
     goToAllProjects () {
-      this.$router.push('/view-five-last-projects')
+      const id = localStorage.getItem('currentId')
+      this.$router.push({ name: 'projects', params: { id } })
     },
     search () {
     },

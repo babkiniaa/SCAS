@@ -25,14 +25,14 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String nameProject;
+    private String name;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
     private String url;
 
-    private boolean visibility;
+    private boolean visibility = true;
 
     @Column(name = "created_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

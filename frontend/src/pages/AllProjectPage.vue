@@ -1,6 +1,5 @@
 <template>
   <q-layout view="lHh lpr lFf">
-    <!-- Header -->
     <q-header elevated class="bg-grey-9">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
@@ -50,8 +49,8 @@
           <div class="search-sort-container row q-gutter-md col-8 justify-center">
             <q-input
               outlined
-              debounce="300"
-              v-model="projectsDto.searchTerm"
+              debounce="30"
+              v-model="projectsDto.name"
               placeholder="Search projects"
               @input="onSearch"
               class="col-5"
@@ -60,14 +59,26 @@
                 <q-icon name="search" />
               </template>
             </q-input>
-            <q-select
+            <q-btn-dropdown
               outlined
-              v-model="projectsDto.sortingField"
-              :options="sortingOptions"
               label="Sort by"
+              color="primary"
+              :options="sortingOptions"
+              @click="onSortChange($event)"
               class="col-5"
-              @input="onSortChange"
-            />
+            >
+              <q-list>
+                <q-item
+                  v-for="option in sortingOptions"
+                  :key="option.value"
+                  clickable
+                  v-ripple
+                  @click="onSortChange(option.value)"
+                >
+                  <q-item-section>{{ option.label }}</q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
           </div>
           <q-btn
             outlined
@@ -113,6 +124,7 @@
     </q-page-container>
   </q-layout>
 </template>
+
 <script>
 import { getProjects } from 'src/services/projectServices'
 export default {
@@ -125,16 +137,16 @@ export default {
         avatar: null
       },
       projectsDto: {
-        count: 10,
+        count: 4,
         page: 0,
         sortingField: 'createdDate',
-        searchTerm: '',
-        userId: '',
-        myProject: true
+        userId: localStorage.getItem('currentId'),
+        myProject: true,
+        name: ''
       },
       sortingOptions: [
         { label: 'Date', value: 'createdDate' },
-        { label: 'Name', value: 'nameProject' }
+        { label: 'Name', value: 'name' }
       ],
       isOwnProject: false,
       currentUserId: null
@@ -147,12 +159,12 @@ export default {
   methods: {
     async loadProjects () {
       try {
-        console.log(this.currentUserId)
         // eslint-disable-next-line eqeqeq
-        if (this.projectsDto.userId != this.$route.params.profileId) {
+        if (this.projectsDto.userId != this.$route.params.id) {
           this.projectsDto.myProject = false
-          this.projectsDto.userId = this.$route.params.profileId
+          this.projectsDto.userId = this.$route.params.id
         }
+        console.log(this.projectsDto.userId)
         const response = await getProjects(this.projectsDto)
         this.projects = response.data
         this.isOwnProject = this.projectsDto.userId === localStorage.getItem('currentId')
@@ -169,6 +181,9 @@ export default {
         this.projectsDto.page -= 1
         this.loadProjects()
       }
+    },
+    goToHome () {
+      this.$router.push('/home')
     },
     goToCreateProject () {
       this.$router.push('/create-project')
@@ -188,46 +203,16 @@ export default {
       this.loadProjects()
     },
     goToAllProjects () {
-      this.$router.push('/projects')
+      const id = localStorage.getItem('currentId')
+      this.$router.push({ name: 'projects', params: { id } })
     },
-    onSortChange () {
-      this.projectsDto.page = 0
-      this.loadProjects()
+    onSortChange (selectedValue) {
+      if (typeof selectedValue === 'string') {
+        this.projectsDto.sortingField = selectedValue
+        this.projectsDto.page = 0
+        this.loadProjects()
+      }
     }
   }
 }
 </script>
-<style scoped>
-.q-toolbar-title {
-  font-size: 20px;
-}
-.q-drawer__content {
-  background-color: #2e2e2e;
-}
-.q-toolbar {
-  background-color: #1f1f1f;
-}
-.q-list .q-item-section {
-  color: white;
-}
-.q-btn {
-  min-width: 150px;
-}
-.q-input,
-.q-select,
-.q-btn {
-  max-width: 100%;
-}
-.sticky-create-btn {
-  position: sticky;
-  top: 10px;
-  z-index: 1;
-}
-.q-gutter-md {
-  gap: 20px;
-}
-.search-sort-container {
-  justify-content: center;
-  display: flex;
-}
-</style>

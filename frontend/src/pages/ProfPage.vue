@@ -36,7 +36,7 @@
           </q-item-section>
           <q-item-section class="text-black">Create Project</q-item-section>
         </q-item>
-        <q-item clickable v-ripple @click="goToAllProjects">
+        <q-item clickable v-ripple @click="goToMyProjects">
           <q-item-section avatar>
             <q-icon name="folder_open" />
           </q-item-section>
@@ -125,7 +125,12 @@ export default {
       this.$router.push('/create-project')
     },
     goToAllProjects () {
-      this.$router.push('/projects')
+      const id = this.user.id
+      this.$router.push({ name: 'projects', params: { id } })
+    },
+    goToMyProjects () {
+      const id = localStorage.getItem('currentId')
+      this.$router.push({ name: 'projects', params: { id } })
     },
     goToProfile () {
       const id = localStorage.getItem('currentId')
