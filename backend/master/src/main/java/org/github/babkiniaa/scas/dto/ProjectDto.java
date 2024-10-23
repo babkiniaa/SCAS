@@ -6,12 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.github.babkiniaa.scas.entity.Report;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectDto {
-    private String nameProject;
+    private String name;
 
     private String description;
 
@@ -19,7 +21,9 @@ public class ProjectDto {
 
     private String[] listOfChecks;
 
-    private boolean visibility;
+    private boolean visibility = true;
 
     private Report report;
+
+    private LocalDateTime createdDate;
 }

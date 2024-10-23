@@ -108,7 +108,21 @@
               <q-input v-model="projectDescription" outlined label="Description" type="textarea" />
             </q-card-section>
             <q-card-section class="text-center">
-              <q-btn label="Create and start searching for vulnerabilities" color="primary" class="q-mt-md full-width" type="submit" />
+              <q-btn
+                label="Create Project"
+                color="primary"
+                class="q-mt-md full-width"
+                type="submit"
+                @click="submitCreateProject"
+                :disable="isCreating"
+              />
+              <q-btn
+                label="Start Analysis"
+                color="green"
+                class="q-mt-md full-width"
+                @click="startAnalysis"
+                :disable="!projectCreated"
+              />
             </q-card-section>
           </q-form>
         </q-card>
@@ -118,7 +132,6 @@
 </template>
 <script>
 import { createProject } from 'src/services/projectServices'
-
 export default {
   data () {
     return {
@@ -127,38 +140,52 @@ export default {
       user: {
         avatar: null
       },
+      visibilityProject: true,
       projectName: '',
       selectedSource: '',
       sourceOptions: ['GitHub', 'Upload'],
       visibilityOptions: ['public', 'private'],
-      selectedVisibility: '',
+      selectedVisibility: 'public',
       gitHubLink: '',
-      projectDescription: ''
+      projectDescription: '',
+      isCreating: false,
+      projectCreated: false,
+      createdProjectId: null
     }
   },
   methods: {
     selectVisibility (visibility) {
       this.selectedVisibility = visibility
+      this.visibilityProject = visibility === 'public'
     },
     selectSource (source) {
       this.selectedSource = source
     },
-
     async submitCreateProject () {
-      this.$router.push({ name: 'analysis', params: 1 })
+      this.isCreating = true
+      console.log(this.visibilityProject)
       try {
-        const response = await createProject({
+        await createProject({
           name: this.projectName,
           source: this.selectedSource,
-          visibility: this.selectedVisibility,
+          visibility: this.visibilityProject,
           gitHubLink: this.gitHubLink,
           description: this.projectDescription
         })
-        const projectId = response.data.id
-        this.$q.notify({ message: response.data, color: 'green' })
-        this.$router.push({ name: 'analysis', params: { projectId } })
+        this.$q.notify({ message: 'Project created successfully', color: 'green' })
+        this.projectCreated = true
       } catch (error) {
-        this.$q.notify({ message: error.response.data, color: 'red' })
+        this.$q.notify({ message: 'Failed to create project', color: 'red' })
+      } finally {
+        this.isCreating = false
+      }
+    },
+    async startAnalysis () {
+      try {
+        // await startProjectAnalysis(this.createdProjectId)
+        this.$q.notify({ message: 'Analysis started successfully', color: 'green' })
+      } catch (error) {
+        this.$q.notify({ message: 'Failed to start analysis', color: 'red' })
       }
     },
     handleFileUpload () {
@@ -171,7 +198,8 @@ export default {
       this.$router.push('/create-project')
     },
     goToAllProjects () {
-      this.$router.push('/projects')
+      const id = localStorage.getItem('currentId')
+      this.$router.push({ name: 'projects', params: { id } })
     },
     goToProfile () {
       const userId = localStorage.getItem('currentId')
@@ -180,6 +208,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 .my-card {
   max-width: 600px;

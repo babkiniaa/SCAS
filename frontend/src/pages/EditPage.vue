@@ -147,7 +147,8 @@ export default {
       this.$router.push('/create-project')
     },
     goToAllProjects () {
-      this.$router.push('/projects')
+      const id = localStorage.getItem('currentId')
+      this.$router.push({ name: 'projects', params: { id } })
     },
     uploadAvatar () {
     },

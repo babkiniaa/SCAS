@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/projects'
+  baseURL: 'http://localhost:8080/project'
 })
 api.interceptors.request.use(
   (config) => {
@@ -15,6 +15,10 @@ api.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-export const createProject = async (projectData) => {
-  return await api.post('/create', projectData)
+export function createProject (projectData) {
+  return api.post('/create', projectData)
+}
+
+export function getProjects (projectData) {
+  return api.post('/get-projects', projectData)
 }
