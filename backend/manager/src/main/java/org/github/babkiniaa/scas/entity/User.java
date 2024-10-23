@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Сущность, представляющая пользователя в системе.
  * Содержит информацию о пользователе, его ролях и состоянии верификации.
@@ -19,29 +16,29 @@ import java.util.List;
 @Entity(name = "users")
 @RequiredArgsConstructor
 public class User {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @Column
-  private String email;
+    @Column
+    private String email;
 
-  @Column
-  private String username;
+    @Column
+    private String username;
 
-  @Column
-  private String about;
+    @Column
+    private String about;
 
-  @Column
-  private String password;
+    @Column
+    private String password;
 
-  @Column
-  @Enumerated(EnumType.STRING)
-  private Role role = Role.USER;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
 
-  @Column
-  private String verificationCode;
+    @Column
+    private String verificationCode;
 
-  @Column
-  private boolean isEnable = false;
+    @Column
+    private boolean isEnable = false;
 }
