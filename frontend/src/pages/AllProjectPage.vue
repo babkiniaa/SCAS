@@ -49,7 +49,7 @@
           <div class="search-sort-container row q-gutter-md col-8 justify-center">
             <q-input
               outlined
-              debounce="30"
+              debounce="300"
               v-model="projectsDto.name"
               placeholder="Search projects"
               @input="onSearch"
@@ -96,7 +96,7 @@
             class="q-mb-md"
           >
             <q-card-section>
-              <div class="text-h6">{{ project.nameProject }}</div>
+              <div class="text-h6">{{ project.name }}</div>
               <div class="text-body1 q-mt-xs">{{ project.description }}</div>
               <div class="text-caption q-mt-sm">Created: {{ formatDate(project.createdDate) }}</div>
               <q-badge
