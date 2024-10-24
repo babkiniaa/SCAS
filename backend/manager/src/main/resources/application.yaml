@@ -19,6 +19,11 @@ spring:
           auth: true
           starttls:
             enable: true
+minio:
+  url: http://minio:4000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket-name: avatars
 security:
   jwt:
     secret: ZGhhc2xhc2Roc2FsZGhhc2Rhc2RrbGQvc2hhc2RoOz9BZGFzZDMyZWRzYw==

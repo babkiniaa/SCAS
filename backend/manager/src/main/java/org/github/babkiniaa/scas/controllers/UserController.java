@@ -1,5 +1,6 @@
 package org.github.babkiniaa.scas.controllers;
 
+import io.minio.errors.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.dto.ProfileDto;
@@ -7,9 +8,15 @@ import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.exception.NotFoundUser;
 import org.github.babkiniaa.scas.mappers.UserMapper;
 import org.github.babkiniaa.scas.security.AuthenticationFacade;
+import org.github.babkiniaa.scas.service.AvatarService;
 import org.github.babkiniaa.scas.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Контроллер для обработки запросов, связанных с пользователями.
@@ -23,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
+    private final AvatarService avatarService;
     private final AuthenticationFacade authenticationFacade;
 
     /**
@@ -58,5 +66,15 @@ public class UserController {
         userService.update(userMapper.updateUserFromDto(profileDto, user));
 
         return ResponseEntity.ok("ok");
+    }
+
+    @PostMapping("/{userId}/avatar")
+    public ResponseEntity<User> uploadUserAvatar(@PathVariable Long userId, @RequestParam("file") MultipartFile file)
+            throws NotFoundUser, ServerException, InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException {
+        String avatarUrl = avatarService.uploadAvatar(file);
+        User updatedUser = userService.updateUserAvatar(userId, avatarUrl);
+        return ResponseEntity.ok(updatedUser);
     }
 }

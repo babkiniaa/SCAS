@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.service;
 
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.entity.User;
+import org.github.babkiniaa.scas.exception.NotFoundUser;
 import org.github.babkiniaa.scas.mappers.UserMapper;
 import org.github.babkiniaa.scas.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -173,5 +174,11 @@ public class UserService {
    */
   public Optional<User> findById(long id) {
     return userRepository.findById(id);
+  }
+
+  public User updateUserAvatar(Long userId, String avatarUrl) throws NotFoundUser {
+    User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUser("User Not Found"));
+    user.setAvatarUrl(avatarUrl);
+    return userRepository.save(user);
   }
 }
