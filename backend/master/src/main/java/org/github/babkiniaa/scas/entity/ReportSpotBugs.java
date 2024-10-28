@@ -1,16 +1,14 @@
 package org.github.babkiniaa.scas.entity;
 
-import edu.umd.cs.findbugs.BugInstance;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.sourceforge.pmd.reporting.RuleViolation;
+import org.github.babkiniaa.scas.entity.reportsEntity.BugInstance;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -35,6 +33,7 @@ public class ReportSpotBugs {
     @CreatedDate
     private LocalDateTime createdDate;
 
+    @OneToMany
     private List<BugInstance> reportList;
 
 

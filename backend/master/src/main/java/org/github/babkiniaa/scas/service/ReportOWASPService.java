@@ -50,7 +50,7 @@ public class ReportOWASPService {
         ReportOWASP ReportOWASP = new ReportOWASP();
         if (!findById(id).isEmpty()) {
             ReportOWASP = findById(id).get();
-            ReportOWASP.setReportList(rep);
+//            ReportOWASP.setReportList(rep);
             save(ReportOWASP);
         }
         return ReportOWASP;

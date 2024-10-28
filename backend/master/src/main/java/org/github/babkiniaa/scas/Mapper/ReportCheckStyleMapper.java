@@ -1,8 +1,6 @@
 package org.github.babkiniaa.scas.Mapper;
 
 import org.github.babkiniaa.scas.dto.ReportCheckStyleDto;
-import org.github.babkiniaa.scas.dto.ReportDto;
-import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.entity.ReportCheckStyle;
 import org.mapstruct.Mapper;
 

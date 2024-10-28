@@ -50,7 +50,7 @@ public class ReportSpotBugsService {
         ReportSpotBugs ReportSpotBugs = new ReportSpotBugs();
         if (!findById(id).isEmpty()) {
             ReportSpotBugs = findById(id).get();
-            ReportSpotBugs.setReportList(rep);
+//            ReportSpotBugs.setReportList(rep);
             save(ReportSpotBugs);
         }
         return ReportSpotBugs;

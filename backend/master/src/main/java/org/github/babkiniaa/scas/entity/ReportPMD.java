@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.sourceforge.pmd.reporting.RuleViolation;
-import org.owasp.dependencycheck.dependency.Dependency;
+import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolation;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -35,6 +34,7 @@ public class ReportPMD {
     @CreatedDate
     private LocalDateTime createdDate;
 
+    @OneToMany
     private List<RuleViolation> reportList;
 
 }

@@ -1,11 +1,12 @@
 package org.github.babkiniaa.scas.entity;
 
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.babkiniaa.scas.entity.reportsEntity.Violation;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -33,7 +34,8 @@ public class ReportCheckStyle {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    private List<AuditEvent> reportList;
+    @OneToMany
+    private List<Violation> reportList;
 
 
 }

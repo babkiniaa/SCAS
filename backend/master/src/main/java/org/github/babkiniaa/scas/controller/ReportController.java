@@ -30,7 +30,7 @@ public class ReportController {
     private final ReportPMDMapper reportPMDMapper;
     private final ReportCheckStyleMapper reportCheckStyleMapper;
     private final ProjectMapper projectMapper;
-    private  final AgentServiceClient agentServiceClient;
+    private final AgentServiceClient agentServiceClient;
 
     @PostMapping("/create")
     public ResponseEntity<?> createReport(@RequestBody ProjectDto projectDto) {

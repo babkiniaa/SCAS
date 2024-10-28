@@ -50,7 +50,7 @@ public class ReportCheckStyleService {
         ReportCheckStyle ReportCheckStyle = new ReportCheckStyle();
         if (!findById(id).isEmpty()) {
             ReportCheckStyle = findById(id).get();
-            ReportCheckStyle.setReportList(rep);
+//            ReportCheckStyle.setReportList(rep);
             save(ReportCheckStyle);
         }
         return ReportCheckStyle;

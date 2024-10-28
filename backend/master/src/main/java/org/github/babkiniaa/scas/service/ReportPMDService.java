@@ -50,7 +50,7 @@ public class ReportPMDService {
         ReportPMD ReportPMD = new ReportPMD();
         if (!findById(id).isEmpty()) {
             ReportPMD = findById(id).get();
-            ReportPMD.setReportList(rep);
+//            ReportPMD.setReportList(rep);
             save(ReportPMD);
         }
         return ReportPMD;

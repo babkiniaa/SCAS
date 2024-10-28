@@ -40,19 +40,19 @@ public class Project {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToOne
+    @OneToMany
     @JoinColumn(name = "reportCheckStyle_id")
     private List<ReportCheckStyle> reportCheckStyles;
 
-    @OneToOne
+    @OneToMany
     @JoinColumn(name = "reportOWASP_id")
     private List<ReportOWASP> reportOWASPS;
 
-    @OneToOne
+    @OneToMany
     @JoinColumn(name = "reportPMD_id")
     private List<ReportPMD> reportPMDS;
 
-    @OneToOne
+    @OneToMany
     @JoinColumn(name = "reportSpotBugs_id")
     private List<ReportSpotBugs> reportSpotBugs;
 

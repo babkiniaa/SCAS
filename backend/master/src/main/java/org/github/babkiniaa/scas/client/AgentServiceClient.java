@@ -2,7 +2,6 @@ package org.github.babkiniaa.scas.client;
 
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
