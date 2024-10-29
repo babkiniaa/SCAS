@@ -60,11 +60,6 @@ public class UserService {
     return true;
   }
 
-  @Transactional
-  public boolean verifyForChangePassword(String verificationCode) {
-    return tokenService.getByVerifyCode(verificationCode) != null;
-  }
-
   /**
    * Генерирует новый токен для изменения пароля.
    *
