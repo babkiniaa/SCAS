@@ -18,7 +18,24 @@
       </q-form>
       <q-card-section class="text-center q-pt-none">
         <div class="text-grey-8">Don't have an account yet?
-          <q-btn flat @click="goToRegister" label="Signup." div class ="text-dark text-weight-bold" style="text-decoration: none" /></div>
+          <q-btn flat
+          @click="goToRegister"
+          label="Sign up."
+          div
+          class ="text-dark text-weight-bold"
+          style="text-decoration: none"
+          />
+        </div>
+        <div class="text-grey-8 q-mt-md">
+          <q-btn flat
+            @click="goToResetPassword"
+            label="Forgot Password?"
+            div
+            class="text-dark text-weight-bold"
+            style="text-decoration: none"
+            :disable="isLoading"
+          />
+        </div>
       </q-card-section>
     </q-card>
   </q-page>
@@ -52,6 +69,9 @@ export default {
     },
     goToRegister () {
       this.$router.push('/register')
+    },
+    goToResetPassword () {
+      this.$router.push('/reset-password')
     }
   }
 }

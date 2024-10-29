@@ -73,7 +73,7 @@ public class Config implements WebMvcConfigurer {
                                 )
                 )
                 .authorizeHttpRequests(configurer ->
-                        configurer.requestMatchers("/auth/**").permitAll()
+                        configurer.requestMatchers("/auth/**", "/password/**").permitAll()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .anonymous(AbstractHttpConfigurer::disable)
