@@ -118,7 +118,7 @@
               />
               <q-btn
                 label="Start Analysis"
-                color="green"
+                color="primary"
                 class="q-mt-md full-width"
                 @click="startAnalysis"
                 :disable="!projectCreated"
