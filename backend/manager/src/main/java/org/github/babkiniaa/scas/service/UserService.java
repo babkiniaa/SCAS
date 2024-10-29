@@ -27,7 +27,7 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final TokenService tokenService;
-  private final UserMapper userMapper;
+
 
   /**
    * Регистрирует нового пользователя.

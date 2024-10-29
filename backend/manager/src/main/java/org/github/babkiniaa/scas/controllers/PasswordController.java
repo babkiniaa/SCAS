@@ -1,21 +1,16 @@
 package org.github.babkiniaa.scas.controllers;
 
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.dto.ChangePasswordDto;
-import org.github.babkiniaa.scas.dto.RegistrationDto;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.exception.PasswordException;
 import org.github.babkiniaa.scas.service.EmailService;
 import org.github.babkiniaa.scas.service.TokenService;
 import org.github.babkiniaa.scas.service.UserService;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.io.UnsupportedEncodingException;
 
 
 /**
@@ -40,7 +35,7 @@ public class PasswordController {
      *
      * @param email DTO с email для смены пароля
      * @return имя шаблона для страницы авторизации
-     * @throws MessagingException при ошибке отправки письма
+     * @throws MessagingException           при ошибке отправки письма
      * @throws UnsupportedEncodingException при ошибке кодировки email
      */
     @PostMapping("/change")
