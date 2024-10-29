@@ -1,11 +1,11 @@
 package org.github.babkiniaa.scas.service;
 
-import edu.umd.cs.findbugs.BugInstance;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.ReportSpotBugsMapper;
 import org.github.babkiniaa.scas.dto.ReportSpotBugsDto;
 import org.github.babkiniaa.scas.entity.ReportSpotBugs;
+import org.github.babkiniaa.scas.entity.reportsEntity.BugInstanceCustom;
 import org.github.babkiniaa.scas.repository.ReportSpotBugsRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +19,8 @@ public class ReportSpotBugsService {
 
     private final ReportSpotBugsMapper ReportSpotBugsMapper;
 
-    public ReportSpotBugs create(ReportSpotBugsDto ReportSpotBugsDto) {
-        return ReportSpotBugsRepository.save(ReportSpotBugsMapper.reportToEntity(ReportSpotBugsDto));
+    public int create(ReportSpotBugsDto ReportSpotBugsDto) {
+        return ReportSpotBugsRepository.save(ReportSpotBugsMapper.reportToEntity(ReportSpotBugsDto)).getId();
     }
 
     public List<ReportSpotBugs> findAll() {
@@ -44,22 +44,5 @@ public class ReportSpotBugsService {
 
     public Optional<ReportSpotBugs> findById(Integer id) {
         return ReportSpotBugsRepository.findById(id);
-    }
-
-    public ReportSpotBugs updateSpotbugs(Integer id, List<BugInstance> rep) {
-        ReportSpotBugs ReportSpotBugs = new ReportSpotBugs();
-        if (!findById(id).isEmpty()) {
-            ReportSpotBugs = findById(id).get();
-//            ReportSpotBugs.setReportList(rep);
-            save(ReportSpotBugs);
-        }
-        return ReportSpotBugs;
-    }
-
-    public ReportSpotBugs save(ReportSpotBugs ReportSpotBugs) {
-        return ReportSpotBugsRepository.save(ReportSpotBugs);
-    }
-
-    public void create(ReportSpotBugs ReportSpotBugsToEntity) {
     }
 }

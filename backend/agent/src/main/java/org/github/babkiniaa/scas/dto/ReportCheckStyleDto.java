@@ -1,13 +1,11 @@
 package org.github.babkiniaa.scas.dto;
 
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -20,6 +18,6 @@ public class ReportCheckStyleDto {
 
     private String hash;
 
-    private List<AuditEvent> reportList;
+    private List<ViolationCustomDto> reportList;
 
 }

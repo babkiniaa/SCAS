@@ -1,17 +1,22 @@
 package org.github.babkiniaa.scas.service;
 
 import lombok.AllArgsConstructor;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import org.github.babkiniaa.scas.Mapper.ProjectMapper;
 import org.github.babkiniaa.scas.dto.GetProjectDto;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.entity.Project;
+import org.github.babkiniaa.scas.entity.ReportPMD;
+import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
 import org.github.babkiniaa.scas.repository.ProjectRepository;
+import org.github.babkiniaa.scas.repository.ReportPMDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Сервис для управления проектами. Предоставляет методы для создания проектов,
@@ -22,6 +27,7 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ReportPMDRepository reportPMDRepository;
     private final ProjectMapper projectMapper;
 
     /**
@@ -30,12 +36,22 @@ public class ProjectService {
      * @param projectDto DTO с данными проекта для создания.
      * @param id идентификатор пользователя, которому будет принадлежать проект.
      */
-    public void create(ProjectDto projectDto, long id) {
+    public int create(ProjectDto projectDto, long id) {
         Project project = projectMapper.projectToEntity(projectDto);
         project.setUserId(id);
-        projectRepository.save(project);
+        return projectRepository.save(project).getId();
     }
 
+    public void connectingReportAndProject(int projectId, int reportId){
+        Optional<Project> project = projectRepository.findById(projectId);
+        if(!project.isEmpty()){
+            List<ReportPMD> ruleViolations =  project.get().getReportPMDS();
+            if(!reportPMDRepository.findById(reportId).isEmpty()){
+                ReportPMD reportPMD = reportPMDRepository.findById(reportId).get();
+                ruleViolations.add(reportPMD);
+            }
+        }
+    }
 
     public List<Project> findAll() {
         return projectRepository.findAll();

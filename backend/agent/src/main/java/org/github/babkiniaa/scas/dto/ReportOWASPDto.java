@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.owasp.dependencycheck.dependency.Dependency;
-import org.springframework.data.annotation.CreatedDate;
+import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -20,6 +18,6 @@ public class ReportOWASPDto {
 
     private String hash;
 
-    private List<Dependency> reportList;
+    private List<DependencyCustomDto> reportList;
 
 }

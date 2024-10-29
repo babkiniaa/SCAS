@@ -13,12 +13,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "violation")
 @Table
-public class Violation {
+public class ViolationCustom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-//    private SeverityLevel DEFAULT_SEVERITY;
 
     private int lineNo;
 
@@ -28,14 +26,10 @@ public class Violation {
 
     private int tokenType;
 
-//    private SeverityLevel severityLevel;
-
     private String moduleId;
-    
+
     @Column(name = "keyValue")
     private String key;
-
-//    private Object[] args;
 
     private String bundle;
 

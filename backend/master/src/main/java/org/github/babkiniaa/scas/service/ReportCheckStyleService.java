@@ -1,6 +1,5 @@
 package org.github.babkiniaa.scas.service;
 
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.ReportCheckStyleMapper;
@@ -19,8 +18,8 @@ public class ReportCheckStyleService {
 
     private final ReportCheckStyleMapper ReportCheckStyleMapper;
 
-    public ReportCheckStyle create(ReportCheckStyleDto ReportCheckStyleDto) {
-        return ReportCheckStyleRepository.save(ReportCheckStyleMapper.reportToEntity(ReportCheckStyleDto));
+    public int create(ReportCheckStyleDto ReportCheckStyleDto) {
+        return ReportCheckStyleRepository.save(ReportCheckStyleMapper.reportToEntity(ReportCheckStyleDto)).getId();
     }
 
     public List<ReportCheckStyle> findAll() {
@@ -44,22 +43,5 @@ public class ReportCheckStyleService {
 
     public Optional<ReportCheckStyle> findById(Integer id) {
         return ReportCheckStyleRepository.findById(id);
-    }
-
-    public ReportCheckStyle updateCheckStyle(Integer id, List<AuditEvent> rep) {
-        ReportCheckStyle ReportCheckStyle = new ReportCheckStyle();
-        if (!findById(id).isEmpty()) {
-            ReportCheckStyle = findById(id).get();
-//            ReportCheckStyle.setReportList(rep);
-            save(ReportCheckStyle);
-        }
-        return ReportCheckStyle;
-    }
-
-    public ReportCheckStyle save(ReportCheckStyle ReportCheckStyle){
-        return ReportCheckStyleRepository.save(ReportCheckStyle);
-    }
-
-    public void create(ReportCheckStyle ReportCheckStyleToEntity) {
     }
 }

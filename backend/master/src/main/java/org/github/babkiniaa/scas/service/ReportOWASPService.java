@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.ReportOWASPMapper;
 import org.github.babkiniaa.scas.dto.ReportOWASPDto;
 import org.github.babkiniaa.scas.entity.ReportOWASP;
+import org.github.babkiniaa.scas.entity.reportsEntity.DependencyCustom;
 import org.github.babkiniaa.scas.repository.ReportOWASPRepository;
-import org.owasp.dependencycheck.dependency.Dependency;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +19,8 @@ public class ReportOWASPService {
 
     private final ReportOWASPMapper ReportOWASPMapper;
 
-    public ReportOWASP create(ReportOWASPDto ReportOWASPDto) {
-        return ReportOWASPRepository.save(ReportOWASPMapper.reportToEntity(ReportOWASPDto));
+    public int create(ReportOWASPDto ReportOWASPDto) {
+        return ReportOWASPRepository.save(ReportOWASPMapper.reportToEntity(ReportOWASPDto)).getId();
     }
 
     public List<ReportOWASP> findAll() {
@@ -46,21 +46,4 @@ public class ReportOWASPService {
         return ReportOWASPRepository.findById(id);
     }
 
-    public ReportOWASP updateOWASP(Integer id, List<Dependency> rep) {
-        ReportOWASP ReportOWASP = new ReportOWASP();
-        if (!findById(id).isEmpty()) {
-            ReportOWASP = findById(id).get();
-//            ReportOWASP.setReportList(rep);
-            save(ReportOWASP);
-        }
-        return ReportOWASP;
-    }
-
-
-    public ReportOWASP save(ReportOWASP ReportOWASP){
-        return ReportOWASPRepository.save(ReportOWASP);
-    }
-
-    public void create(ReportOWASP ReportOWASPToEntity) {
-    }
 }

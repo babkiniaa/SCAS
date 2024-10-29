@@ -5,11 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolation;
+import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -35,6 +34,6 @@ public class ReportPMD {
     private LocalDateTime createdDate;
 
     @OneToMany
-    private List<RuleViolation> reportList;
+    private List<RuleViolationCustom> reportList;
 
 }

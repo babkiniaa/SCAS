@@ -13,7 +13,7 @@ public class MyController {
     private MasterServiceClient agentServiceClient;
 
     @PostMapping("/analysis/init")
-    public ResponseEntity<?> createReport(@RequestBody ProjectDto projectDto) {
-        return agentServiceClient.createReport(projectDto);
+    public ResponseEntity<?> createReport(@RequestBody ProjectDto projectDto, @RequestBody int projectId) {
+        return agentServiceClient.createReport(projectDto, projectId);
     }
 }

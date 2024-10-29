@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.sourceforge.pmd.reporting.RuleViolation;
-import org.springframework.data.annotation.CreatedDate;
+import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -20,6 +18,6 @@ public class ReportPMDDto {
 
     private String hash;
 
-    private List<RuleViolation> reportList;
+    private List<RuleViolationCustomDto> reportList;
 
 }

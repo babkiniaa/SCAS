@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.github.babkiniaa.scas.entity.reportsEntity.BugInstance;
+import org.github.babkiniaa.scas.entity.reportsEntity.BugInstanceCustom;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -34,7 +34,7 @@ public class ReportSpotBugs {
     private LocalDateTime createdDate;
 
     @OneToMany
-    private List<BugInstance> reportList;
+    private List<BugInstanceCustom> reportList;
 
 
 }

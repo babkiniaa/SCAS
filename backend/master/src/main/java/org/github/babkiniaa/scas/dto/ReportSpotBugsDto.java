@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class ReportSpotBugsDto {
 
     private String hash;
 
-    private List<BugInstance> reportList;
+    private List<BugInstanceCustomDto> reportList;
 
 
 }

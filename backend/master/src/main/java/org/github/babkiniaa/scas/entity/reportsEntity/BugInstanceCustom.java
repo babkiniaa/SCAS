@@ -17,7 +17,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @Entity(name = "bug_instance")
 @Table
-public class BugInstance {
+public class BugInstanceCustom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -26,13 +26,7 @@ public class BugInstance {
 
     private int priority;
 
-//    private ArrayList<BugAnnotation> annotationList;
-
     private int cachedHashCode;
-
-//    private BugProperty propertyListHead;
-
-//    private BugProperty propertyListTail;
 
     private String oldInstanceHash;
 
@@ -41,8 +35,6 @@ public class BugInstance {
     private int instanceOccurrenceNum;
 
     private int instanceOccurrenceMax;
-
-//    private DetectorFactory detectorFactory;
 
     private long firstVersion;
 

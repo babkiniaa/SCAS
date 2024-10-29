@@ -1,6 +1,5 @@
-package org.github.babkiniaa.scas.entity.reportsEntity;
+package org.github.babkiniaa.scas.dto.reportsDto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,12 +9,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "rule_violation")
-@Table
-public class RuleViolation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class RuleViolationCustomDto {
 
     private String name;
 

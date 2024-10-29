@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "agent-service", url = "http://localhost:8081")
 public interface AgentServiceClient {
+
     @PostMapping("/analysis/init")
     ProjectDto init(@RequestBody String url);
 

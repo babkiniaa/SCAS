@@ -1,10 +1,10 @@
 package org.github.babkiniaa.scas.dto;
 
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
 
 import java.util.List;
 
@@ -18,6 +18,6 @@ public class ReportCheckStyleDto {
 
     private String hash;
 
-    private List<AuditEvent> reportList;
+    private List<ViolationCustomDto> reportList;
 
 }

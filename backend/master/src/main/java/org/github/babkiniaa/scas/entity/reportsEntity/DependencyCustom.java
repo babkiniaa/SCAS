@@ -19,25 +19,11 @@ import java.util.SortedSet;
 @AllArgsConstructor
 @Entity(name = "dependency")
 @Table
-public class Dependency {
+public class DependencyCustom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-//    private Set<Identifier> softwareIdentifiers;
-//
-//    private Set<Identifier> vulnerableSoftwareIdentifiers;
-//
-//    private Set<Identifier> suppressedIdentifiers;
-//
-//    private Set<Vulnerability> suppressedVulnerabilities;
-//
-//    private Set<Vulnerability> vulnerabilities;
-
-//    private SortedSet<org.owasp.dependencycheck.dependency.Dependency> relatedDependencies;
-
-//    private Set<IncludedByReference> includedBy;
-//
     private Set<String> projectReferences;
 
     private List<String> availableVersions;

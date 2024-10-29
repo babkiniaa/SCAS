@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.github.babkiniaa.scas.entity.reportsEntity.Dependency;
+import org.github.babkiniaa.scas.entity.reportsEntity.DependencyCustom;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -34,6 +34,6 @@ public class ReportOWASP {
     private LocalDateTime createdDate;
 
     @OneToMany
-    private List<Dependency> reportList;
+    private List<DependencyCustom> reportList;
 
 }

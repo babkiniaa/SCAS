@@ -24,9 +24,14 @@ public class ProjectController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createProject(@RequestBody ProjectDto projectDto, @RequestBody int userId) {
-        projectService.create(projectDto, userId);
-        return ResponseEntity.ok("Created project");
+    public int createProject(@RequestBody ProjectDto projectDto, @RequestBody int userId) {
+        return projectService.create(projectDto, userId);
+    }
+
+    @PostMapping("/connecting-report")
+    public ResponseEntity<?> connectionUserAndReport(@RequestBody int projectId,@RequestBody int reportId){
+        projectService.connectingReportAndProject(projectId, reportId);
+        return ResponseEntity.ok("Связали проект и отчет");
     }
 
     /**
