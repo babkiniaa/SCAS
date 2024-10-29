@@ -15,14 +15,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChangePasswordDto {
+
     @UniqueEmail
     @Email
     @NotEmpty(message = "The field is not filled in")
     private String email;
+
     @Password
     @NotEmpty(message = "The field is not filled in")
     private String password;
+
     @Password
     @NotEmpty(message = "The field is not filled in")
     private String passwordConfirm;
+
+    @NotEmpty(message = "The field is not filled in")
+    private String token;
 }

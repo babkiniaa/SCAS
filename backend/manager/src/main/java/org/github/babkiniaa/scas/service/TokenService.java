@@ -27,8 +27,8 @@ public class TokenService {
     }
 
 
-    private String generateVerificationCode() {
-        return StringUtils.randomAlphanumeric(64);
+    private String generateVerificationCode(int size) {
+        return StringUtils.randomAlphanumeric(size);
     }
 
     /**
@@ -43,7 +43,7 @@ public class TokenService {
         Token token = new Token();
         token.setUser(user);
         token.setExpiryDate(LocalDateTime.now().plusHours(1));
-        token.setVerificationToken(generateVerificationCode());
+        token.setVerificationToken(generateVerificationCode(64));
         tokenRepository.save(token);
         return token.getVerificationToken();
     }
@@ -62,5 +62,14 @@ public class TokenService {
 
     public void delete(Token token) {
         tokenRepository.delete(token);
+    }
+
+    public String createTokenForPassword(User user) {
+        Token token = new Token();
+        token.setExpiryDate(LocalDateTime.now().plusHours(1));
+        token.setVerificationToken(generateVerificationCode(6));
+        token.setUser(user);
+        tokenRepository.save(token);
+        return token.getVerificationToken();
     }
 }

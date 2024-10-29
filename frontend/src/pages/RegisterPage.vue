@@ -40,6 +40,17 @@
               :disable="isLoading"
             />
           </div>
+          <div class="text-grey-8 q-mt-md">
+            <q-btn
+              flat
+              @click="goToResetPassword"
+              label="Forgot Password?"
+              div
+              class="text-dark text-weight-bold"
+              style="text-decoration: none"
+              :disable="isLoading"
+            />
+          </div>
         </q-card-section>
       </q-card>
     </q-page>
@@ -87,6 +98,9 @@ export default {
     },
     goToLogin () {
       this.$router.push('/login')
+    },
+    goToResetPassword () {
+      this.$router.push('/reset-password')
     }
   }
 }

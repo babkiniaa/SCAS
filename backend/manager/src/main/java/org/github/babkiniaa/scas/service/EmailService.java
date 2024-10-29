@@ -50,25 +50,22 @@ public class EmailService {
      *
      * @param email          адрес электронной почты получателя
      * @param verificationCode код верификации
-     * @param request        объект {@link HttpServletRequest}, необходимый для получения URL сайта
      * @throws MessagingException если произошла ошибка при отправке сообщения
      * @throws UnsupportedEncodingException если кодировка не поддерживается
      */
     public void sendVerificationPassword(
-            String email, String verificationCode, HttpServletRequest request
+            String email, String verificationCode
     ) throws MessagingException, UnsupportedEncodingException {
         String subject = "Here's the link to reset your password";
         String content = "Dear user,<br>"
-                + "Please follow the link below to change your password:<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
-                + "Thank you,<br>"
+                + "your password change code "
+                + verificationCode
+                + " Thank you,<br>"
                 + "SCASIK_STASIK.";
-        sendEmail(email,
+        sendEmailForPassword(email,
                 subject,
                 content,
-                verificationCode,
-                request,
-                "/password/change-password?code=");
+                verificationCode);
     }
 
     private void sendEmail(
@@ -89,6 +86,23 @@ public class EmailService {
         helper.setSubject(subject);
         String verifyURL = Url + partVerifyURL + verificationCode;
         content = content.replace("[[URL]]", verifyURL);
+        helper.setText(content, true);
+        mailSender.send(message);
+    }
+
+    private void sendEmailForPassword(
+            String toAddress,
+            String subject,
+            String content,
+            String verificationCode
+    ) throws MessagingException, UnsupportedEncodingException {
+        String fromAddress = "scasproject66@gmail.com";
+        String senderName = "SCAS";
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setFrom(fromAddress, senderName);
+        helper.setTo(toAddress);
+        helper.setSubject(subject);
         helper.setText(content, true);
         mailSender.send(message);
     }

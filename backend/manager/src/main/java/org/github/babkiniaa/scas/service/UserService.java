@@ -27,7 +27,7 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final TokenService tokenService;
-  private final UserMapper userMapper;
+
 
   /**
    * Регистрирует нового пользователя.
@@ -78,7 +78,7 @@ public class UserService {
   public String changePassword(String email) {
     User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    return tokenService.createToken(user);
+    return tokenService.createTokenForPassword(user);
   }
 
   /**
