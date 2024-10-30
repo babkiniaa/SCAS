@@ -64,7 +64,7 @@
             </q-list>
           </q-card-section>
           <q-card-section v-else>
-            <q-btn label="Create Project" color="primary" @click="goToCreateProject" class="q-mt-md full-width" />
+            <q-btn label="Create Project" color="dark" @click="goToCreateProject" class="q-mt-md full-width" />
           </q-card-section>
         </q-card>
       </q-page>
