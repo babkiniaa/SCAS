@@ -6,6 +6,14 @@
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">Profile</q-toolbar-title>
         <q-space />
+        <q-btn
+          dense
+          round
+          :icon="isDarkMode ? 'light_mode' : 'dark_mode'"
+          @click="toggleDarkMode"
+          aria-label="Toggle Dark Mode"
+          class="text-white q-ml-sm"
+        />
         <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
           <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
           <q-icon v-else name="person" class="text-white" />
@@ -21,26 +29,26 @@
       :width="200"
       :breakpoint="500"
       bordered
-      content-class="bg-grey-9"
+      :content-class="isDarkMode ? 'bg-dark' : 'bg-grey-9'"
     >
       <q-list padding>
         <q-item clickable v-ripple @click="goToHome">
           <q-item-section avatar>
-            <q-icon name="home" />
+            <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
           </q-item-section>
-          <q-item-section class="text-black">Home</q-item-section>
+          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
         </q-item>
         <q-item clickable v-ripple @click="goToCreateProject">
           <q-item-section avatar>
-            <q-icon name="add_circle" />
+            <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
           </q-item-section>
-          <q-item-section class="text-black">Create Project</q-item-section>
+          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
         </q-item>
-        <q-item clickable v-ripple @click="goToMyProjects">
+        <q-item clickable v-ripple @click="goToAllProjects">
           <q-item-section avatar>
-            <q-icon name="folder_open" />
+            <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
           </q-item-section>
-          <q-item-section class="text-black">All Projects</q-item-section>
+          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
@@ -81,6 +89,7 @@
 </template>
 <script>
 import { getUserProfile } from 'src/services/userServices'
+import { Dark } from 'quasar'
 export default {
   data () {
     return {
@@ -94,7 +103,8 @@ export default {
         about: ''
       },
       currentUserId: null,
-      isOwnProfile: false
+      isOwnProfile: false,
+      isDarkMode: Dark.isActive
     }
   },
   async created () {
@@ -103,6 +113,10 @@ export default {
     await this.loadUserProfile(profileId)
   },
   methods: {
+    toggleDarkMode () {
+      Dark.set(!this.isDarkMode)
+      this.isDarkMode = Dark.isActive
+    },
     async loadUserProfile (profileId) {
       try {
         const response = await getUserProfile(profileId)

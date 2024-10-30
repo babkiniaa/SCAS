@@ -1,10 +1,18 @@
 <template>
   <q-layout view="lHh lpr lFf">
-    <q-header elevated class="bg-grey-9">
+    <q-header :class="isDarkMode ? 'bg-dark' : 'bg-grey-9'">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">All Projects</q-toolbar-title>
         <q-space />
+        <q-btn
+          dense
+          round
+          :icon="isDarkMode ? 'light_mode' : 'dark_mode'"
+          @click="toggleDarkMode"
+          aria-label="Toggle Dark Mode"
+          class="text-white q-ml-sm"
+        />
         <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
           <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
           <q-icon v-else name="person" class="text-white" />
@@ -20,31 +28,31 @@
       :width="200"
       :breakpoint="500"
       bordered
-      content-class="bg-grey-9"
+      :content-class="isDarkMode ? 'bg-dark' : 'bg-grey-9'"
     >
       <q-list padding>
         <q-item clickable v-ripple @click="goToHome">
           <q-item-section avatar>
-            <q-icon name="home" />
+            <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
           </q-item-section>
-          <q-item-section class="text-black">Home</q-item-section>
+          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
         </q-item>
         <q-item clickable v-ripple @click="goToCreateProject">
           <q-item-section avatar>
-            <q-icon name="add_circle" />
+            <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
           </q-item-section>
-          <q-item-section class="text-black">Create Project</q-item-section>
+          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
         </q-item>
         <q-item clickable v-ripple @click="goToAllProjects">
-            <q-item-section avatar>
-              <q-icon name="folder_open" />
-            </q-item-section>
-            <q-item-section class="text-black">All Projects</q-item-section>
+          <q-item-section avatar>
+            <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
+          </q-item-section>
+          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
     <q-page-container>
-      <q-page class="q-pa-md">
+      <q-page :class="isDarkMode ? 'bg-dark' : 'bg-grey-2'">
         <div class="row q-mb-md items-center justify-center">
           <div class="search-sort-container row q-gutter-md col-8 justify-center">
             <q-input
@@ -53,10 +61,11 @@
               v-model="projectsDto.name"
               placeholder="Search projects"
               @input="onSearch"
+              :class="isDarkMode ? 'bg-dark text-white' : 'text-black'"
               class="col-5"
             >
               <template v-slot:append>
-                <q-icon name="search" />
+                <q-icon name="search" :class="isDarkMode ? 'text-white' : 'text-black'" />
               </template>
             </q-input>
             <q-btn-dropdown
@@ -75,7 +84,7 @@
                   v-ripple
                   @click="onSortChange(option.value)"
                 >
-                  <q-item-section>{{ option.label }}</q-item-section>
+                  <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">{{ option.label }}</q-item-section>
                 </q-item>
               </q-list>
             </q-btn-dropdown>
@@ -93,12 +102,13 @@
           <q-card
             v-for="(project, index) in projects"
             :key="index"
+            :class="isDarkMode ? 'bg-grey-8 text-white' : 'bg-white'"
             class="q-mb-md"
           >
             <q-card-section>
-              <div class="text-h6">{{ project.name }}</div>
-              <div class="text-body1 q-mt-xs">{{ project.description }}</div>
-              <div class="text-caption q-mt-sm">Created: {{ formatDate(project.createdDate) }}</div>
+              <div :class="[isDarkMode ? 'text-white' : 'text-black', 'text-h6']">{{ project.name }}</div>
+              <div :class="isDarkMode ? 'text-grey-4' : 'text-body1'" class="q-mt-xs">{{ project.description }}</div>
+              <div :class="isDarkMode ? 'text-grey-5' : 'text-caption'" class="q-mt-sm">Created: {{ formatDate(project.createdDate) }}</div>
               <q-badge
                 v-if="isOwnProject"
                 :color="project.visibility ? 'green' : 'yellow'"
@@ -127,6 +137,8 @@
 
 <script>
 import { getProjects } from 'src/services/projectServices'
+import { Dark } from 'quasar'
+
 export default {
   data () {
     return {
@@ -149,14 +161,15 @@ export default {
         { label: 'Name', value: 'name' }
       ],
       isOwnProject: false,
-      currentUserId: null
+      currentUserId: null,
+      isDarkMode: Dark.isActive
     }
   },
-  async created () {
-    this.currentUserId = localStorage.getItem('currentId')
-    await this.loadProjects()
-  },
   methods: {
+    toggleDarkMode () {
+      Dark.set(!this.isDarkMode)
+      this.isDarkMode = Dark.isActive
+    },
     async loadProjects () {
       try {
         // eslint-disable-next-line eqeqeq
@@ -164,7 +177,6 @@ export default {
           this.projectsDto.myProject = false
           this.projectsDto.userId = this.$route.params.id
         }
-        console.log(this.projectsDto.userId)
         const response = await getProjects(this.projectsDto)
         this.projects = response.data
         this.isOwnProject = this.projectsDto.userId === localStorage.getItem('currentId')
@@ -213,6 +225,24 @@ export default {
         this.loadProjects()
       }
     }
+  },
+  created () {
+    this.currentUserId = localStorage.getItem('currentId')
+    this.loadProjects()
   }
 }
 </script>
+
+<style>
+.bg-dark {
+  background-color: #1c1c1e;
+}
+
+.text-white {
+  color: #ffffff !important;
+}
+
+.text-grey-5 {
+  color: #7f8c8d !important;
+}
+</style>
