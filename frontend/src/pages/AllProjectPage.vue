@@ -102,10 +102,10 @@
           <q-card
             v-for="(project, index) in projects"
             :key="index"
-            :class="isDarkMode ? 'bg-grey-8 text-white' : 'bg-white'"
-            class="q-mb-md"
+            :class="['project-card', isDarkMode ? 'bg-grey-8 text-white' : 'bg-white']"
+            class="q-my-sm q-px-sm q-py-xs"
           >
-            <q-card-section>
+            <q-card-section class="q-pa-sm">
               <div :class="[isDarkMode ? 'text-white' : 'text-black', 'text-h6']">{{ project.name }}</div>
               <div :class="isDarkMode ? 'text-grey-4' : 'text-body1'" class="q-mt-xs">{{ project.description }}</div>
               <div :class="isDarkMode ? 'text-grey-5' : 'text-caption'" class="q-mt-sm">Created: {{ formatDate(project.createdDate) }}</div>
@@ -117,7 +117,7 @@
                 {{ project.visibility ? 'Public' : 'Private' }}
               </q-badge>
             </q-card-section>
-            <q-card-actions align="right">
+            <q-card-actions align="right" class="q-pa-none q-px-sm q-py-xs">
               <q-btn label="View Report" color="primary" @click="viewReport(project)" />
             </q-card-actions>
           </q-card>
@@ -244,5 +244,10 @@ export default {
 
 .text-grey-5 {
   color: #7f8c8d !important;
+}
+.project-card {
+  max-width: 90%;
+  margin: 6px auto;
+  padding: 8px;
 }
 </style>
