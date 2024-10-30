@@ -1,8 +1,6 @@
 package org.github.babkiniaa.scas.dto;
 
 import org.github.babkiniaa.scas.validatros.Password;
-import org.github.babkiniaa.scas.validatros.UniqueEmail;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,11 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChangePasswordDto {
-
-    @UniqueEmail
-    @Email
-    @NotEmpty(message = "The field is not filled in")
-    private String email;
 
     @Password
     @NotEmpty(message = "The field is not filled in")

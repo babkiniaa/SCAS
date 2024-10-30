@@ -9,8 +9,23 @@
       </q-card-section>
       <q-form @submit="submitLogin">
         <q-card-section>
-          <q-input dense outlined v-model="username" label="Email Address"></q-input>
-          <q-input dense outlined class="q-mt-md" v-model="password" type="password" label="Password"></q-input>
+          <q-input
+              dense
+              outlined
+              v-model="username"
+              label="Email"
+              :error="!!errors.username"
+              :error-message="errors.username"
+            ></q-input>
+            <q-input
+              dense
+              outlined
+              v-model="password"
+              type="password"
+              label="Password"
+              :error="!!errors.password"
+              :error-message="errors.password"
+            ></q-input>
         </q-card-section>
         <q-card-actions>
           <q-btn type="submit" style="border-radius: 8px;" color="dark" rounded size="md" label="Sign in" no-caps class="full-width"></q-btn>
@@ -47,12 +62,14 @@ export default {
   data () {
     return {
       username: '',
-      password: ''
+      password: '',
+      errors: {}
     }
   },
   methods: {
     async submitLogin () {
       try {
+        this.errors = {}
         const response = await loginUser({
           username: this.username,
           password: this.password
@@ -64,7 +81,11 @@ export default {
         this.$q.notify({ message: response.data, color: 'green' })
         this.$router.push('/home')
       } catch (error) {
-        this.$q.notify({ message: error.response.data, color: 'red' })
+        if (error.response && error.response.data) {
+          this.errors = error.response.data
+        } else {
+          this.$q.notify({ message: 'Error of server', color: 'red' })
+        }
       }
     },
     goToRegister () {

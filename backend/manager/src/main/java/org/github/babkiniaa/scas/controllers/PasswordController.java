@@ -1,16 +1,22 @@
 package org.github.babkiniaa.scas.controllers;
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.dto.ChangePasswordDto;
+import org.github.babkiniaa.scas.dto.VeritifyEmail;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.exception.PasswordException;
 import org.github.babkiniaa.scas.service.EmailService;
 import org.github.babkiniaa.scas.service.TokenService;
 import org.github.babkiniaa.scas.service.UserService;
+import org.github.babkiniaa.scas.util.ValidCollerctor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 
 /**
@@ -40,8 +46,14 @@ public class PasswordController {
      */
     @PostMapping("/change")
     public ResponseEntity<?> verifyEmailForChangePassword(
-            @RequestBody ChangePasswordDto email
+            @RequestBody @Valid VeritifyEmail email,
+            BindingResult result
     ) throws MessagingException, UnsupportedEncodingException {
+        Map<String, String> errors = ValidCollerctor.collectValidationErrors(result);
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
         String code = userService.changePassword(email.getEmail());
         emailService.sendVerificationPassword(email.getEmail(), code);
         return ResponseEntity.ok("The token was sent to confirm the mail");
@@ -56,14 +68,18 @@ public class PasswordController {
      */
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
-            @RequestBody ChangePasswordDto changePasswordDto
-    ) throws PasswordException {
-        User user = tokenService.getByVerifyCode(changePasswordDto.getToken()).getUser();
-        if (changePasswordDto.getPassword().equals(changePasswordDto.getPasswordConfirm())) {
-            userService.changePasswordUser(user, changePasswordDto.getPassword());
-        } else {
-            throw new PasswordException("passwords don't match");
+            @RequestBody @Valid ChangePasswordDto changePasswordDto,
+            BindingResult result
+    ) {
+        Map<String, String> errors = ValidCollerctor.collectValidationErrors(result);
+        ValidCollerctor.checkPasswordMatch(changePasswordDto.getPassword(), changePasswordDto.getPasswordConfirm(), errors);
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
         }
+
+        User user = tokenService.getByVerifyCode(changePasswordDto.getToken()).getUser();
+        userService.changePasswordUser(user, changePasswordDto.getPassword());
+
         return ResponseEntity.ok("Password change");
     }
 }
