@@ -120,7 +120,7 @@ public class StaticAnalysis {
 //    }
 
     String[] arg = new String[2];
-    arg[0] = "C:\\test\\spotTusk\\src\\main\\java";
+    arg[0] = path;
     arg[1] = "-c=checkstyle.xml";
     Main.main(arg);
     Checker checker = new Checker();
