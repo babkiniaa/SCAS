@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.dto.LoginDto;
 import org.github.babkiniaa.scas.dto.RegistrationDto;
 import org.github.babkiniaa.scas.entity.User;
-import org.github.babkiniaa.scas.exception.NotFoundUser;
+import org.github.babkiniaa.scas.exception.NotFoundUserException;
 import org.github.babkiniaa.scas.mappers.UserMapper;
 import org.github.babkiniaa.scas.service.AuthService;
 import org.github.babkiniaa.scas.service.EmailService;
@@ -72,7 +72,7 @@ public class AuthController {
      * @return ResponseEntity с сообщением об успешной аутентификации или ошибке.
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, BindingResult result) throws NotFoundUser {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, BindingResult result) throws NotFoundUserException {
         Map<String, String> errors = ValidCollerctor.collectValidationErrors(result);
 
         if (!errors.isEmpty()) {

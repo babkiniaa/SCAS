@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.dto.ProfileDto;
 import org.github.babkiniaa.scas.entity.User;
-import org.github.babkiniaa.scas.exception.NotFoundUser;
+import org.github.babkiniaa.scas.exception.NotFoundUserException;
 import org.github.babkiniaa.scas.mappers.UserMapper;
 import org.github.babkiniaa.scas.security.AuthenticationFacade;
 import org.github.babkiniaa.scas.service.UserService;
@@ -31,12 +31,12 @@ public class UserController {
      *
      * @param id идентификатор пользователя, чей профиль требуется получить
      * @return ResponseEntity, содержащий данные профиля пользователя (ProfileDto)
-     * @throws NotFoundUser если пользователь с указанным идентификатором не найден
+     * @throws NotFoundUserException если пользователь с указанным идентификатором не найден
      */
     @GetMapping("/profile/{id}")
-    public ResponseEntity<ProfileDto> getProfile(@PathVariable("id") long id) throws NotFoundUser {
+    public ResponseEntity<ProfileDto> getProfile(@PathVariable("id") long id) throws NotFoundUserException {
         User user = userService.findById(id)
-                .orElseThrow(() -> new NotFoundUser("Пользователь не найден"));
+                .orElseThrow(() -> new NotFoundUserException("Пользователь не найден"));
 
         return ResponseEntity.ok(userMapper.toProfile(user));
     }
@@ -48,13 +48,13 @@ public class UserController {
      *
      * @param profileDto данные для обновления профиля пользователя
      * @return ResponseEntity с результатом операции (строка "ok")
-     * @throws NotFoundUser если текущий пользователь не найден
+     * @throws NotFoundUserException если текущий пользователь не найден
      */
     @PutMapping("/profile")
-    public ResponseEntity<?> editProfile(@RequestBody @Valid ProfileDto profileDto) throws NotFoundUser {
+    public ResponseEntity<?> editProfile(@RequestBody @Valid ProfileDto profileDto) throws NotFoundUserException {
         String username = authenticationFacade.getCurrentUserName();
         User user = userService.findByUsername(username)
-                .orElseThrow(() -> new NotFoundUser("Пользователь не найден"));
+                .orElseThrow(() -> new NotFoundUserException("Пользователь не найден"));
         userService.update(userMapper.updateUserFromDto(profileDto, user));
 
         return ResponseEntity.ok("ok");
