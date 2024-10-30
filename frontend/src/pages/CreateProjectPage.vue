@@ -128,7 +128,7 @@
 
 <script>
 import { Dark } from 'quasar'
-
+import { createProject } from 'src/services/projectServices'
 export default {
   data () {
     return {
@@ -158,13 +158,24 @@ export default {
     selectSource (source) {
       this.selectedSource = source
     },
-    submitCreateProject () {
+    async submitCreateProject () {
       this.isCreating = true
-      setTimeout(() => {
-        this.projectCreated = true
-        this.isCreating = false
+      console.log(this.visibilityProject)
+      try {
+        await createProject({
+          name: this.projectName,
+          source: this.selectedSource,
+          visibility: this.visibilityProject,
+          gitHubLink: this.gitHubLink,
+          description: this.projectDescription
+        })
         this.$q.notify({ message: 'Project created successfully', color: 'green' })
-      }, 1000)
+        this.projectCreated = true
+      } catch (error) {
+        this.$q.notify({ message: 'Failed to create project', color: 'red' })
+      } finally {
+        this.isCreating = false
+      }
     },
     startAnalysis () {
       this.$q.notify({ message: 'Analysis started successfully', color: 'green' })
