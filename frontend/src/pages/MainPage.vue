@@ -82,7 +82,7 @@
 
 <script>
 import { Dark } from 'quasar'
-
+import { getProjects } from 'src/services/projectServices'
 export default {
   data () {
     return {
@@ -92,10 +92,27 @@ export default {
         avatar: null
       },
       projects: [],
-      isDarkMode: Dark.isActive
+      isDarkMode: Dark.isActive,
+      projectsDto: {
+        count: 3,
+        page: 0,
+        sortingField: 'createdDate',
+        userId: localStorage.getItem('currentId'),
+        myProject: true,
+        name: '',
+        sortDirection: 'DESC'
+      }
     }
   },
   methods: {
+    async fetchProjects () {
+      try {
+        const response = await getProjects(this.projectsDto)
+        this.projects = response.data
+      } catch (error) {
+        this.$q.notify({ message: 'Error loading projects', color: 'red' })
+      }
+    },
     toggleDarkMode () {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
@@ -104,9 +121,6 @@ export default {
       this.user = {
         avatar: null
       }
-    },
-    fetchProjects () {
-      this.projects = []
     },
     goToHome () {
       this.$router.push('/home')
