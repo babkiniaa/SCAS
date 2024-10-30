@@ -2,7 +2,6 @@ package org.github.babkiniaa.scas.service;
 
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.entity.User;
-import org.github.babkiniaa.scas.mappers.UserMapper;
 import org.github.babkiniaa.scas.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -59,11 +58,6 @@ public class UserService {
     userRepository.save(user);
     tokenService.deleteByToken(verificationCode);
     return true;
-  }
-
-  @Transactional
-  public boolean verifyForChangePassword(String verificationCode) {
-    return tokenService.getByVerifyCode(verificationCode) != null;
   }
 
   /**
@@ -123,12 +117,13 @@ public class UserService {
    */
   @Scheduled(cron = "0 0 * * * ?")
   public void deleteExpiredUsers() {
-    if (!tokenService.getByBeforeExpiryDate().getUser().isEnable()) {
-      userRepository.delete(tokenService.getByBeforeExpiryDate().getUser());
-      tokenService.delete(tokenService.getByBeforeExpiryDate());
+    var expiredToken = tokenService.getByBeforeExpiryDate();
+
+    if (expiredToken != null && expiredToken.getUser() != null && !expiredToken.getUser().isEnable()) {
+      userRepository.delete(expiredToken.getUser());
+      tokenService.delete(expiredToken);
     }
   }
-
 
   public Optional<User> findByEmailOrUsername(String email, String username) {
     return userRepository.findByEmailOrUsername(email, username);
