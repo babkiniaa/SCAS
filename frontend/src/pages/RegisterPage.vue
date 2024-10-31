@@ -8,10 +8,40 @@
         </q-card-section>
         <q-form @submit="submitRegister">
           <q-card-section>
-            <q-input dense outlined v-model="email" label="Email Address"></q-input>
-            <q-input dense outlined class="q-mt-md" v-model="username" label="Login"></q-input>
-            <q-input dense outlined class="q-mt-md" v-model="password" type="password" label="Password"></q-input>
-            <q-input dense outlined class="q-mt-md" v-model="passwordConfirm" type="password" label="Confirm Password"></q-input>
+            <q-input
+              dense
+              outlined
+              v-model="email"
+              label="Email"
+              :error="!!errors.email"
+              :error-message="errors.email"
+            ></q-input>
+            <q-input
+              dense
+              outlined
+              v-model="username"
+              label="Login"
+              :error="!!errors.username"
+              :error-message="errors.username"
+            ></q-input>
+            <q-input
+              dense
+              outlined
+              v-model="password"
+              type="password"
+              label="Password"
+              :error="!!errors.password"
+              :error-message="errors.password"
+            ></q-input>
+            <q-input
+              dense
+              outlined
+              v-model="passwordConfirm"
+              type="password"
+              label="Password"
+              :error="!!errors.passwordConfirm"
+              :error-message="errors.passwordConfirm"
+            ></q-input>
           </q-card-section>
           <q-card-actions>
             <q-btn
@@ -73,12 +103,14 @@ export default {
       username: '',
       password: '',
       passwordConfirm: '',
-      isLoading: false
+      isLoading: false,
+      errors: {}
     }
   },
   methods: {
     async submitRegister () {
       this.isLoading = true
+      this.errors = {}
       try {
         const response = await registerUser({
           email: this.email,
@@ -91,7 +123,11 @@ export default {
           this.goToLogin()
         }, 1500)
       } catch (error) {
-        this.$q.notify({ message: error.response.data, color: 'red' })
+        if (error.response && error.response.data) {
+          this.errors = error.response.data
+        } else {
+          this.$q.notify({ message: 'Error of server', color: 'red' })
+        }
       } finally {
         this.isLoading = false
       }

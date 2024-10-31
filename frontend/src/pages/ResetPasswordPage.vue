@@ -22,14 +22,29 @@
                 @input="moveToNextField(index)"
               />
             </div>
+            <div v-if="errors.token" class="text-negative text-caption text-center q-mt-xs">{{ errors.token }}</div>
           </q-card-section>
           <q-form @submit="submitResetPassword">
             <q-card-section>
-              <q-input dense outlined v-model="newPassword" type="password" label="New Password" class="q-mt-md" />
-              <q-input dense outlined v-model="confirmPassword" type="password" label="Confirm Password" class="q-mt-md" />
+              <q-input dense
+              outlined
+              v-model="password"
+              type="password"
+              label="New Password"
+              :error="!!errors.password"
+              :error-message="errors.password"
+              class="q-mt-md"/>
+              <q-input dense
+              outlined
+              v-model="confirmPassword"
+              type="password"
+              label="Confirm Password"
+              :error="!!errors.passwordConfirm"
+              :error-message="errors.passwordConfirm"
+              class="q-mt-md" />
             </q-card-section>
             <q-card-actions>
-              <q-btn type="submit" color="dark" rounded size="md" label="Reset Password" no-caps class="full-width" />
+              <q-btn type="submit" color="dark" rounded size="md" label="Reset Password" no-caps class="full-width"/>
             </q-card-actions>
           </q-form>
         </q-card>
@@ -43,22 +58,27 @@ export default {
   data () {
     return {
       codeDigits: Array(6).fill(''),
-      newPassword: '',
-      confirmPassword: ''
+      password: '',
+      confirmPassword: '',
+      errors: {}
     }
   },
   methods: {
     async submitResetPassword () {
       try {
         await changePassword({
-          password: this.newPassword,
+          password: this.password,
           passwordConfirm: this.confirmPassword,
           token: this.codeDigits.join('')
         })
         this.$q.notify({ message: 'Password reset successfully', color: 'green' })
         this.goToLogin()
       } catch (error) {
-        this.$q.notify({ message: 'Error resetting password', color: 'red' })
+        if (error.response && error.response.data) {
+          this.errors = error.response.data
+        } else {
+          this.$q.notify({ message: 'Error of server', color: 'red' })
+        }
       }
     },
     goToLogin () {

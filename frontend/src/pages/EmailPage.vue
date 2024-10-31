@@ -8,7 +8,13 @@
         </q-card-section>
         <q-form @submit="submitEmail">
           <q-card-section>
-            <q-input dense outlined v-model="email" label="Email Address"></q-input>
+            <q-input dense
+            outlined
+            v-model="email"
+            label="Email Address"
+            :error="!!errors.email"
+            :error-message="errors.email"
+            ></q-input>
           </q-card-section>
           <q-card-actions>
             <q-btn
@@ -43,18 +49,24 @@ export default {
   data () {
     return {
       email: '',
-      isLoading: false
+      isLoading: false,
+      errors: {}
     }
   },
   methods: {
     async submitEmail () {
       this.isLoading = true
+      this.errors = {}
       try {
         const response = await sendVerificationEmail({ email: this.email })
         this.$q.notify({ message: response.data, color: 'green' })
         this.$router.push('/reset-password-page')
       } catch (error) {
-        this.$q.notify({ message: error.response.data, color: 'red' })
+        if (error.response && error.response.data) {
+          this.errors = error.response.data
+        } else {
+          this.$q.notify({ message: 'Error of server', color: 'red' })
+        }
       } finally {
         this.isLoading = false
       }

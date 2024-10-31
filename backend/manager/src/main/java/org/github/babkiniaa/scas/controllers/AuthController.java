@@ -1,6 +1,9 @@
 package org.github.babkiniaa.scas.controllers;
 
-import org.github.babkiniaa.scas.dto.JwtResponse;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.dto.LoginDto;
 import org.github.babkiniaa.scas.dto.RegistrationDto;
 import org.github.babkiniaa.scas.entity.User;
@@ -9,20 +12,12 @@ import org.github.babkiniaa.scas.mappers.UserMapper;
 import org.github.babkiniaa.scas.service.AuthService;
 import org.github.babkiniaa.scas.service.EmailService;
 import org.github.babkiniaa.scas.service.UserService;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import java.io.UnsupportedEncodingException;
-import lombok.RequiredArgsConstructor;
+import org.github.babkiniaa.scas.util.ValidCollerctor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 /**
  * Контроллер для обработки запросов регистрации, входа в систему и верификации пользователей.
@@ -40,17 +35,16 @@ public class AuthController {
     private final EmailService emailService;
 
     /**
-     * Регистрация нового пользователя.
-     * Метод принимает данные регистрации, проверяет их на валидность,
-     * сравнивает пароли,
-     * регистрирует пользователя и отправляет ему письмо для подтверждения аккаунта.
+     * Регистрирует нового пользователя, проверяет данные на валидность,
+     * отправляет письмо с подтверждением регистрации.
      *
-     * @param registrationDto данные для регистрации пользователя.
-     * @param result объект для обработки ошибок валидации.
-     * @param request объект запроса, необходимый для формирования ссылки для подтверждения.
-     * @return ResponseEntity с сообщением об успешной отправке письма для подтверждения или ошибках.
-     * @throws UnsupportedEncodingException если возникли ошибки при кодировании текста в email.
-     * @throws MessagingException если возникли проблемы с отправкой email.
+     * @param registrationDto DTO с данными для регистрации пользователя.
+     * @param result          Объект BindingResult для хранения ошибок валидации.
+     * @param request         Объект HttpServletRequest для получения информации о запросе.
+     * @return Ответ с HTTP статусом 200 и сообщением о успешной регистрации,
+     * либо 400 с ошибками валидации, если данные неверны.
+     * @throws UnsupportedEncodingException если кодировка URL недопустима.
+     * @throws MessagingException           если возникает ошибка при отправке электронной почты.
      */
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(
@@ -58,15 +52,15 @@ public class AuthController {
             BindingResult result,
             HttpServletRequest request
     ) throws UnsupportedEncodingException, MessagingException {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Validation errors occurred.");
-        }
-        if (!registrationDto.getPassword().equals(registrationDto.getPasswordConfirm())) {
-            return ResponseEntity.badRequest().body("Passwords don't match.");
+        Map<String, String> errors = ValidCollerctor.collectValidationErrors(result);
+        ValidCollerctor.checkPasswordMatch(registrationDto.getPassword(), registrationDto.getPasswordConfirm(), errors);
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
         }
         User user = userMapper.toEntity(registrationDto);
         String verificationCode = userService.registerUser(user);
         emailService.sendVerificationEmail(user.getEmail(), verificationCode, request);
+
         return ResponseEntity.ok("Verification email sent to your email address");
     }
 
@@ -78,8 +72,14 @@ public class AuthController {
      * @return ResponseEntity с сообщением об успешной аутентификации или ошибке.
      */
     @PostMapping("/login")
-    public JwtResponse login(@RequestBody LoginDto loginDto) throws NotFoundUser {
-        return authService.login(loginDto);
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, BindingResult result) throws NotFoundUser {
+        Map<String, String> errors = ValidCollerctor.collectValidationErrors(result);
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        return ResponseEntity.ok(authService.login(loginDto));
     }
 
     /**
