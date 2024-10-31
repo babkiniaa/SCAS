@@ -1,11 +1,19 @@
 <template>
   <q-layout view="lHh lpr lFf">
-    <q-header elevated class="bg-grey-9">
+    <q-header :class="isDarkMode ? 'bg-dark' : 'bg-grey-9'">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
         <q-space />
         <q-btn dense round icon="search" @click="search" aria-label="Search" class="text-white" />
+        <q-btn
+          dense
+          round
+          :icon="isDarkMode ? 'light_mode' : 'dark_mode'"
+          @click="toggleDarkMode"
+          aria-label="Toggle Dark Mode"
+          class="text-white q-ml-sm"
+        />
         <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
           <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
           <q-icon v-else name="person" class="text-white" />
@@ -21,37 +29,37 @@
       :width="200"
       :breakpoint="500"
       bordered
-      content-class="bg-grey-9"
+      :content-class="isDarkMode ? 'bg-black' : 'bg-grey-9'"
     >
       <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
         <q-list padding>
           <q-item clickable v-ripple @click="goToHome">
             <q-item-section avatar>
-              <q-icon name="home" />
+              <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
             </q-item-section>
-            <q-item-section class="text-black">Home</q-item-section>
+            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
           </q-item>
           <q-item clickable v-ripple @click="goToCreateProject">
             <q-item-section avatar>
-              <q-icon name="add_circle" />
+              <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
             </q-item-section>
-            <q-item-section class="text-black">Create Project</q-item-section>
+            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
           </q-item>
           <q-item clickable v-ripple @click="goToAllProjects">
             <q-item-section avatar>
-              <q-icon name="folder_open" />
+              <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
             </q-item-section>
-            <q-item-section class="text-black">All Projects</q-item-section>
+            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
     <q-page-container>
-      <q-page class="bg-grey-2">
-        <q-card class="q-pa-md shadow-2 my-card" bordered style="max-width: 600px; margin: 16px auto;">
+      <q-page :class="isDarkMode ? 'bg-dark' : 'bg-grey-2'">
+        <q-card :class="['q-pa-md', 'shadow-2', 'my-card', isDarkMode ? 'bg-grey-8' : '']" bordered>
           <q-card-section class="text-center">
-            <div class="text-grey-9 text-h5 text-weight-bold">Your Projects</div>
-            <div class="text-grey-8">
+            <div :class="{ 'text-white': isDarkMode, 'text-grey-9': !isDarkMode, 'text-h5': true, 'text-weight-bold': true }">Your Projects</div>
+            <div :class="isDarkMode ? 'text-grey-4' : 'text-grey-8'">
               <span v-if="projects.length">Here are your current projects:</span>
               <span v-else>You have no projects yet</span>
             </div>
@@ -59,36 +67,39 @@
           <q-card-section v-if="projects.length">
             <q-list bordered>
               <q-item v-for="project in projects" :key="project.id" clickable>
-                <q-item-section>{{ project.name }}</q-item-section>
+                <q-item-section :class="isDarkMode ? 'text-white' : ''">{{ project.name }}</q-item-section>
               </q-item>
             </q-list>
           </q-card-section>
           <q-card-section v-else>
-            <q-btn label="Create Project" color="dark" @click="goToCreateProject" class="q-mt-md full-width" />
+            <q-btn label="Create Project" color="dark" @click="goToCreateProject" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" />
           </q-card-section>
         </q-card>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
+
 <script>
+import { Dark } from 'quasar'
+
 export default {
   data () {
     return {
-      userId: null,
       drawer: true,
       miniState: true,
       user: {
         avatar: null
       },
-      projects: []
+      projects: [],
+      isDarkMode: Dark.isActive
     }
   },
-  mounted () {
-    this.fetchUser()
-    this.fetchProjects()
-  },
   methods: {
+    toggleDarkMode () {
+      Dark.set(!this.isDarkMode)
+      this.isDarkMode = Dark.isActive
+    },
     fetchUser () {
       this.user = {
         avatar: null
@@ -107,15 +118,19 @@ export default {
       const id = localStorage.getItem('currentId')
       this.$router.push({ name: 'projects', params: { id } })
     },
-    search () {
-    },
+    search () {},
     goToProfile () {
       const userId = localStorage.getItem('currentId')
       this.$router.push(`/profile/${userId}`)
     }
+  },
+  mounted () {
+    this.fetchUser()
+    this.fetchProjects()
   }
 }
 </script>
+
 <style scoped>
 .my-card {
   max-width: 600px;
@@ -124,13 +139,16 @@ export default {
 .q-toolbar-title {
   font-size: 20px;
 }
-.q-drawer__content {
-  background-color: #2e2e2e;
+.bg-dark {
+  background-color: #121212;
 }
-.q-toolbar {
-  background-color: #1f1f1f;
+.bg-grey-8 {
+  background-color: #3a3a3a;
 }
-.q-list .q-item-section {
-  color: white;
+.bg-grey-6 {
+  background-color: #4a4a4a;
+}
+.text-white {
+  color: white !important;
 }
 </style>
