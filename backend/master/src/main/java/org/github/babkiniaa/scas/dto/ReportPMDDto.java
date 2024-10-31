@@ -15,8 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ReportPMDDto {
 
-    private int id;
-
     private String hash;
 
     private List<RuleViolationCustomDto> reportList;

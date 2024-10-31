@@ -30,7 +30,7 @@ public class ProjectController {
 
     @PostMapping("/connecting-report")
     public ResponseEntity<?> connectionUserAndReport(@RequestBody int projectId,@RequestBody int reportId){
-        projectService.connectingReportAndProject(projectId, reportId);
+        projectService.connectingReportOWASPAndProject(projectId, reportId);
         return ResponseEntity.ok("Связали проект и отчет");
     }
 

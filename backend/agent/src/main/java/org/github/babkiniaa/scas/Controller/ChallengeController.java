@@ -3,12 +3,19 @@ package org.github.babkiniaa.scas.Controller;
 import lombok.RequiredArgsConstructor;
 import org.apache.maven.shared.invoker.*;
 import org.github.babkiniaa.scas.dto.ProjectDto;
+import org.github.babkiniaa.scas.dto.ReportOWASPDto;
+import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
+import org.github.babkiniaa.scas.mapper.ReportCheckStyleMapper;
+import org.github.babkiniaa.scas.mapper.ReportOWASPMapper;
+import org.github.babkiniaa.scas.mapper.ReportPMDMapper;
+import org.github.babkiniaa.scas.mapper.ReportSpotBugsMapper;
 import org.github.babkiniaa.scas.parsers.CheckStyleParser;
 import org.github.babkiniaa.scas.parsers.DependencyCheckParser;
 import org.github.babkiniaa.scas.parsers.PmdParser;
 import org.github.babkiniaa.scas.parsers.SpotBugsParser;
 import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
 import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
+import org.owasp.dependencycheck.dependency.Dependency;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.stream.XMLStreamException;
@@ -26,6 +33,10 @@ public class ChallengeController {
     private final CheckStyleParser checkStyleParser;
     private final PmdParser pmdParser;
     private final SpotBugsParser spotBugsParser;
+    private final ReportCheckStyleMapper reportCheckStyleMapper;
+    private final ReportOWASPMapper reportOWASPMapper;
+    private final ReportPMDMapper reportPMDMapper;
+    private final ReportSpotBugsMapper reportSpotBugsMapper;
 
 //    @GetMapping("/reports")
 //    public List<Report> allReports() {
@@ -49,12 +60,17 @@ public class ChallengeController {
 //    }
 
     @PostMapping("/init")
-    public ProjectDto start(@RequestBody List<String> checks, @RequestBody ProjectDto projectDto) {
-        reportCheckstyle();
-        reportOwasp();
-        reportSpotBugs();
-        reportPmd();
-//
+    public ProjectDto start(@RequestBody List<String> checks, @RequestBody ProjectDto projectDto) throws IOException, InterruptedException {
+//        reportCheckstyle();
+        ReportOWASPDto reportOwasp = new ReportOWASPDto();
+        reportOwasp.setReportList(reportOwasp());
+        List<ReportOWASPDto> reportOWASPDto = projectDto.getReportOWASPS();
+        reportOWASPDto.add(reportOwasp);
+        projectDto.setReportOWASPS(reportOWASPDto);
+
+//        reportSpotBugs();
+//        reportPmd();
+
 //        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
 //
 //        Integer idReport = reportService.create(reportDto).getId();
@@ -110,7 +126,7 @@ public class ChallengeController {
         return projectDto;
     }
 
-    private String reportSpotBugs()  {
+    private String reportSpotBugs() {
         String report = "";
 //        String patch = System.getProperty("user.dir") + "/backend/agent/target/spotbugs/" + reportId + "/spotbugsXml.xml";
 //        System.setProperty("maven.home", System.getenv("M2_HOME"));
@@ -136,17 +152,20 @@ public class ChallengeController {
 
     }
 
-    private String reportOwasp()  {
-        String report = "";
+    private List<DependencyCustomDto> reportOwasp() throws IOException, InterruptedException {
+        List<DependencyCustomDto> reportDto = null;
+        List<Dependency> dependencies = null;
+        dependencies = StaticAnalysis.startOWASP(" fgfg");
+        reportDto = reportOWASPMapper.owaspToOwaspCustomList(dependencies);
 //        String patch = System.getProperty("user.dir") + "/down/" + reportId;
 //
 //        StaticAnalysis.startOWASP(patch);
 //        report = dependencyCheckParser.parse(patch);
-        return report;
+        return reportDto;
     }
 
 
-    private String reportCheckstyle()  {
+    private String reportCheckstyle() {
         String report = "";
 //        String patch = System.getProperty("user.dir") + "/backend/agent/target/checkstyle-reports/" + reportId + "/checkstyle-result.xml";
 //

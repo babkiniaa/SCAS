@@ -5,16 +5,16 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 import org.github.babkiniaa.scas.Mapper.ProjectMapper;
 import org.github.babkiniaa.scas.dto.GetProjectDto;
 import org.github.babkiniaa.scas.dto.ProjectDto;
-import org.github.babkiniaa.scas.entity.Project;
-import org.github.babkiniaa.scas.entity.ReportPMD;
+import org.github.babkiniaa.scas.dto.ReportSpotBugsDto;
+import org.github.babkiniaa.scas.entity.*;
 import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
-import org.github.babkiniaa.scas.repository.ProjectRepository;
-import org.github.babkiniaa.scas.repository.ReportPMDRepository;
+import org.github.babkiniaa.scas.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +28,16 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ReportPMDRepository reportPMDRepository;
+    private final ReportOWASPRepository reportOWASPRepository;
+    private final ReportCheckStyleRepository reportCheckStyleRepository;
+    private final ReportSpotBugsRepository reportSpotBugsRepository;
     private final ProjectMapper projectMapper;
 
     /**
      * Создает новый проект для пользователя с указанным идентификатором.
      *
      * @param projectDto DTO с данными проекта для создания.
-     * @param id идентификатор пользователя, которому будет принадлежать проект.
+     * @param id         идентификатор пользователя, которому будет принадлежать проект.
      */
     public int create(ProjectDto projectDto, long id) {
         Project project = projectMapper.projectToEntity(projectDto);
@@ -42,14 +45,47 @@ public class ProjectService {
         return projectRepository.save(project).getId();
     }
 
-    public void connectingReportAndProject(int projectId, int reportId){
-        Optional<Project> project = projectRepository.findById(projectId);
-        if(!project.isEmpty()){
-            List<ReportPMD> ruleViolations =  project.get().getReportPMDS();
-            if(!reportPMDRepository.findById(reportId).isEmpty()){
-                ReportPMD reportPMD = reportPMDRepository.findById(reportId).get();
-                ruleViolations.add(reportPMD);
-            }
+    public void connectingReportPMDAndProject(int projectId, int reportId) {
+        Project project = projectRepository.findById(projectId).get();
+        List<ReportPMD> reportPMDS = project.getReportPMDS();
+        if (!reportPMDRepository.findById(reportId).isEmpty()) {
+            ReportPMD reportPMD = reportPMDRepository.findById(reportId).get();
+            reportPMDS.add(reportPMD);
+            project.setReportPMDS(reportPMDS);
+            projectRepository.save(project);
+        }
+    }
+
+    public void connectingReportOWASPAndProject(int projectId, int reportId) {
+        Project project = projectRepository.findById(projectId).get();
+        List<ReportOWASP> reportOWASPS = project.getReportOWASPS();
+        if (!reportOWASPRepository.findById(reportId).isEmpty()) {
+            ReportOWASP reportOWASP = reportOWASPRepository.findById(reportId).get();
+            reportOWASPS.add(reportOWASP);
+            project.setReportOWASPS(reportOWASPS);
+            projectRepository.save(project);
+        }
+    }
+
+    public void connectingReportCheckstyleAndProject(int projectId, int reportId) {
+        Project project = projectRepository.findById(projectId).get();
+        List<ReportCheckStyle> reportCheckStyles = project.getReportCheckStyles();
+        if (!reportCheckStyleRepository.findById(reportId).isEmpty()) {
+            ReportCheckStyle reportCheckStyle = reportCheckStyleRepository.findById(reportId).get();
+            reportCheckStyles.add(reportCheckStyle);
+            project.setReportCheckStyles(reportCheckStyles);
+            projectRepository.save(project);
+        }
+    }
+
+    public void connectingReportSpotBugsAndProject(int projectId, int reportId) {
+        Project project = projectRepository.findById(projectId).get();
+        List<ReportSpotBugs> reportSpotBugs = project.getReportSpotBugs();
+        if (!reportSpotBugsRepository.findById(reportId).isEmpty()) {
+            ReportSpotBugs reportSpotBug = reportSpotBugsRepository.findById(reportId).get();
+            reportSpotBugs.add(reportSpotBug);
+            project.setReportSpotBugs(reportSpotBugs);
+            projectRepository.save(project);
         }
     }
 

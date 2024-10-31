@@ -31,9 +31,9 @@ public class ReportController {
     private final AgentServiceClient agentServiceClient;
 
     @PostMapping("/create")
-    public int createReport(@RequestBody ProjectDto projectDto, @RequestBody int ReportId) {
+    public int createReport(@RequestBody ProjectDto projectDto) {
         ProjectDto projectDtoNew = agentServiceClient.init(projectDto.getUrl());
-        ReportPMDDto reportPmd = projectDtoNew.getReportPMDS().get(1);
+        ReportPMDDto reportPmd = projectDtoNew.getReportPMDS().get(projectDtoNew.getReportPMDS().size() - 1);
         int idReportPMD = reportPMDService.create(reportPmd);
         return idReportPMD;
     }

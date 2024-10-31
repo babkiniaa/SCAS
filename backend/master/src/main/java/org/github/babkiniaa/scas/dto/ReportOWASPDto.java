@@ -15,8 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ReportOWASPDto {
 
-    private int id;
-
     private String hash;
 
     private List<DependencyCustomDto> reportList;

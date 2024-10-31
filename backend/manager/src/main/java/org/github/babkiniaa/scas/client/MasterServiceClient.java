@@ -13,7 +13,7 @@ import java.util.List;
 @FeignClient(name = "master-service", url = "http://localhost:8082")
 public interface MasterServiceClient {
     @PostMapping("/report/create")
-    ResponseEntity<?> createReport(@RequestBody ProjectDto reportDto, @RequestBody int projectId);
+    ResponseEntity<?> createReport(@RequestBody ProjectDto reportDto);
 
     @PostMapping("report/get-owasp/")
     ReportOWASPDto getReport(@RequestBody int idOWASP);

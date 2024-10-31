@@ -14,8 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ReportCheckStyleDto {
 
-    private int id;
-
     private String hash;
 
     private List<ViolationCustomDto> reportList;
