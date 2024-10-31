@@ -9,11 +9,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ReportCheckStyleMapper {
 
-    Violation checkstyleCustomTocCheckStyle(ViolationCustomDto violationCustomDto);
-
     ViolationCustomDto checkStyleToCheckstyleCustom(Violation violation);
-
-    List<Violation> checkStyleCustomToCheckStyleList(List<ViolationCustomDto> reports);
 
     List<ViolationCustomDto> checkStyleToCheckStyleCustomList(List<Violation> reports);
 }

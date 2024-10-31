@@ -9,11 +9,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ReportPMDMapper {
 
-    RuleViolation ruleViolationCustomToRuleViolation(RuleViolationCustomDto violationCustomDto);
-
     RuleViolationCustomDto ruleViolationToRuleViolationCustom(RuleViolation violation);
-
-    List<RuleViolation> ruleViolationCustomToRuleViolationList(List<RuleViolationCustomDto> reports);
 
     List<RuleViolationCustomDto> ruleViolationToRuleViolationCustomList(List<RuleViolation> reports);
 }

@@ -9,11 +9,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ReportSpotBugsMapper {
 
-    BugInstance bugInstanceCustomToBugInstance(BugInstanceCustomDto violationCustomDto);
-
     BugInstanceCustomDto bugInstanceToBugInstanceCustom(BugInstance violation);
-
-    List<BugInstance> bugInstanceCustomToBugInstanceList(List<BugInstanceCustomDto> reports);
 
     List<BugInstanceCustomDto> bugInstanceToBugInstanceCustomList(List<BugInstance> reports);
 }
