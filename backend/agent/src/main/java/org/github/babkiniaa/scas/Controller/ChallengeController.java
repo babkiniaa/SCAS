@@ -60,7 +60,7 @@ public class ChallengeController {
 //    }
 
     @PostMapping("/init")
-    public ProjectDto start(@RequestBody List<String> checks, @RequestBody ProjectDto projectDto) throws IOException, InterruptedException {
+    public ProjectDto start(@RequestBody ProjectDto projectDto) throws IOException, InterruptedException {
 //        reportCheckstyle();
         ReportOWASPDto reportOwasp = new ReportOWASPDto();
         reportOwasp.setReportList(reportOwasp());

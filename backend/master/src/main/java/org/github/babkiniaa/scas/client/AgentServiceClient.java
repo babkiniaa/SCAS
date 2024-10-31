@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface AgentServiceClient {
 
     @PostMapping("/analysis/init")
-    ProjectDto init(@RequestBody String url);
+    ProjectDto init(@RequestBody ProjectDto projectDto);
 
 
 }

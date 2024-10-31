@@ -3,8 +3,12 @@ package org.github.babkiniaa.scas.controller;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.ProjectMapper;
 import org.github.babkiniaa.scas.dto.GetProjectDto;
+import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectAndUserIdDto;
+import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectIdAndReportId;
 import org.github.babkiniaa.scas.dto.ProjectDto;
+import org.github.babkiniaa.scas.entity.Project;
 import org.github.babkiniaa.scas.service.ProjectService;
+import org.github.babkiniaa.scas.Mapper.ProjectUserId.ProjectAndUserIdMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,17 +25,23 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final ProjectMapper projectMapper;
-
+    private final ProjectAndUserIdMapper projectAndUserMapper;
 
     @PostMapping("/create")
-    public int createProject(@RequestBody ProjectDto projectDto, @RequestBody int userId) {
-        return projectService.create(projectDto, userId);
+    public int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto) {
+        ProjectDto projectDto = projectAndUserMapper.projectDtoToProjectAndUserIdDto(projectAndUserIdDto);
+        return projectService.create(projectDto, projectAndUserIdDto.getUserId());
     }
 
     @PostMapping("/connecting-report")
-    public ResponseEntity<?> connectionUserAndReport(@RequestBody int projectId,@RequestBody int reportId){
-        projectService.connectingReportOWASPAndProject(projectId, reportId);
+    public ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId){
+        projectService.connectingReportOWASPAndProject(projectIdAndReportId.getProjectId(), projectIdAndReportId.getReportId());
         return ResponseEntity.ok("Связали проект и отчет");
+    }
+
+    @PostMapping("/get-all")
+    public List<Project> getAllProject(){
+        return projectService.findAll();
     }
 
     /**
