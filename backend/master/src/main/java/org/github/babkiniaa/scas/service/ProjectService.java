@@ -54,7 +54,7 @@ public class ProjectService {
         Pageable pageable = PageRequest.of(
                 projectsDto.getPage(),
                 projectsDto.getCount(),
-                Sort.by(projectsDto.getSortingField())
+                Sort.by(Sort.Direction.fromString(projectsDto.getSortDirection()), projectsDto.getSortingField())
         );
 
         return projectsDto.isMyProject()

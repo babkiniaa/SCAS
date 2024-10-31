@@ -154,7 +154,8 @@ export default {
         sortingField: 'createdDate',
         userId: localStorage.getItem('currentId'),
         myProject: true,
-        name: ''
+        name: '',
+        sortDirection: 'DESC'
       },
       sortingOptions: [
         { label: 'Date', value: 'createdDate' },
@@ -176,6 +177,10 @@ export default {
         if (this.projectsDto.userId != this.$route.params.id) {
           this.projectsDto.myProject = false
           this.projectsDto.userId = this.$route.params.id
+        }
+        // eslint-disable-next-line eqeqeq
+        if (this.projectsDto.sortingField == 'name') {
+          this.projectsDto.sortDirection = 'ASC'
         }
         const response = await getProjects(this.projectsDto)
         this.projects = response.data

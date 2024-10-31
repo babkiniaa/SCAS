@@ -12,4 +12,5 @@ public class GetProjectDto {
     private long userId;
     private boolean myProject;
     private String name;
+    private String sortDirection;
 }
