@@ -75,7 +75,18 @@ export default {
         this.goToLogin()
       } catch (error) {
         if (error.response && error.response.data) {
-          this.errors = error.response.data
+          const responseData = error.response.data
+          if (typeof responseData === 'object' && !responseData.error) {
+            this.errors = responseData
+          } else if (responseData.error && responseData.details) {
+            console.log('sadasd')
+            this.$q.notify({
+              message: `${responseData.error}: ${responseData.details}`,
+              color: 'red'
+            })
+          } else {
+            this.$q.notify({ message: 'Unknown error', color: 'red' })
+          }
         } else {
           this.$q.notify({ message: 'Error of server', color: 'red' })
         }

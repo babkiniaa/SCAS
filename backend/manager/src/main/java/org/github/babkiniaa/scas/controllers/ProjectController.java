@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.ProjectMapper;
 import org.github.babkiniaa.scas.dto.GetProjectDto;
 import org.github.babkiniaa.scas.dto.ProjectDto;
-import org.github.babkiniaa.scas.entity.Project;
 import org.github.babkiniaa.scas.entity.User;
-import org.github.babkiniaa.scas.exception.NotFoundUser;
+import org.github.babkiniaa.scas.exception.NotFoundUserException;
 import org.github.babkiniaa.scas.security.AuthenticationFacade;
 import org.github.babkiniaa.scas.service.ProjectService;
 import org.github.babkiniaa.scas.service.UserService;
@@ -34,12 +33,12 @@ public class ProjectController {
      *
      * @param projectDto DTO с данными для создания проекта.
      * @return {@link ResponseEntity} с сообщением о статусе создания проекта.
-     * @throws NotFoundUser если пользователь, выполняющий запрос, не найден.
+     * @throws NotFoundUserException если пользователь, выполняющий запрос, не найден.
      */
     @PostMapping("/create")
-    public ResponseEntity<?> createProject(@RequestBody ProjectDto projectDto) throws NotFoundUser {
+    public ResponseEntity<?> createProject(@RequestBody ProjectDto projectDto) throws NotFoundUserException {
         User user = userService.findByUsername(authenticationFacade.getCurrentUserName())
-                .orElseThrow(() -> new NotFoundUser("Пользователь не найден"));
+                .orElseThrow(() -> new NotFoundUserException("Пользователь не найден"));
         projectService.create(projectDto, user.getId());
 
         return ResponseEntity.ok("Created project");
