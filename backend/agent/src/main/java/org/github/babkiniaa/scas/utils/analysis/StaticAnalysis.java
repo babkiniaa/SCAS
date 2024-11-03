@@ -54,7 +54,8 @@ public class StaticAnalysis {
         PMDConfiguration config = new PMDConfiguration();
 
         config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageVersionById("java", null));
-        config.addRuleSet("rulesets/java/quickstart.xml");
+//        config.addRuleSet("rulesets/java/quickstart.xml");
+        config.addRuleSet("rules.xml");
 
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
 
@@ -87,22 +88,23 @@ public class StaticAnalysis {
 //      throw e;
 //    }
 //
-//        Engine engine = new Engine(new Settings());
-//        List<Dependency> list2 = engine.scan(scanDir);
-//        DependencyCheckScanAgent scan = new DependencyCheckScanAgent();
+        Engine engine = new Engine(new Settings());
+        List<Dependency> list2 = engine.scan(scanDir);
+        DependencyCheckScanAgent scan = new DependencyCheckScanAgent();
+        scan.setNvdApiKey("856e72cc-cfa7-4220-b12b-19317c018957");
 //        scan.setDataDirectory("C:\\dependency-check\\data");
-//        scan.setDependencies(list2);
-////    scan.setReportFormat(ReportGenerator.Format.HTML);
-////    scan.setReportOutputDirectory(System.getProperty("user.home"));
-//        scan.execute();
-////        engine.analyzeDependencies();
-//        Dependency[] dependencies = (Dependency[]) Arrays.stream(engine.getDependencies()).filter(x -> x.getVulnerabilitiesCount() > 0).toArray();
+        scan.setDependencies(list2);
+//    scan.setReportFormat(ReportGenerator.Format.HTML);
+//    scan.setReportOutputDirectory(System.getProperty("user.home"));
+        scan.execute();
+//        engine.analyzeDependencies();
+        Dependency[] dependencies = (Dependency[]) Arrays.stream(engine.getDependencies()).filter(x -> x.getVulnerabilitiesCount() > 0).toArray();
 //
-        Dependency dependency = new Dependency();
-        dependency.setDescription("Это я написал для теста");
-        List<Dependency> dependencies = null;
-        dependencies.add(dependency);
-        return dependencies;
+//        Dependency dependency = new Dependency();
+//        dependency.setDescription("Это я написал для теста");
+//        List<Dependency> dependencies = null;
+//        dependencies.add(dependency);
+        return List.of(dependencies);
     }
 
     public static List<Violation> startCheckStyle(String path) throws Exception {
