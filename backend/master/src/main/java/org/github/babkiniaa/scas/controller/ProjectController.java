@@ -36,11 +36,11 @@ public class ProjectController {
     @PostMapping("/connecting-report")
     public ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId){
         projectService.connectingReportOWASPAndProject(projectIdAndReportId.getProjectId(), projectIdAndReportId.getReportId());
-        return ResponseEntity.ok("Связали проект и отчет");
+        return ResponseEntity.ok("");
     }
 
     @PostMapping("/get-all")
-    public List<Project> getAllProject(){
+    public List<ProjectDto> getAllProject(){
         return projectService.findAll();
     }
 

@@ -33,7 +33,7 @@ public class ReportSpotBugs {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<BugInstanceCustom> reportList;
 
 

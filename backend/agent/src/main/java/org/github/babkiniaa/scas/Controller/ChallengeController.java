@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,7 +65,10 @@ public class ChallengeController {
 //        reportCheckstyle();
         ReportOWASPDto reportOwasp = new ReportOWASPDto();
         reportOwasp.setReportList(reportOwasp());
-        List<ReportOWASPDto> reportOWASPDto = projectDto.getReportOWASPS();
+        List<ReportOWASPDto> reportOWASPDto = new ArrayList<>();
+        if(projectDto.getReportOWASPS()!= null) {
+            reportOWASPDto = projectDto.getReportOWASPS();
+        }
         reportOWASPDto.add(reportOwasp);
         projectDto.setReportOWASPS(reportOWASPDto);
 
@@ -153,15 +157,17 @@ public class ChallengeController {
     }
 
     private List<DependencyCustomDto> reportOwasp() throws IOException, InterruptedException {
-        List<DependencyCustomDto> reportDto = null;
-        List<Dependency> dependencies = null;
-        dependencies = StaticAnalysis.startOWASP(" fgfg");
-        reportDto = reportOWASPMapper.owaspToOwaspCustomList(dependencies);
+        List<DependencyCustomDto> dependencyCustomDtos = new ArrayList<>();
+        List<Dependency> dependencies = new ArrayList<>();
+        Dependency dependency = new Dependency(new File("wqed"));
+//        dependencies = StaticAnalysis.startOWASP(" fgfg");
+        dependencies.add(dependency);
+        dependencyCustomDtos = reportOWASPMapper.owaspToOwaspCustomList(dependencies);
 //        String patch = System.getProperty("user.dir") + "/down/" + reportId;
 //
 //        StaticAnalysis.startOWASP(patch);
 //        report = dependencyCheckParser.parse(patch);
-        return reportDto;
+        return dependencyCustomDtos;
     }
 
 

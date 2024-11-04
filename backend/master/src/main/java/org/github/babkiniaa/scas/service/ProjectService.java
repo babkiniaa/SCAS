@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,10 @@ public class ProjectService {
 
     public void connectingReportPMDAndProject(int projectId, int reportId) {
         Project project = projectRepository.findById(projectId).get();
-        List<ReportPMD> reportPMDS = project.getReportPMDS();
+        List<ReportPMD> reportPMDS = new ArrayList<>();
+        if (project.getReportPMDS() != null) {
+            reportPMDS = project.getReportPMDS();
+        }
         if (!reportPMDRepository.findById(reportId).isEmpty()) {
             ReportPMD reportPMD = reportPMDRepository.findById(reportId).get();
             reportPMDS.add(reportPMD);
@@ -58,7 +62,10 @@ public class ProjectService {
 
     public void connectingReportOWASPAndProject(int projectId, int reportId) {
         Project project = projectRepository.findById(projectId).get();
-        List<ReportOWASP> reportOWASPS = project.getReportOWASPS();
+        List<ReportOWASP> reportOWASPS = new ArrayList<>();
+        if (project.getReportOWASPS() != null) {
+            reportOWASPS = project.getReportOWASPS();
+        }
         if (!reportOWASPRepository.findById(reportId).isEmpty()) {
             ReportOWASP reportOWASP = reportOWASPRepository.findById(reportId).get();
             reportOWASPS.add(reportOWASP);
@@ -69,7 +76,10 @@ public class ProjectService {
 
     public void connectingReportCheckstyleAndProject(int projectId, int reportId) {
         Project project = projectRepository.findById(projectId).get();
-        List<ReportCheckStyle> reportCheckStyles = project.getReportCheckStyles();
+        List<ReportCheckStyle> reportCheckStyles = new ArrayList<>();
+        if (project.getReportCheckStyles() != null) {
+            reportCheckStyles = project.getReportCheckStyles();
+        }
         if (!reportCheckStyleRepository.findById(reportId).isEmpty()) {
             ReportCheckStyle reportCheckStyle = reportCheckStyleRepository.findById(reportId).get();
             reportCheckStyles.add(reportCheckStyle);
@@ -80,7 +90,10 @@ public class ProjectService {
 
     public void connectingReportSpotBugsAndProject(int projectId, int reportId) {
         Project project = projectRepository.findById(projectId).get();
-        List<ReportSpotBugs> reportSpotBugs = project.getReportSpotBugs();
+        List<ReportSpotBugs> reportSpotBugs = new ArrayList<>();
+        if (project.getReportSpotBugs() != null) {
+            reportSpotBugs = project.getReportSpotBugs();
+        }
         if (!reportSpotBugsRepository.findById(reportId).isEmpty()) {
             ReportSpotBugs reportSpotBug = reportSpotBugsRepository.findById(reportId).get();
             reportSpotBugs.add(reportSpotBug);
@@ -89,8 +102,8 @@ public class ProjectService {
         }
     }
 
-    public List<Project> findAll() {
-        return projectRepository.findAll();
+    public List<ProjectDto> findAll() {
+        return projectMapper.projectToListDto(projectRepository.findAll());
     }
 
     /**

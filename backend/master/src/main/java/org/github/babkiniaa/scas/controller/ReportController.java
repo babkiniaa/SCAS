@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.*;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.dto.*;
+import org.github.babkiniaa.scas.entity.ReportCheckStyle;
 import org.github.babkiniaa.scas.entity.ReportOWASP;
+import org.github.babkiniaa.scas.entity.ReportPMD;
 import org.github.babkiniaa.scas.entity.ReportSpotBugs;
 import org.github.babkiniaa.scas.service.*;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +35,31 @@ public class ReportController {
     @PostMapping("/create")
     public int createReport(@RequestBody ProjectDto projectDto) {
         ProjectDto projectDtoNew = agentServiceClient.init(projectDto);
-        ReportPMDDto reportPmd = projectDtoNew.getReportPMDS().get(projectDtoNew.getReportPMDS().size() - 1);
-        int idReportPMD = reportPMDService.create(reportPmd);
-        return idReportPMD;
+//        ReportPMDDto reportPmd = projectDtoNew.getReportPMDS().get(projectDtoNew.getReportPMDS().size() - 1);
+        ReportOWASPDto reportOWASPDto = projectDtoNew.getReportOWASPS().get(projectDtoNew.getReportOWASPS().size() - 1);
+//        int idReportPMD = reportPMDService.create(reportPmd);
+        int idReportOWASP = reportOWASPService.create(reportOWASPDto);
+        return idReportOWASP;
     }
 
-
-    @PostMapping("/get-reports")
-    public List<ProjectDto> getReports(@RequestBody GetProjectDto projectsDto) {
-        return projectMapper.projectToListDto(projectService.getAllProject(projectsDto));
+    @GetMapping("/get-all-owasp")
+    public List<ReportOWASPDto> getAllReportsOwasp() {
+        return reportOWASPMapper.reportToListDto(reportOWASPService.findAll());
     }
+
+    @GetMapping("/get-all-pmd")
+    public List<ReportPMDDto> getAllReportsPmd() {
+        return reportPMDMapper.reportToListDto(reportPMDService.findAll());
+    }
+
+    @GetMapping("/get-all-checkstyle")
+    public List<ReportCheckStyleDto> getAllReportsCheckstyle() {
+        return reportCheckStyleMapper.reportToListDto(reportCheckStyleService.findAll());
+    }
+
+    @GetMapping("/get-all-spotbugs")
+    public List<ReportSpotBugsDto> getAllReportsSpotBugs() {
+        return reportSpotBugsMapper.reportToListDto(reportSpotBugsService.findAll());
+    }
+
 }

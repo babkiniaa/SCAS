@@ -33,7 +33,7 @@ public class ReportPMD {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<RuleViolationCustom> reportList;
 
 }

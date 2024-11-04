@@ -11,5 +11,4 @@ public interface AgentServiceClient {
     @PostMapping("/analysis/init")
     ProjectDto init(@RequestBody ProjectDto projectDto);
 
-
 }

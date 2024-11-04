@@ -33,7 +33,7 @@ public class ReportOWASP {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<DependencyCustom> reportList;
 
 }

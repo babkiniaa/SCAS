@@ -34,7 +34,7 @@ public class ReportCheckStyle {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<ViolationCustom> reportList;
 
 
