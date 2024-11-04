@@ -1,10 +1,14 @@
 package org.github.babkiniaa.scas.Controller;
 
 import lombok.RequiredArgsConstructor;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import org.apache.maven.shared.invoker.*;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportOWASPDto;
+import org.github.babkiniaa.scas.dto.ReportPMDDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
+import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
+import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
 import org.github.babkiniaa.scas.mapper.ReportCheckStyleMapper;
 import org.github.babkiniaa.scas.mapper.ReportOWASPMapper;
 import org.github.babkiniaa.scas.mapper.ReportPMDMapper;
@@ -73,7 +77,14 @@ public class ChallengeController {
         projectDto.setReportOWASPS(reportOWASPDto);
 
 //        reportSpotBugs();
-//        reportPmd();
+        ReportPMDDto reportPMD = new ReportPMDDto();
+        reportPMD.setReportList(reportPmd());
+        List<ReportPMDDto> reportPMDDto = new ArrayList<>();
+        if(projectDto.getReportPMDS() != null){
+            reportPMDDto = projectDto.getReportPMDS();
+        }
+        reportPMDDto.add(reportPMD);
+        projectDto.setReportPMDS(reportPMDDto);
 
 //        ReportDto reportDto = new ReportDto(projectDto.getNameProject());
 //
@@ -146,22 +157,29 @@ public class ChallengeController {
 
     }
 
-    private String reportPmd() {
-        String report = "";
-//        String patch = System.getProperty("user.dir") + "/backend/agent/target/pmd-res/" + reportId + "/pmd.xml";
+    private List<RuleViolationCustomDto> reportPmd() {
+        List<RuleViolationCustomDto> violationCustomDtos = new ArrayList<>();
+        List<RuleViolation> ruleViolationList = new ArrayList<>();
+
+        try {
+            ruleViolationList = StaticAnalysis.startPmd("C:\\sber");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        violationCustomDtos = reportPMDMapper.ruleViolationToRuleViolationCustomList(ruleViolationList);
+//        String patch = System.getProperty("user.dir") + "/down/" + reportId;
 //
-//        StaticAnalysis.startPmd(String.valueOf(reportId));
-//        report = pmdParser.parse(patch);
-        return report;
+//        StaticAnalysis.startOWASP(patch);
+//        report = dependencyCheckParser.parse(patch);
+        return violationCustomDtos;
 
     }
 
     private List<DependencyCustomDto> reportOwasp() throws IOException, InterruptedException {
         List<DependencyCustomDto> dependencyCustomDtos = new ArrayList<>();
         List<Dependency> dependencies = new ArrayList<>();
-        Dependency dependency = new Dependency(new File("wqed"));
-//        dependencies = StaticAnalysis.startOWASP(" fgfg");
-        dependencies.add(dependency);
+
+        dependencies = StaticAnalysis.startOWASP("C:\\sber");
         dependencyCustomDtos = reportOWASPMapper.owaspToOwaspCustomList(dependencies);
 //        String patch = System.getProperty("user.dir") + "/down/" + reportId;
 //
