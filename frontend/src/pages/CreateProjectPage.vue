@@ -129,6 +129,7 @@
 <script>
 import { Dark } from 'quasar'
 import { createProject } from 'src/services/projectServices'
+import { getAvatar } from 'src/services/userServices'
 export default {
   data () {
     return {
@@ -196,7 +197,14 @@ export default {
     goToProfile () {
       const userId = localStorage.getItem('currentId')
       this.$router.push(`/profile/${userId}`)
+    },
+    async fetchUser () {
+      const response = await getAvatar(localStorage.getItem('currentId'))
+      this.user.avatar = response.data
     }
+  },
+  created () {
+    this.fetchUser()
   }
 }
 </script>

@@ -138,7 +138,7 @@
 <script>
 import { getProjects } from 'src/services/projectServices'
 import { Dark } from 'quasar'
-
+import { getAvatar } from 'src/services/userServices'
 export default {
   data () {
     return {
@@ -229,9 +229,14 @@ export default {
         this.projectsDto.page = 0
         this.loadProjects()
       }
+    },
+    async fetchUser () {
+      const response = await getAvatar(localStorage.getItem('currentId'))
+      this.user.avatar = response.data
     }
   },
   created () {
+    this.fetchUser()
     this.currentUserId = localStorage.getItem('currentId')
     this.loadProjects()
   }

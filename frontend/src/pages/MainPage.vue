@@ -83,6 +83,7 @@
 <script>
 import { Dark } from 'quasar'
 import { getProjects } from 'src/services/projectServices'
+import { getAvatar } from 'src/services/userServices'
 export default {
   data () {
     return {
@@ -117,10 +118,9 @@ export default {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    fetchUser () {
-      this.user = {
-        avatar: null
-      }
+    async fetchUser () {
+      const response = await getAvatar(localStorage.getItem('currentId'))
+      this.user.avatar = response.data
     },
     goToHome () {
       this.$router.push('/home')
