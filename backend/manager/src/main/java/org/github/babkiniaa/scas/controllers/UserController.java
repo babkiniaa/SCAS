@@ -80,7 +80,6 @@ public class UserController {
         userService.installAvatar(user, file);
 
         return ResponseEntity.ok("Avatar uploaded successfully");
-
     }
 
     /**
