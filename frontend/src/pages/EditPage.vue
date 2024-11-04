@@ -150,6 +150,7 @@ export default {
       try {
         await updateUserProfile(this.user)
         this.$q.notify({ message: 'Profile updated successfully', color: 'green' })
+        this.goToProfile()
       } catch (error) {
         this.$q.notify({ message: 'Error updating profile', color: 'red' })
       }
