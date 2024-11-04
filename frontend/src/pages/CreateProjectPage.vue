@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh lpr lFf">
-    <q-header :class="isDarkMode ? 'bg-dark' : 'bg-grey-9'">
+  <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
+    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title :class="isDarkMode ? 'text-white' : ''">Create Project</q-toolbar-title>
@@ -55,9 +55,8 @@
         </q-list>
       </q-scroll-area>
     </q-drawer>
-
-    <q-page-container>
-      <q-page :class="isDarkMode ? 'bg-dark' : 'bg-grey-2'">
+    <q-page-container  :class="isDarkMode ? 'bg-dark' : 'bg-grey-2'">
+      <q-page style="margin-top: 15px;">
         <q-card :class="['q-pa-md', 'shadow-2', 'my-card', isDarkMode ? 'bg-grey-8' : '']" bordered>
           <q-form @submit="submitCreateProject">
             <q-card-section class="row q-col-gutter-md">
@@ -67,6 +66,7 @@
               <div class="col-4">
                 <q-btn-dropdown
                   color="primary"
+                  :class="isDarkMode ? 'bg-grey-6' : ''"
                   :label="selectedVisibility ? 'Visibility: ' + selectedVisibility : 'Select Visibility'"
                 >
                   <q-list>
@@ -84,6 +84,7 @@
             <q-card-section class="row q-col-gutter-md q-pt-none">
               <div class="col-12">
                 <q-btn-dropdown
+                  :class="isDarkMode ? 'bg-grey-6' : ''"
                   color="primary"
                   :label="selectedSource ? 'Source: ' + selectedSource : 'Select Source'"
                 >
@@ -116,8 +117,8 @@
             </q-card-section>
 
             <q-card-section class="text-center">
-              <q-btn label="Create Project" color="primary" class="q-mt-md full-width" type="submit" :disable="isCreating" />
-              <q-btn label="Start Analysis" color="primary" class="q-mt-md full-width" @click="startAnalysis" :disable="!projectCreated" />
+              <q-btn label="Create Project" color="primary" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" type="submit" :disable="isCreating" />
+              <q-btn label="Start Analysis" color="primary" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" @click="startAnalysis" :disable="!projectCreated" />
             </q-card-section>
           </q-form>
         </q-card>
@@ -212,7 +213,7 @@ export default {
 <style scoped>
 .my-card {
   max-width: 600px;
-  margin: 16px auto;
+  margin:  auto;
 }
 .bg-dark {
   background-color: #121212;

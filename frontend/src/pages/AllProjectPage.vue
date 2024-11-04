@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh lpr lFf">
-    <q-header :class="isDarkMode ? 'bg-dark' : 'bg-grey-9'">
+    <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
+      <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">All Projects</q-toolbar-title>
@@ -51,8 +51,8 @@
         </q-item>
       </q-list>
     </q-drawer>
-    <q-page-container>
-      <q-page :class="isDarkMode ? 'bg-dark' : 'bg-grey-2'">
+    <q-page-container :class="isDarkMode ? 'bg-dark' : 'bg-grey-3'" >
+      <q-page style="margin-top: 15px;">
         <div class="row q-mb-md items-center justify-center">
           <div class="search-sort-container row q-gutter-md col-8 justify-center">
             <q-input
@@ -71,10 +71,10 @@
             <q-btn-dropdown
               outlined
               label="Sort by"
-              color="primary"
               :options="sortingOptions"
               @click="onSortChange($event)"
-              class="col-5"
+              color="dark"
+              :class="isDarkMode ? 'bg-grey-6' : ''" class="col-5"
             >
               <q-list>
                 <q-item
@@ -93,8 +93,8 @@
             outlined
             label="Create Project"
             icon="add_circle"
-            class="q-ml-md sticky-create-btn"
-            color="blue"
+            :class="isDarkMode ? 'bg-grey-6' : ''" class="q-ml-md sticky-create-btn"
+            color="dark"
             @click="goToCreateProject"
           />
         </div>
@@ -118,7 +118,7 @@
               </q-badge>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-none q-px-sm q-py-xs">
-              <q-btn label="View Report" color="primary" @click="viewReport(project)" />
+              <q-btn label="View Report" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width"  @click="viewReport(project)" />
             </q-card-actions>
           </q-card>
         </div>
@@ -245,9 +245,14 @@ export default {
 
 <style>
 .bg-dark {
-  background-color: #1c1c1e;
+  background-color: #121212;
 }
-
+.bg-grey-8 {
+  background-color: #3a3a3a;
+}
+.bg-grey-6 {
+  background-color: #4a4a4a;
+}
 .text-white {
   color: #ffffff !important;
 }
@@ -259,5 +264,8 @@ export default {
   max-width: 90%;
   margin: 6px auto;
   padding: 8px;
+}
+.dark-bg {
+  background-color: #1d1d1d !important;
 }
 </style>
