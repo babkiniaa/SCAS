@@ -67,6 +67,14 @@
               color="primary"
               @click="uploadAvatar"
             />
+            <q-btn
+              v-if="user.avatar"
+              flat
+              class="q-mt-sm"
+              label="Delete Avatar"
+              color="negative"
+              @click="deleteAvatar"
+            />
           </div>
           <div class="col-8 q-pa-md">
             <div class="q-mb-md row">
@@ -114,7 +122,7 @@
   </q-layout>
 </template>
 <script>
-import { getUserProfile, updateUserProfile } from 'src/services/userServices'
+import { getUserProfile, updateUserProfile, uploadUserAvatar, deleteUserAvatar } from 'src/services/userServices'
 import { Dark } from 'quasar'
 export default {
   data () {
@@ -142,6 +150,7 @@ export default {
       try {
         const response = await getUserProfile(localStorage.getItem('currentId'))
         this.user = response.data
+        this.avatar = response.data.avatar
       } catch (error) {
         this.$q.notify({ message: 'Error loading profile', color: 'red' })
       }
@@ -154,6 +163,32 @@ export default {
         this.$q.notify({ message: 'Error updating profile', color: 'red' })
       }
     },
+    async uploadAvatar () {
+      const fileInput = document.createElement('input')
+      fileInput.type = 'file'
+      fileInput.onchange = async () => {
+        const file = fileInput.files[0]
+        const formData = new FormData()
+        formData.append('file', file)
+        try {
+          await uploadUserAvatar(formData)
+          this.$q.notify({ message: 'Avatar uploaded successfully', color: 'green' })
+          await this.loadUserProfile()
+        } catch (error) {
+          this.$q.notify({ message: 'Error uploading avatar', color: 'red' })
+        }
+      }
+      fileInput.click()
+    },
+    async deleteAvatar () {
+      try {
+        await deleteUserAvatar()
+        this.$q.notify({ message: 'Avatar deleted successfully', color: 'green' })
+        await this.loadUserProfile()
+      } catch (error) {
+        this.$q.notify({ message: 'Error deleting avatar', color: 'red' })
+      }
+    },
     goToHome () {
       this.$router.push('/home')
     },
@@ -163,8 +198,6 @@ export default {
     goToAllProjects () {
       const id = localStorage.getItem('currentId')
       this.$router.push({ name: 'projects', params: { id } })
-    },
-    uploadAvatar () {
     },
     goToProfile () {
       const userId = localStorage.getItem('currentId')

@@ -21,3 +21,17 @@ export function getUserProfile (id) {
 export function updateUserProfile (userData) {
   return api.put('/profile', userData)
 }
+export function uploadUserAvatar (formData) {
+  return api.post('/avatar', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+export function deleteUserAvatar () {
+  return api.delete('/avatar')
+}
+
+export function getAvatar (id) {
+  return api.get(`/avatar/${id}`)
+}

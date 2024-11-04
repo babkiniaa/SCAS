@@ -41,4 +41,6 @@ public class User {
 
     @Column
     private boolean isEnable = false;
+
+    private String avatarUrl;
 }
