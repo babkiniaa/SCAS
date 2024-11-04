@@ -130,10 +130,10 @@ public class StaticAnalysis {
 //      throw e;
 //    }
 
-        String[] arg = new String[2];
-        arg[0] = path;
-        arg[1] = "-c=checkstyle.xml";
-        Main.main(arg);
+//        String[] arg = new String[2];
+//        arg[0] = path;
+//        arg[1] = "-c=checkstyle.xml";
+//        Main.main(arg);
         Checker checker = new Checker();
         Configuration config2 = ConfigurationLoader.loadConfiguration("checkstyle.xml",
                 new PropertiesExpander(System.getProperties()), ConfigurationLoader.IgnoredModulesOptions.OMIT,
