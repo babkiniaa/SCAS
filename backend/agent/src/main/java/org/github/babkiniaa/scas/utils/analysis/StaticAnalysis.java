@@ -14,6 +14,7 @@ import org.github.babkiniaa.scas.reporters.MyList;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.agent.DependencyCheckScanAgent;
 import org.owasp.dependencycheck.dependency.Dependency;
+import org.owasp.dependencycheck.exception.ExceptionCollection;
 import org.owasp.dependencycheck.reporting.ReportGenerator;
 import org.owasp.dependencycheck.utils.Settings;
 
@@ -30,31 +31,9 @@ import java.util.Map;
 public class StaticAnalysis {
 
     public static List<RuleViolation> startPmd(String path) throws Exception {
-//    ProcessBuilder processBuilder = new ProcessBuilder();
-//    String dirReport = "-DdistPMD=" + nameFile;
-//    processBuilder.command(
-//            System.getenv("M2_HOME") + "\\bin\\mvn.cmd",
-//            dirReport,
-//            "pmd:pmd");
-//
-//    try {
-//      Process process = processBuilder.start();
-//      BufferedReader reader =
-//              new BufferedReader(new InputStreamReader(process.getInputStream()));
-//      String line;
-//      while ((line = reader.readLine()) != null) {
-//      }
-//      int exitCode = process.waitFor();
-//      process.destroy();
-//    } catch (InterruptedException | IOException e) {
-//      e.printStackTrace();
-//      throw e;
-//    }
-//
         PMDConfiguration config = new PMDConfiguration();
 
         config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageVersionById("java", null));
-//        config.addRuleSet("rulesets/java/quickstart.xml");
         config.addRuleSet("rules.xml");
 
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
@@ -66,74 +45,26 @@ public class StaticAnalysis {
 
     }
 
-    public static List<Dependency> startOWASP(String scanDir) throws IOException, InterruptedException {
-//    ProcessBuilder processBuilder = new ProcessBuilder();
-//    processBuilder.directory(new File(scanDir));
-//    processBuilder.command(
-//            System.getenv("M2_HOME") + "\\bin\\mvn.cmd",
-//            "org.owasp:dependency-check-maven:check"
-//    );
-//
-//    try {
-//      Process process = processBuilder.start();
-//      BufferedReader reader =
-//              new BufferedReader(new InputStreamReader(process.getInputStream()));
-//      String line;
-//      while ((line = reader.readLine()) != null) {
-//      }
-//      int exitCode = process.waitFor();
-//      process.destroy();
-//    } catch (InterruptedException | IOException e) {
-//      e.printStackTrace();
-//      throw e;
-//    }
-//
-        Engine engine = new Engine(new Settings());
+    public static List<Dependency> startOWASP(String scanDir) {
+        Settings settings = new Settings();
+        settings.setString(Settings.KEYS.AUTO_UPDATE, "false");
+        //settings.setString(Settings.KEYS.NVD_API_KEY, "856e72cc-cfa7-4220-b12b-19317c018957");
+        Engine engine = new Engine(settings);
         List<Dependency> list2 = engine.scan(scanDir);
-        DependencyCheckScanAgent scan = new DependencyCheckScanAgent();
-        scan.setNvdApiKey("856e72cc-cfa7-4220-b12b-19317c018957");
-//        scan.setDataDirectory("C:\\dependency-check\\data");
-        scan.setDependencies(list2);
-//    scan.setReportFormat(ReportGenerator.Format.HTML);
-//    scan.setReportOutputDirectory(System.getProperty("user.home"));
-        scan.execute();
-//        engine.analyzeDependencies();
-        Dependency[] dependencies = (Dependency[]) Arrays.stream(engine.getDependencies()).filter(x -> x.getVulnerabilitiesCount() > 0).toArray();
-//
-//        Dependency dependency = new Dependency();
-//        dependency.setDescription("Это я написал для теста");
-//        List<Dependency> dependencies = null;
-//        dependencies.add(dependency);
-        return List.of(dependencies);
+
+        try {
+            engine.analyzeDependencies();
+        } catch (ExceptionCollection e) {
+            throw new RuntimeException(e);
+        }
+        List<Dependency> dependencies = Arrays.stream(engine.getDependencies())
+                .filter(x -> x.getVulnerabilitiesCount() != 0)
+                .toList();
+
+        return dependencies;
     }
 
     public static List<Violation> startCheckStyle(String path) throws Exception {
-//    ProcessBuilder processBuilder = new ProcessBuilder();
-//    String dirReport = "-DdistCheckerStyle=" + nameFile;
-//    processBuilder.command(
-//            System.getenv("M2_HOME") + "\\bin\\mvn.cmd",
-//            dirReport,
-//            "checkstyle:checkstyle"
-//    );
-//
-//    try {
-//      Process process = processBuilder.start();
-//      BufferedReader reader =
-//              new BufferedReader(new InputStreamReader(process.getInputStream()));
-//      String line;
-//      while ((line = reader.readLine()) != null) {
-//      }
-//      int exitCode = process.waitFor();
-//      process.destroy();
-//    } catch (InterruptedException | IOException e) {
-//      e.printStackTrace();
-//      throw e;
-//    }
-
-//        String[] arg = new String[2];
-//        arg[0] = path;
-//        arg[1] = "-c=checkstyle.xml";
-//        Main.main(arg);
         Checker checker = new Checker();
         Configuration config2 = ConfigurationLoader.loadConfiguration("checkstyle.xml",
                 new PropertiesExpander(System.getProperties()), ConfigurationLoader.IgnoredModulesOptions.OMIT,

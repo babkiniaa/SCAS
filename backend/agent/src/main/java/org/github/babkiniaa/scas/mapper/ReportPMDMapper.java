@@ -1,20 +1,32 @@
 package org.github.babkiniaa.scas.mapper;
 
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
-import org.mapstruct.Mapper;
-import org.owasp.dependencycheck.dependency.Dependency;
-
+import org.springframework.stereotype.Component;
+import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface ReportPMDMapper {
-    RuleViolation ruleViolationCustomToRuleViolation(RuleViolationCustomDto ruleViolationCustomDto);
+@Component
+public class ReportPMDMapper {
+    public RuleViolationCustomDto PMDtoDTO(RuleViolation ruleViolation) {
+        RuleViolationCustomDto ruleViolationCustomDto = new RuleViolationCustomDto();
 
-    RuleViolationCustomDto ruleViolationToRuleViolationCustom(RuleViolation violation);
+        ruleViolationCustomDto.setName(ruleViolation.getRule().getName());
+        ruleViolationCustomDto.setDescription(ruleViolation.getDescription());
+        ruleViolationCustomDto.setMessage(ruleViolation.getRule().getMessage());
+        ruleViolationCustomDto.setPriority(ruleViolation.getRule().getPriority().getName());
 
-    List<RuleViolation> ruleViolationCustomToRuleViolationList(List<RuleViolationCustomDto> reports);
+        return ruleViolationCustomDto;
+    }
 
-    List<RuleViolationCustomDto> ruleViolationToRuleViolationCustomList(List<RuleViolation> reports);
+    public List<RuleViolationCustomDto> PMDtoDTO(List<RuleViolation> ruleViolations) {
+
+        List<RuleViolationCustomDto> pmdDTOs = new ArrayList<>();
+
+        for (RuleViolation rv : ruleViolations) {
+            pmdDTOs.add(PMDtoDTO(rv));
+        }
+
+        return pmdDTOs;
+    }
 }

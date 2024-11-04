@@ -3,7 +3,6 @@ package org.github.babkiniaa.scas.utils.analysis;
 import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.FindBugs2;
 import edu.umd.cs.findbugs.TextUICommandLine;
-import org.apache.maven.shared.invoker.*;
 import org.github.babkiniaa.scas.reporters.MyBg;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,7 @@ import java.util.Collections;
 
 public class BinAnalysis {
 
-    public static void spotbugs(String dir) throws XMLStreamException, MavenInvocationException, IOException {
+    public static void spotbugs(String dir) throws IOException {
 //        System.setProperty("maven.home", System.getenv("M2_HOME"));
 //        InvocationRequest request = new DefaultInvocationRequest();
 //        Invoker invoker = new DefaultInvoker();
