@@ -4,12 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.*;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.dto.*;
-import org.github.babkiniaa.scas.entity.ReportCheckStyle;
-import org.github.babkiniaa.scas.entity.ReportOWASP;
-import org.github.babkiniaa.scas.entity.ReportPMD;
-import org.github.babkiniaa.scas.entity.ReportSpotBugs;
 import org.github.babkiniaa.scas.service.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +41,7 @@ public class ReportController {
     public List<ReportOWASPDto> getAllReportsOwasp() {
         return reportOWASPMapper.reportToListDto(reportOWASPService.findAll());
     }
+
     @GetMapping("/get-all-pmd")
     public List<ReportPMDDto> getAllReportsPmd() {
         return reportPMDMapper.reportToListDto(reportPMDService.findAll());
@@ -61,23 +57,23 @@ public class ReportController {
         return reportSpotBugsMapper.reportToListDto(reportSpotBugsService.findAll());
     }
 
-    @PostMapping("/get-owasp")
-    public ReportOWASPDto getReportOwasp(@RequestBody Integer id) {
+    @GetMapping("/get-owasp/{id}")
+    public ReportOWASPDto getReportOwasp(@PathVariable("id") int id) {
         return reportOWASPMapper.reportToDto(reportOWASPService.findById(id));
     }
 
-    @PostMapping("/get-pmd")
-    public ReportPMDDto getReportPMD(@RequestBody Integer id) {
+    @GetMapping("/get-pmd/{id}")
+    public ReportPMDDto getReportPMD(@PathVariable("id") int id) {
         return reportPMDMapper.reportToDto(reportPMDService.findById(id));
     }
 
-    @PostMapping("/get-checkstyle")
-    public ReportCheckStyleDto getReportCheckstyle(@RequestBody Integer id) {
+    @GetMapping("/get-checkstyle/{id}")
+    public ReportCheckStyleDto getReportCheckstyle(@PathVariable("id") int id) {
         return reportCheckStyleMapper.reportToDto(reportCheckStyleService.findById(id));
     }
 
-    @PostMapping("/get-spotbugs")
-    public ReportSpotBugsDto getReportSpotBugs(@RequestBody Integer id) {
+    @GetMapping("/get-spotbugs/{id}")
+    public ReportSpotBugsDto getReportSpotBugs(@PathVariable("id") int id) {
         return reportSpotBugsMapper.reportToDto(reportSpotBugsService.findById(id));
     }
 

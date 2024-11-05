@@ -33,19 +33,19 @@ public class ProjectController {
     }
 
     @PostMapping("/connecting-report-owasp")
-    public ResponseEntity<?> connectionUserAndReportOwasp(@RequestBody ProjectIdAndReportId projectIdAndReportId){
+    public ResponseEntity<?> connectionUserAndReportOwasp(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
         projectService.connectingReportOWASPAndProject(projectIdAndReportId.getProjectId(), projectIdAndReportId.getReportId());
         return ResponseEntity.ok("");
     }
 
     @PostMapping("/connecting-report-pmd")
-    public ResponseEntity<?> connectionUserAndReportPmd(@RequestBody ProjectIdAndReportId projectIdAndReportId){
+    public ResponseEntity<?> connectionUserAndReportPmd(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
         projectService.connectingReportPMDAndProject(projectIdAndReportId.getProjectId(), projectIdAndReportId.getReportId());
         return ResponseEntity.ok("");
     }
 
     @PostMapping("/get-all")
-    public List<ProjectDto> getAllProject(){
+    public List<ProjectDto> getAllProject() {
         return projectService.findAll();
     }
 
@@ -61,8 +61,8 @@ public class ProjectController {
         return projectMapper.projectToListDto(projectService.getAllProject(projectsDto));
     }
 
-    @PostMapping("/get-project")
-    public ProjectDto getProject(@RequestBody Integer id) {
+    @GetMapping("/get-project/{id}")
+    public ProjectDto getProject(@PathVariable int id) {
 
         return projectService.findById(id);
     }
