@@ -16,6 +16,12 @@ public class ReportPMDMapper {
         ruleViolationCustomDto.setDescription(ruleViolation.getDescription());
         ruleViolationCustomDto.setMessage(ruleViolation.getRule().getMessage());
         ruleViolationCustomDto.setPriority(ruleViolation.getRule().getPriority().getName());
+        ruleViolationCustomDto.setBeginLine(ruleViolation.getBeginLine());
+        ruleViolationCustomDto.setBeginColumn(ruleViolation.getBeginColumn());
+        ruleViolationCustomDto.setEndLine(ruleViolation.getEndLine());
+        ruleViolationCustomDto.setEndColumn(ruleViolation.getEndColumn());
+        ruleViolationCustomDto.setFileName(ruleViolation.getFileId().getFileName());
+
 
         return ruleViolationCustomDto;
     }

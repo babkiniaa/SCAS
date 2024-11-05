@@ -19,4 +19,14 @@ public class RuleViolationCustomDto {
 
     private String description;
 
+    private int beginLine;
+
+    private int endLine;
+
+    private int beginColumn;
+
+    private int endColumn;
+
+    private String fileName;
+
 }
