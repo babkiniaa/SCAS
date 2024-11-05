@@ -48,7 +48,7 @@ public class StaticAnalysis {
     public static List<Dependency> startOWASP(String scanDir) {
         Settings settings = new Settings();
         settings.setString(Settings.KEYS.AUTO_UPDATE, "false");
-        //settings.setString(Settings.KEYS.NVD_API_KEY, "856e72cc-cfa7-4220-b12b-19317c018957");
+        settings.setString(Settings.KEYS.NVD_API_KEY, "856e72cc-cfa7-4220-b12b-19317c018957");
         Engine engine = new Engine(settings);
         List<Dependency> list2 = engine.scan(scanDir);
 
@@ -57,6 +57,7 @@ public class StaticAnalysis {
         } catch (ExceptionCollection e) {
             throw new RuntimeException(e);
         }
+
         List<Dependency> dependencies = Arrays.stream(engine.getDependencies())
                 .filter(x -> x.getVulnerabilitiesCount() != 0)
                 .toList();
