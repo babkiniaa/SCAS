@@ -146,7 +146,9 @@ export default {
       gitHubLink: '',
       projectDescription: '',
       isCreating: false,
-      projectCreated: false
+      projectCreated: false,
+      userId: localStorage.getItem('currentId'),
+      vis: true
     }
   },
   methods: {
@@ -155,6 +157,10 @@ export default {
       this.isDarkMode = Dark.isActive
     },
     selectVisibility (visibility) {
+      // eslint-disable-next-line eqeqeq
+      if (visibility == 'private') {
+        this.vis = false
+      }
       this.selectedVisibility = visibility
     },
     selectSource (source) {
@@ -162,14 +168,15 @@ export default {
     },
     async submitCreateProject () {
       this.isCreating = true
-      console.log(this.visibilityProject)
       try {
         await createProject({
           name: this.projectName,
           source: this.selectedSource,
-          visibility: this.visibilityProject,
+          visibility: this.vis,
           gitHubLink: this.gitHubLink,
-          description: this.projectDescription
+          description: this.projectDescription,
+          userId: this.userId
+
         })
         this.$q.notify({ message: 'Project created successfully', color: 'green' })
         this.projectCreated = true
