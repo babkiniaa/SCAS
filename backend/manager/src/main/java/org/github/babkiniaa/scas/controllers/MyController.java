@@ -24,55 +24,55 @@ public class MyController {
     }
 
     @PostMapping("report/get-owasp/")
-    ReportOWASPDto getReport(@RequestBody int idOWASP) {
+    public ReportOWASPDto getReport(@RequestBody int idOWASP) {
 
         return agentServiceClient.getReport(idOWASP);
     }
 
     @PostMapping("/project/create")
-    int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto) {
+    public int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto) {
 
         return agentServiceClient.createProject(projectAndUserIdDto);
     }
 
-    @PostMapping("/project/get-reports")
-    List<ProjectDto> getProject(@RequestBody GetProjectDto projectsDto) {
+    @PostMapping("/project/get-projects")
+    public List<ProjectDto> getProject(@RequestBody GetProjectDto projectsDto) {
 
         return agentServiceClient.getProject(projectsDto);
     }
 
     @GetMapping("report/get-all-owasp")
-    List<ReportOWASPDto> getAllReportsOwasp() {
+    public List<ReportOWASPDto> getAllReportsOwasp() {
 
         return agentServiceClient.getAllReportsOwasp();
     }
 
     @GetMapping("report/get-all-pmd")
-    List<ReportPMDDto> getAllReportsPmd() {
+    public List<ReportPMDDto> getAllReportsPmd() {
 
         return agentServiceClient.getAllReportsPmd();
     }
 
     @GetMapping("report/get-all-checkstyle")
-    List<ReportCheckStyleDto> getAllReportsCheckstyle() {
+    public List<ReportCheckStyleDto> getAllReportsCheckstyle() {
 
         return agentServiceClient.getAllReportsCheckstyle();
     }
 
     @GetMapping("report/get-all-spotbugs")
-    List<ReportSpotBugsDto> getAllReportsSpotBugs() {
+    public List<ReportSpotBugsDto> getAllReportsSpotBugs() {
 
         return agentServiceClient.getAllReportsSpotBugs();
     }
 
     @PostMapping("project/connecting-report")
-    ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
+    public ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
 
         return agentServiceClient.connectionUserAndReport(projectIdAndReportId);
     }
 
     @PostMapping("project/get-all")
-    List<ProjectDto> getAllProject() {
+    public List<ProjectDto> getAllProject() {
 
         return agentServiceClient.getAllProject();
     }

@@ -24,7 +24,7 @@ public interface MasterServiceClient {
     @PostMapping("/project/create")
     int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto);
 
-    @PostMapping("/project/get-reports")
+    @PostMapping("/project/get-projects")
     List<ProjectDto> getProject(@RequestBody GetProjectDto projectsDto);
 
     @GetMapping("report/get-all-owasp")
