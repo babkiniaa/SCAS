@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.babkiniaa.scas.dto.OWASPVulnerabilitiesDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -45,5 +46,7 @@ public class DependencyCustomDto {
     private String version;
 
     private String ecosystem;
+
+    private List<OWASPVulnerabilitiesDTO> owaspVulnerabilities;
 
 }
