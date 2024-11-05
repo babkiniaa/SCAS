@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.babkiniaa.scas.entity.OWASPVulnerabilities;
 import org.owasp.dependencycheck.dependency.IncludedByReference;
 import org.owasp.dependencycheck.dependency.Vulnerability;
 import org.owasp.dependencycheck.dependency.naming.Identifier;
@@ -55,5 +56,8 @@ public class DependencyCustom {
     private String version;
 
     private String ecosystem;
+
+    @OneToMany
+    private List<OWASPVulnerabilities> owaspVulnerabilities;
 
 }

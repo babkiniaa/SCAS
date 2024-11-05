@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.mapper;
 
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.owasp.dependencycheck.dependency.Dependency;
+import org.owasp.dependencycheck.dependency.Vulnerability;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -74,6 +75,10 @@ public class ReportOWASPMapper {
         dependencyCustomDto.setName( dependency.getName() );
         dependencyCustomDto.setVersion( dependency.getVersion() );
         dependencyCustomDto.setEcosystem( dependency.getEcosystem() );
+        dependencyCustomDto.setOwaspVulnerabilities(OWASPVulnerabilitiesMapper
+                .VulnerstoDTO(dependency
+                        .getVulnerabilities()
+                        .stream().toList()));
 
         return dependencyCustomDto;
     }
