@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.babkiniaa.scas.dto.OWASPVulnerabilitiesDTO;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -19,4 +22,15 @@ public class RuleViolationCustomDto {
 
     private String description;
 
+    private int beginLine;
+
+    private int endLine;
+
+    private int beginColumn;
+
+    private int endColumn;
+
+    private String fileName;
+
+    private List<OWASPVulnerabilitiesDTO> owaspVulnerabilities;
 }
