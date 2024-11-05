@@ -142,16 +142,34 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.github.babkiniaa.scas</groupId>
-            <artifactId>agent</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>4.1.3</version>
         </dependency>
         <dependency>
-            <groupId>org.github.babkiniaa.scas</groupId>
-            <artifactId>master</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-core</artifactId>
+            <version>11.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>7.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs</artifactId>
+            <version>4.8.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>10.14.1</version>
         </dependency>
         <dependency>
             <groupId>io.minio</groupId>

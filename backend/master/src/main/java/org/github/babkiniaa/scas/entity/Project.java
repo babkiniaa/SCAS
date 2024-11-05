@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -35,9 +37,21 @@ public class Project {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToOne
-    @JoinColumn(name = "report_id")
-    private Report report;
+    @OneToMany
+    @JoinColumn(name = "reportCheckStyle_id")
+    private List<ReportCheckStyle> reportCheckStyles;
+
+    @OneToMany
+    @JoinColumn(name = "reportOWASP_id")
+    private List<ReportOWASP> reportOWASPS;
+
+    @OneToMany
+    @JoinColumn(name = "reportPMD_id")
+    private List<ReportPMD> reportPMDS;
+
+    @OneToMany
+    @JoinColumn(name = "reportSpotBugs_id")
+    private List<ReportSpotBugs> reportSpotBugs;
 
     private long userId;
 }

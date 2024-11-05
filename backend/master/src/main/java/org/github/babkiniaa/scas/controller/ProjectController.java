@@ -1,14 +1,17 @@
-package org.github.babkiniaa.scas.controllers;
+package org.github.babkiniaa.scas.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.ProjectMapper;
 import org.github.babkiniaa.scas.dto.GetProjectDto;
+import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectAndUserIdDto;
+import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectIdAndReportId;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.exception.NotFoundUserException;
 import org.github.babkiniaa.scas.security.AuthenticationFacade;
+import org.github.babkiniaa.scas.entity.Project;
 import org.github.babkiniaa.scas.service.ProjectService;
-import org.github.babkiniaa.scas.service.UserService;
+import org.github.babkiniaa.scas.Mapper.ProjectUserId.ProjectAndUserIdMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,24 +27,24 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
-    private final AuthenticationFacade authenticationFacade;
-    private final UserService userService;
     private final ProjectMapper projectMapper;
+    private final ProjectAndUserIdMapper projectAndUserMapper;
 
-    /**
-     * Создает новый проект для текущего аутентифицированного пользователя.
-     *
-     * @param projectDto DTO с данными для создания проекта.
-     * @return {@link ResponseEntity} с сообщением о статусе создания проекта.
-     * @throws NotFoundUserException если пользователь, выполняющий запрос, не найден.
-     */
     @PostMapping("/create")
-    public ResponseEntity<?> createProject(@RequestBody ProjectDto projectDto) throws NotFoundUserException {
-        User user = userService.findByUsername(authenticationFacade.getCurrentUserName())
-                .orElseThrow(() -> new NotFoundUserException("Пользователь не найден"));
-        projectService.create(projectDto, user.getId());
+    public int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto) {
+        ProjectDto projectDto = projectAndUserMapper.projectDtoToProjectAndUserIdDto(projectAndUserIdDto);
+        return projectService.create(projectDto, projectAndUserIdDto.getUserId());
+    }
 
-        return ResponseEntity.ok("Created project");
+    @PostMapping("/connecting-report")
+    public ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId){
+        projectService.connectingReportOWASPAndProject(projectIdAndReportId.getProjectId(), projectIdAndReportId.getReportId());
+        return ResponseEntity.ok("");
+    }
+
+    @PostMapping("/get-all")
+    public List<ProjectDto> getAllProject(){
+        return projectService.findAll();
     }
 
     /**

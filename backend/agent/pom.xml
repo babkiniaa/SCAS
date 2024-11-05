@@ -55,32 +55,19 @@
             <version>1.18.20</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.7</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>commons-io</groupId>-->
+<!--            <artifactId>commons-io</artifactId>-->
+<!--            <version>2.7</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.34</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-invoker</artifactId>
-            <version>3.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>${version.pmd-plugin}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <version>10.0.2</version>
-        </dependency>
+
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -107,11 +94,6 @@
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-invoker</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>3.1.5</version>
@@ -133,84 +115,83 @@
             <version>1.5.5.Final</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>4.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-core</artifactId>
+            <version>11.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-utils</artifactId>
+            <version>11.0.0</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-api</artifactId>-->
+<!--            <version>2.0.16</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>ch.qos.logback</groupId>-->
+<!--            <artifactId>logback-classic</artifactId>-->
+<!--            <version>1.5.12</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>ch.qos.logback</groupId>-->
+<!--            <artifactId>logback-classic</artifactId>-->
+<!--            <version>1.2.6</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.13.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd</artifactId>
+            <version>7.6.0</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>7.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java8</artifactId>
+            <version>6.55.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-cli</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs</artifactId>
+            <version>4.8.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>10.14.1</version>
+        </dependency>
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <!--          OWASP - dependency                                          -->
-            <!--          mvn org.owasp:dependency-check-maven:check -DscanDirectory= -->
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>8.0.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- Каталог для сохранения отчетов -->
-                    <outputDirectory>target/dependency-check-report/${distOWASP}</outputDirectory>
 
-                    <!-- Формат отчета: HTML, XML, JSON -->
-                    <format>XML</format>
-
-                    <!-- Минимальный уровень уязвимостей, при котором сборка завершится с ошибкой -->
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
-                </configuration>
-            </plugin>
-
-            <!--            PMD Maven Plugin             -->
-            <!--            mvn pmd:pmd -DscanDirectory= -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${version.pmd-plugin}</version>
-                <configuration>
-                    <targetDirectory>target/pmd-res/${distPMD}</targetDirectory>
-                </configuration>
-            </plugin>
-            <!--      checker-style                  -->
-            <!--      mvn checkstyle:checkstyle           -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-check-style.plugin}</version>
-                <configuration>
-                    <configLocation>src/main/resources/checkstyle.xml</configLocation>
-                    <outputDirectory>target/checkstyle-reports/${distCheckerStyle}</outputDirectory>
-                    <outputFile>target/checkstyle-reports/${distCheckerStyle}/checkstyle-result.xml</outputFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--спотбагс-->
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.8.6.0</version>
-                <dependencies>
-                    <!-- C:\sber\SberTasks2024\src\down
-                                         overwrite dependency on spotbugs if you want to specify the version of spotbugs C:\sber\SberTasks2024\src\down -->
-                    <dependency>
-                        <groupId>com.github.spotbugs</groupId>
-                        <artifactId>spotbugs</artifactId>
-                        <version>4.8.6</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <classFilesDirectory>${dist}</classFilesDirectory>
-                    <spotbugsXmlOutputDirectory>target/spotbugs/${spotout}</spotbugsXmlOutputDirectory>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
