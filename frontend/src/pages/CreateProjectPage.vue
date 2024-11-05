@@ -148,7 +148,8 @@ export default {
       isCreating: false,
       projectCreated: false,
       userId: localStorage.getItem('currentId'),
-      vis: true
+      vis: true,
+      idProject: null
     }
   },
   methods: {
@@ -169,17 +170,18 @@ export default {
     async submitCreateProject () {
       this.isCreating = true
       try {
-        await createProject({
+        const response = await createProject({
           name: this.projectName,
           source: this.selectedSource,
           visibility: this.vis,
-          gitHubLink: this.gitHubLink,
+          url: this.gitHubLink,
           description: this.projectDescription,
           userId: this.userId
 
         })
         this.$q.notify({ message: 'Project created successfully', color: 'green' })
         this.projectCreated = true
+        this.idProject = response.data
       } catch (error) {
         this.$q.notify({ message: 'Failed to create project', color: 'red' })
       } finally {
@@ -187,7 +189,8 @@ export default {
       }
     },
     startAnalysis () {
-      this.$q.notify({ message: 'Analysis started successfully', color: 'green' })
+      localStorage.setItem('currentProject', this.idProject)
+      this.$router.push('/analysis')
     },
     handleFileUpload () {
       this.$q.notify({ message: 'File upload clicked', color: 'blue' })
