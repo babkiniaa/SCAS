@@ -1,11 +1,11 @@
 <template>
-  <q-layout view="lHh lpr lFf">
-    <!-- Header -->
-    <q-header elevated class="bg-grey-9">
+    <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
+    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
-        <q-toolbar-title class="text-white">Profile</q-toolbar-title>
+        <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
         <q-space />
+        <q-btn dense round icon="search" @click="search" aria-label="Search" class="text-white" />
         <q-btn
           dense
           round
@@ -52,8 +52,8 @@
         </q-item>
       </q-list>
     </q-drawer>
-    <q-page-container>
-      <q-page class="q-pa-md">
+    <q-page-container :class="isDarkMode ? 'dark-bg' : 'bg-grey-3'">
+      <q-page style="margin-top: 15px;">
         <div class="profile-container q-py-lg q-px-md row">
           <div class="col-4 q-pa-md">
             <q-avatar size="140px" class="q-mb-md avatar">
@@ -173,27 +173,22 @@ export default {
 .q-toolbar-title {
   font-size: 20px;
 }
-.q-drawer__content {
-  background-color: #2e2e2e;
+.bg-dark {
+  background-color: #121212;
 }
-.q-toolbar {
-  background-color: #1f1f1f;
+.bg-grey-8 {
+  background-color: #3a3a3a;
 }
-.q-list .q-item-section {
-  color: white;
+.bg-grey-6 {
+  background-color: #4a4a4a;
 }
-.q-btn {
-  min-width: 150px;
+.text-white {
+  color: white !important;
 }
-.q-avatar {
-  cursor: pointer;
+.bg-grey-11 {
+  background-color: #1d1d1d;
 }
-.avatar {
-  margin-left: 10%;
-}
-.bottom-buttons {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
+.dark-bg {
+  background-color: #1d1d1d !important;
 }
 </style>
