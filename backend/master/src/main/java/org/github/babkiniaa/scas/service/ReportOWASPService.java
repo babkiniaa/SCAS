@@ -42,8 +42,8 @@ public class ReportOWASPService {
         }
     }
 
-    public Optional<ReportOWASP> findById(Integer id) {
-        return ReportOWASPRepository.findById(id);
+    public ReportOWASP findById(Integer id) {
+        return ReportOWASPRepository.findById(id).get();
     }
 
 }

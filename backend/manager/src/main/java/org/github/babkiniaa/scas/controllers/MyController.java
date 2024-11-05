@@ -65,16 +65,55 @@ public class MyController {
         return agentServiceClient.getAllReportsSpotBugs();
     }
 
-    @PostMapping("project/connecting-report")
+    @PostMapping("report/get-owasp")
+    public ReportOWASPDto getReportOwasp(@RequestBody Integer id){
+
+        return agentServiceClient.getReportOwasp(id);
+    }
+
+    @PostMapping("report/get-pmd")
+    public ReportPMDDto getReportPMD(@RequestBody Integer id){
+
+        return agentServiceClient.getReportPMD(id);
+    }
+
+    @PostMapping("report/get-checkstyle")
+    public ReportCheckStyleDto getReportCheckstyle(@RequestBody Integer id){
+
+        return agentServiceClient.getReportCheckstyle(id);
+    }
+
+    @PostMapping("report/get-spotbugs")
+    public ReportSpotBugsDto getReportSpotBugs(@RequestBody Integer id){
+
+        return agentServiceClient.getReportSpotBugs(id);
+    }
+
+
+    @PostMapping("project/get-project")
+    public ProjectDto getProject(@RequestBody Integer id){
+
+        return agentServiceClient.getProject(id);
+    }
+
+
+    @PostMapping("project/connecting-report-pmd")
+    public ResponseEntity<?> connectionUserAndReportPmd(@RequestBody ProjectIdAndReportId projectIdAndReportId){
+
+        return agentServiceClient.connectionUserAndReportPmd(projectIdAndReportId);
+    }
+
+    @PostMapping("project/connecting-report-owasp")
     public ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
 
         return agentServiceClient.connectionUserAndReport(projectIdAndReportId);
     }
 
-    @PostMapping("project/get-all")
+    @GetMapping("project/get-all")
     public List<ProjectDto> getAllProject() {
 
         return agentServiceClient.getAllProject();
     }
+
 
 }

@@ -42,7 +42,7 @@ public class ReportSpotBugsService {
         }
     }
 
-    public Optional<ReportSpotBugs> findById(Integer id) {
-        return ReportSpotBugsRepository.findById(id);
+    public ReportSpotBugs findById(Integer id) {
+        return ReportSpotBugsRepository.findById(id).get();
     }
 }

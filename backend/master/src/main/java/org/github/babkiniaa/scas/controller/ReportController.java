@@ -46,7 +46,6 @@ public class ReportController {
     public List<ReportOWASPDto> getAllReportsOwasp() {
         return reportOWASPMapper.reportToListDto(reportOWASPService.findAll());
     }
-
     @GetMapping("/get-all-pmd")
     public List<ReportPMDDto> getAllReportsPmd() {
         return reportPMDMapper.reportToListDto(reportPMDService.findAll());
@@ -61,5 +60,26 @@ public class ReportController {
     public List<ReportSpotBugsDto> getAllReportsSpotBugs() {
         return reportSpotBugsMapper.reportToListDto(reportSpotBugsService.findAll());
     }
+
+    @PostMapping("/get-owasp")
+    public ReportOWASPDto getReportOwasp(@RequestBody Integer id) {
+        return reportOWASPMapper.reportToDto(reportOWASPService.findById(id));
+    }
+
+    @PostMapping("/get-pmd")
+    public ReportPMDDto getReportPMD(@RequestBody Integer id) {
+        return reportPMDMapper.reportToDto(reportPMDService.findById(id));
+    }
+
+    @PostMapping("/get-checkstyle")
+    public ReportCheckStyleDto getReportCheckstyle(@RequestBody Integer id) {
+        return reportCheckStyleMapper.reportToDto(reportCheckStyleService.findById(id));
+    }
+
+    @PostMapping("/get-spotbugs")
+    public ReportSpotBugsDto getReportSpotBugs(@RequestBody Integer id) {
+        return reportSpotBugsMapper.reportToDto(reportSpotBugsService.findById(id));
+    }
+
 
 }

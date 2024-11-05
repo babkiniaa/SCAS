@@ -19,7 +19,7 @@ public interface MasterServiceClient {
     int createReport(@RequestBody ProjectDto reportDto);
 
     @PostMapping("report/get-owasp/")
-    ReportOWASPDto getReport(@RequestBody int idOWASP);
+    ReportOWASPDto getReport(@RequestBody Integer idOWASP);
 
     @PostMapping("/project/create")
     int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto);
@@ -39,9 +39,28 @@ public interface MasterServiceClient {
     @GetMapping("report/get-all-spotbugs")
     List<ReportSpotBugsDto> getAllReportsSpotBugs();
 
-    @PostMapping("project/connecting-report")
+    @PostMapping("report/get-owasp")
+    ReportOWASPDto getReportOwasp(@RequestBody Integer id);
+
+    @PostMapping("report/get-pmd")
+    ReportPMDDto getReportPMD(@RequestBody Integer id);
+
+    @PostMapping("report/get-checkstyle")
+    ReportCheckStyleDto getReportCheckstyle(@RequestBody Integer id);
+
+    @PostMapping("report/get-spotbugs")
+    ReportSpotBugsDto getReportSpotBugs(@RequestBody Integer id);
+
+    @PostMapping("project/connecting-report-owasp")
     ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId);
 
-    @PostMapping("project/get-all")
+    @PostMapping("project/connecting-report-pmd")
+    ResponseEntity<?> connectionUserAndReportPmd(@RequestBody ProjectIdAndReportId projectIdAndReportId);
+
+    @GetMapping("project/get-all")
     List<ProjectDto> getAllProject();
+
+    @PostMapping("project/get-project")
+    ProjectDto getProject(@RequestBody Integer id);
+
 }
