@@ -41,7 +41,7 @@ public class ReportCheckStyleService {
         }
     }
 
-    public Optional<ReportCheckStyle> findById(Integer id) {
-        return ReportCheckStyleRepository.findById(id);
+    public ReportCheckStyle findById(Integer id) {
+        return ReportCheckStyleRepository.findById(id).get();
     }
 }

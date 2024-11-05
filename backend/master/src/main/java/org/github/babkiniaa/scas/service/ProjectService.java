@@ -1,15 +1,11 @@
 package org.github.babkiniaa.scas.service;
 
 import lombok.AllArgsConstructor;
-import net.sourceforge.pmd.reporting.RuleViolation;
 import org.github.babkiniaa.scas.Mapper.ProjectMapper;
 import org.github.babkiniaa.scas.dto.GetProjectDto;
 import org.github.babkiniaa.scas.dto.ProjectDto;
-import org.github.babkiniaa.scas.dto.ReportSpotBugsDto;
 import org.github.babkiniaa.scas.entity.*;
-import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
 import org.github.babkiniaa.scas.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Сервис для управления проектами. Предоставляет методы для создания проектов,
@@ -104,6 +99,10 @@ public class ProjectService {
 
     public List<ProjectDto> findAll() {
         return projectMapper.projectToListDto(projectRepository.findAll());
+    }
+
+    public ProjectDto findById(int id){
+        return projectMapper.projectToDto(projectRepository.findById(id).get());
     }
 
     /**

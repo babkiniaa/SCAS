@@ -32,14 +32,20 @@ public class ProjectController {
         return projectService.create(projectDto, projectAndUserIdDto.getUserId());
     }
 
-    @PostMapping("/connecting-report")
-    public ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId){
+    @PostMapping("/connecting-report-owasp")
+    public ResponseEntity<?> connectionUserAndReportOwasp(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
         projectService.connectingReportOWASPAndProject(projectIdAndReportId.getProjectId(), projectIdAndReportId.getReportId());
         return ResponseEntity.ok("");
     }
 
+    @PostMapping("/connecting-report-pmd")
+    public ResponseEntity<?> connectionUserAndReportPmd(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
+        projectService.connectingReportPMDAndProject(projectIdAndReportId.getProjectId(), projectIdAndReportId.getReportId());
+        return ResponseEntity.ok("");
+    }
+
     @PostMapping("/get-all")
-    public List<ProjectDto> getAllProject(){
+    public List<ProjectDto> getAllProject() {
         return projectService.findAll();
     }
 
@@ -50,8 +56,15 @@ public class ProjectController {
      * @return список проектов, соответствующих заданным параметрам.
      */
     @PostMapping("/get-projects")
-    public List<ProjectDto> getProject(@RequestBody GetProjectDto projectsDto) {
+    public List<ProjectDto> getProjects(@RequestBody GetProjectDto projectsDto) {
 
         return projectMapper.projectToListDto(projectService.getAllProject(projectsDto));
     }
+
+    @GetMapping("/get-project/{id}")
+    public ProjectDto getProject(@PathVariable int id) {
+
+        return projectService.findById(id);
+    }
+
 }

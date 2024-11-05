@@ -1,6 +1,5 @@
 package org.github.babkiniaa.scas.controllers;
 
-import edu.umd.cs.findbugs.Project;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.MasterServiceClient;
 import org.github.babkiniaa.scas.dto.*;
@@ -15,66 +14,105 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MyController {
 
-    private final MasterServiceClient agentServiceClient;
+    private final MasterServiceClient masterServiceClient;
 
     @PostMapping("/report/create")
     public int createReport(@RequestBody ProjectDto projectDto) {
 
-        return agentServiceClient.createReport(projectDto);
+        return masterServiceClient.createReport(projectDto);
     }
 
     @PostMapping("report/get-owasp/")
     public ReportOWASPDto getReport(@RequestBody int idOWASP) {
 
-        return agentServiceClient.getReport(idOWASP);
+        return masterServiceClient.getReport(idOWASP);
     }
 
     @PostMapping("/project/create")
     public int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto) {
 
-        return agentServiceClient.createProject(projectAndUserIdDto);
+        return masterServiceClient.createProject(projectAndUserIdDto);
     }
 
     @PostMapping("/project/get-projects")
     public List<ProjectDto> getProject(@RequestBody GetProjectDto projectsDto) {
 
-        return agentServiceClient.getProject(projectsDto);
+        return masterServiceClient.getProject(projectsDto);
     }
 
     @GetMapping("report/get-all-owasp")
     public List<ReportOWASPDto> getAllReportsOwasp() {
 
-        return agentServiceClient.getAllReportsOwasp();
+        return masterServiceClient.getAllReportsOwasp();
     }
 
     @GetMapping("report/get-all-pmd")
     public List<ReportPMDDto> getAllReportsPmd() {
 
-        return agentServiceClient.getAllReportsPmd();
+        return masterServiceClient.getAllReportsPmd();
     }
 
     @GetMapping("report/get-all-checkstyle")
     public List<ReportCheckStyleDto> getAllReportsCheckstyle() {
 
-        return agentServiceClient.getAllReportsCheckstyle();
+        return masterServiceClient.getAllReportsCheckstyle();
     }
 
     @GetMapping("report/get-all-spotbugs")
     public List<ReportSpotBugsDto> getAllReportsSpotBugs() {
 
-        return agentServiceClient.getAllReportsSpotBugs();
+        return masterServiceClient.getAllReportsSpotBugs();
     }
 
-    @PostMapping("project/connecting-report")
+    @GetMapping("report/get-owasp/{id}")
+    public ReportOWASPDto getReportOwasp(@PathVariable("id") int id) {
+
+        return masterServiceClient.getReportOwasp(id);
+    }
+
+    @GetMapping("report/get-pmd/{id}")
+    public ReportPMDDto getReportPMD(@PathVariable("id") int id) {
+
+        return masterServiceClient.getReportPMD(id);
+    }
+
+    @GetMapping("report/get-checkstyle/{id}")
+    public ReportCheckStyleDto getReportCheckstyle(@PathVariable("id") int id) {
+
+        return masterServiceClient.getReportCheckstyle(id);
+    }
+
+    @GetMapping("report/get-spotbugs/{id}")
+    public ReportSpotBugsDto getReportSpotBugs(@PathVariable("id") int id) {
+
+        return masterServiceClient.getReportSpotBugs(id);
+    }
+
+
+    @GetMapping("project/get-project/{id}")
+    public ProjectDto getProject(@PathVariable("id") int id) {
+
+        return masterServiceClient.getProject(id);
+    }
+
+
+    @PostMapping("project/connecting-report-pmd")
+    public ResponseEntity<?> connectionUserAndReportPmd(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
+
+        return masterServiceClient.connectionUserAndReportPmd(projectIdAndReportId);
+    }
+
+    @PostMapping("project/connecting-report-owasp")
     public ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
 
-        return agentServiceClient.connectionUserAndReport(projectIdAndReportId);
+        return masterServiceClient.connectionUserAndReport(projectIdAndReportId);
     }
 
-    @PostMapping("project/get-all")
+    @GetMapping("project/get-all")
     public List<ProjectDto> getAllProject() {
 
-        return agentServiceClient.getAllProject();
+        return masterServiceClient.getAllProject();
     }
+
 
 }

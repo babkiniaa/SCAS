@@ -1,12 +1,12 @@
 package org.github.babkiniaa.scas.client;
 
-import edu.umd.cs.findbugs.Project;
 import org.github.babkiniaa.scas.dto.*;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectAndUserIdDto;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectIdAndReportId;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -19,7 +19,7 @@ public interface MasterServiceClient {
     int createReport(@RequestBody ProjectDto reportDto);
 
     @PostMapping("report/get-owasp/")
-    ReportOWASPDto getReport(@RequestBody int idOWASP);
+    ReportOWASPDto getReport(@RequestBody Integer idOWASP);
 
     @PostMapping("/project/create")
     int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto);
@@ -39,9 +39,28 @@ public interface MasterServiceClient {
     @GetMapping("report/get-all-spotbugs")
     List<ReportSpotBugsDto> getAllReportsSpotBugs();
 
-    @PostMapping("project/connecting-report")
+    @GetMapping("report/get-owasp/{id}")
+    ReportOWASPDto getReportOwasp(@PathVariable("id") int id);
+
+    @GetMapping("report/get-pmd/{id}")
+    ReportPMDDto getReportPMD(@PathVariable("id") int id);
+
+    @GetMapping("report/get-checkstyle/{id}")
+    ReportCheckStyleDto getReportCheckstyle(@PathVariable("id") int id);
+
+    @GetMapping("report/get-spotbugs/{id}")
+    ReportSpotBugsDto getReportSpotBugs(@PathVariable("id") int id);
+
+    @PostMapping("project/connecting-report-owasp")
     ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId);
 
-    @PostMapping("project/get-all")
+    @PostMapping("project/connecting-report-pmd")
+    ResponseEntity<?> connectionUserAndReportPmd(@RequestBody ProjectIdAndReportId projectIdAndReportId);
+
+    @GetMapping("project/get-all")
     List<ProjectDto> getAllProject();
+
+    @GetMapping("project/get-project/{id}")
+    ProjectDto getProject(@PathVariable int id);
+
 }

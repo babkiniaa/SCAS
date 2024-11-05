@@ -42,7 +42,7 @@ public class ReportPMDService {
         }
     }
 
-    public Optional<ReportPMD> findById(Integer id) {
-        return ReportPMDRepository.findById(id);
+    public ReportPMD findById(Integer id) {
+        return ReportPMDRepository.findById(id).get();
     }
 }

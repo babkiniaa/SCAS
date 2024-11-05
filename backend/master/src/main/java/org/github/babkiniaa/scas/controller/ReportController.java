@@ -4,12 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.*;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.dto.*;
-import org.github.babkiniaa.scas.entity.ReportCheckStyle;
-import org.github.babkiniaa.scas.entity.ReportOWASP;
-import org.github.babkiniaa.scas.entity.ReportPMD;
-import org.github.babkiniaa.scas.entity.ReportSpotBugs;
 import org.github.babkiniaa.scas.service.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,5 +56,26 @@ public class ReportController {
     public List<ReportSpotBugsDto> getAllReportsSpotBugs() {
         return reportSpotBugsMapper.reportToListDto(reportSpotBugsService.findAll());
     }
+
+    @GetMapping("/get-owasp/{id}")
+    public ReportOWASPDto getReportOwasp(@PathVariable("id") int id) {
+        return reportOWASPMapper.reportToDto(reportOWASPService.findById(id));
+    }
+
+    @GetMapping("/get-pmd/{id}")
+    public ReportPMDDto getReportPMD(@PathVariable("id") int id) {
+        return reportPMDMapper.reportToDto(reportPMDService.findById(id));
+    }
+
+    @GetMapping("/get-checkstyle/{id}")
+    public ReportCheckStyleDto getReportCheckstyle(@PathVariable("id") int id) {
+        return reportCheckStyleMapper.reportToDto(reportCheckStyleService.findById(id));
+    }
+
+    @GetMapping("/get-spotbugs/{id}")
+    public ReportSpotBugsDto getReportSpotBugs(@PathVariable("id") int id) {
+        return reportSpotBugsMapper.reportToDto(reportSpotBugsService.findById(id));
+    }
+
 
 }
