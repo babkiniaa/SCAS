@@ -16,7 +16,7 @@ import java.util.List;
 public interface MasterServiceClient {
 
     @PostMapping("/report/create")
-    ResponseEntity<?> createReport(@RequestBody ProjectDto reportDto);
+    int createReport(@RequestBody ProjectDto reportDto);
 
     @PostMapping("report/get-owasp/")
     ReportOWASPDto getReport(@RequestBody int idOWASP);

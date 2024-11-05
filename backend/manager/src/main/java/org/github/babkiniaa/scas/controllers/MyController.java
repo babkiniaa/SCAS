@@ -18,7 +18,7 @@ public class MyController {
     private final MasterServiceClient agentServiceClient;
 
     @PostMapping("/report/create")
-    public ResponseEntity<?> createReport(@RequestBody ProjectDto projectDto) {
+    public int createReport(@RequestBody ProjectDto projectDto) {
 
         return agentServiceClient.createReport(projectDto);
     }
