@@ -2,14 +2,40 @@ package org.github.babkiniaa.scas.mapper;
 
 import com.puppycrawl.tools.checkstyle.api.Violation;
 import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
-import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+@Component
+public class ReportCheckStyleMapper {
 
-@Mapper(componentModel = "spring")
-public interface ReportCheckStyleMapper {
+    public static ViolationCustomDto checkStyleToCheckstyleCustom(Violation violation) {
+        if ( violation == null ) {
+            return null;
+        }
 
-    ViolationCustomDto checkStyleToCheckstyleCustom(Violation violation);
+        ViolationCustomDto violationCustomDto = new ViolationCustomDto();
 
-    List<ViolationCustomDto> checkStyleToCheckStyleCustomList(List<Violation> reports);
+        violationCustomDto.setLineNo( violation.getLineNo() );
+        violationCustomDto.setColumnNo( violation.getColumnNo() );
+        violationCustomDto.setColumnCharIndex( violation.getColumnCharIndex() );
+        violationCustomDto.setTokenType( violation.getTokenType() );
+        violationCustomDto.setModuleId( violation.getModuleId() );
+        violationCustomDto.setKey( violation.getKey() );
+
+        return violationCustomDto;
+    }
+
+    public static List<ViolationCustomDto> checkStyleToCheckStyleCustomList(List<Violation> reports) {
+        if ( reports == null ) {
+            return null;
+        }
+
+        List<ViolationCustomDto> list = new ArrayList<ViolationCustomDto>( reports.size() );
+        for ( Violation violation : reports ) {
+            list.add( checkStyleToCheckstyleCustom( violation ) );
+        }
+
+        return list;
+    }
 }

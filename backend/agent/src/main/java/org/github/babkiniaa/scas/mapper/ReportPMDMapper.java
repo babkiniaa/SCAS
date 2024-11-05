@@ -8,7 +8,8 @@ import java.util.List;
 
 @Component
 public class ReportPMDMapper {
-    public RuleViolationCustomDto PMDtoDTO(RuleViolation ruleViolation) {
+
+    public static RuleViolationCustomDto PMDtoDTO(RuleViolation ruleViolation) {
         RuleViolationCustomDto ruleViolationCustomDto = new RuleViolationCustomDto();
 
         ruleViolationCustomDto.setName(ruleViolation.getRule().getName());
@@ -19,7 +20,7 @@ public class ReportPMDMapper {
         return ruleViolationCustomDto;
     }
 
-    public List<RuleViolationCustomDto> PMDtoDTO(List<RuleViolation> ruleViolations) {
+    public static List<RuleViolationCustomDto> PMDtoDTO(List<RuleViolation> ruleViolations) {
 
         List<RuleViolationCustomDto> pmdDTOs = new ArrayList<>();
 
