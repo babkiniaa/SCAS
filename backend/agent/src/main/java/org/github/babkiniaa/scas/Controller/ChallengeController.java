@@ -1,7 +1,11 @@
 package org.github.babkiniaa.scas.Controller;
 
+import com.puppycrawl.tools.checkstyle.api.Violation;
+import edu.umd.cs.findbugs.BugInstance;
 import lombok.RequiredArgsConstructor;
+import net.sf.saxon.trans.SymbolicName;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import org.checkerframework.checker.units.qual.K;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.ReportOWASPDto;
@@ -19,6 +23,7 @@ import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.h2.table.FunctionTable;
 import org.owasp.dependencycheck.dependency.Dependency;
 import org.springframework.web.bind.annotation.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,21 +34,18 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 @RequestMapping("/analysis")
 public class ChallengeController {
-    private final DependencyCheckParser dependencyCheckParser;
-    private final CheckStyleParser checkStyleParser;
-    private final PmdParser pmdParser;
-    private final SpotBugsParser spotBugsParser;
-    private static ReportCheckStyleMapper reportCheckStyleMapper;
-    private static ReportOWASPMapper reportOWASPMapper;
-    private static ReportPMDMapper reportPMDMapper;
-    private static ReportSpotBugsMapper reportSpotBugsMapper;
-    private final HashMap<String, Function<ProjectDto, ProjectDto>> methodMap = new HashMap<>();
+
+    private final ReportCheckStyleMapper reportCheckStyleMapper;
+    private final ReportOWASPMapper reportOWASPMapper;
+    private final ReportPMDMapper reportPMDMapper;
+    private final ReportSpotBugsMapper reportSpotBugsMapper;
+    private static final HashMap<String, Function<ProjectDto, ?>> methodMap = new HashMap<>();
 
     {
-        methodMap.put("OWASP", ChallengeController::reportOwasp);
-        methodMap.put("PMD", ChallengeController::reportPmd);
-        methodMap.put("CheckStyle", ChallengeController::reportCheckstyle);
-        methodMap.put("SpotBugs", ChallengeController::reportSpotBugs);
+        methodMap.put("OWASP", (Function<ProjectDto, List<Dependency>>) ChallengeController::reportOwasp);
+        methodMap.put("PMD", (Function<ProjectDto, List<RuleViolation>>) ChallengeController::reportPmd);
+        methodMap.put("CheckStyle", (Function<ProjectDto, List<Violation>>) ChallengeController::reportCheckstyle);
+        methodMap.put("SpotBugs", (Function<ProjectDto, List<BugInstance>>) ChallengeController::reportSpotBugs);
     }
 
     @PostMapping("/init")
@@ -54,7 +56,16 @@ public class ChallengeController {
         } catch (GitAPIException e) {
             throw new RuntimeException(e);
         }
-        projectDto = methodMap.get("OWASP").apply(projectDto);
+        List<ReportOWASPDto> reportOWASPDtos = projectDto.getReportOWASPS();
+        if(reportOWASPDtos == null){
+            reportOWASPDtos = new ArrayList<>();
+        }
+        ReportOWASPDto reportOWASPDto = new ReportOWASPDto();
+        List<Dependency> dependency = (List<Dependency>) methodMap.get("OWASP").apply(projectDto);
+        List<DependencyCustomDto> dependencyCustomDto = reportOWASPMapper.owaspToOwaspCustomList(dependency);
+        reportOWASPDto.setReportList(dependencyCustomDto);
+        reportOWASPDtos.add(reportOWASPDto);
+        projectDto.setReportOWASPS(reportOWASPDtos);
         DeleteFileUtil.deleteDir(new File(dir));
         return projectDto;
     }
@@ -65,7 +76,7 @@ public class ChallengeController {
 
     }
 
-    private static ProjectDto reportPmd(ProjectDto projectDto) {
+    private static List<RuleViolation> reportPmd(ProjectDto projectDto) {
         List<RuleViolationCustomDto> violationCustomDtos = new ArrayList<>();
         List<RuleViolation> ruleViolationList = new ArrayList<>();
         String dir = System.getProperty("user.dir") + "/down";
@@ -75,51 +86,51 @@ public class ChallengeController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        violationCustomDtos = reportPMDMapper.PMDtoDTO(ruleViolationList);
-        ReportPMDDto reportPMD = new ReportPMDDto();
-        reportPMD.setReportList(violationCustomDtos);
-        List<ReportPMDDto> reportPMDDto = new ArrayList<>();
-        if (projectDto.getReportPMDS() != null) {
-            reportPMDDto = projectDto.getReportPMDS();
-        }
-        reportPMDDto.add(reportPMD);
-        projectDto.setReportPMDS(reportPMDDto);
+//        violationCustomDtos = reportPMDMapper.PMDtoDTO(ruleViolationList);
+//        ReportPMDDto reportPMD = new ReportPMDDto();
+//        reportPMD.setReportList(violationCustomDtos);
+//        List<ReportPMDDto> reportPMDDto = new ArrayList<>();
+//        if (projectDto.getReportPMDS() != null) {
+//            reportPMDDto = projectDto.getReportPMDS();
+//        }
+//        reportPMDDto.add(reportPMD);
+//        projectDto.setReportPMDS(reportPMDDto);
 
-        return projectDto;
+        return ruleViolationList;
 
     }
 
-    private static ProjectDto reportOwasp(ProjectDto projectDto) {
+    private static List<Dependency> reportOwasp(ProjectDto projectDto) {
         List<DependencyCustomDto> dependencyCustomDtos;
         List<Dependency> dependencies = new ArrayList<>();
         String dir = System.getProperty("user.dir") + "/down";
         dependencies = StaticAnalysis.startOWASP(dir);
-        dependencyCustomDtos = reportOWASPMapper.owaspToOwaspCustomList(dependencies);
-        ReportOWASPDto reportOwasp = new ReportOWASPDto();
-        reportOwasp.setReportList(dependencyCustomDtos);
-        List<ReportOWASPDto> reportOWASPDto = new ArrayList<>();
+//        dependencyCustomDtos = reportOWASPMapper.owaspToOwaspCustomList(dependencies);
+//        ReportOWASPDto reportOwasp = new ReportOWASPDto();
+//        reportOwasp.setReportList(dependencyCustomDtos);
+//        List<ReportOWASPDto> reportOWASPDto = new ArrayList<>();
+//
+//        if (projectDto.getReportOWASPS() != null) {
+//            reportOWASPDto = projectDto.getReportOWASPS();
+//        }
+//        reportOWASPDto.add(reportOwasp);
+//        projectDto.setReportOWASPS(reportOWASPDto);
 
-        if (projectDto.getReportOWASPS() != null) {
-            reportOWASPDto = projectDto.getReportOWASPS();
-        }
-        reportOWASPDto.add(reportOwasp);
-        projectDto.setReportOWASPS(reportOWASPDto);
-
-        return projectDto;
+        return dependencies;
     }
 
-    private static ProjectDto reportCheckstyle(ProjectDto projectDto) {
+    private static List<Violation> reportCheckstyle(ProjectDto projectDto) {
         String report = "";
         String dir = System.getProperty("user.dir") + "/down";
 
-        return projectDto;
+        return null;
     }
 
-    private static ProjectDto reportSpotBugs(ProjectDto projectDto) {
+    private static List<BugInstance> reportSpotBugs(ProjectDto projectDto) {
         String report = "";
         String dir = System.getProperty("user.dir") + "/down";
 
-        return projectDto;
+        return null;
     }
 
 }
