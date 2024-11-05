@@ -57,7 +57,7 @@ public class DependencyCustom {
 
     private String ecosystem;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<OWASPVulnerabilities> owaspVulnerabilities;
 
 }
