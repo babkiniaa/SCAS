@@ -12,6 +12,7 @@ import org.github.babkiniaa.scas.dto.ReportOWASPDto;
 import org.github.babkiniaa.scas.dto.ReportPMDDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
+import org.github.babkiniaa.scas.dto.typeForMap.MethodAndTypeAnalysis;
 import org.github.babkiniaa.scas.mapper.*;
 import org.github.babkiniaa.scas.utils.DeleteFileUtil;
 import org.github.babkiniaa.scas.utils.GitUtil;
@@ -35,14 +36,13 @@ public class ChallengeController {
     private static ReportOWASPMapper reportOWASPMapper;
     private static ReportPMDMapper reportPMDMapper;
     private static ReportSpotBugsMapper reportSpotBugsMapper;
-    private static final HashMap<String, Function<ProjectDto, ?>> methodMap = new HashMap<>();
+    private static final HashMap<String, MethodAndTypeAnalysis> methodMap = new HashMap<>();
 
     {
-        methodMap.put("OWASP", (Function<ProjectDto, ProjectDto>) ChallengeController::reportOwasp);
-        methodMap.put("PMD", (Function<ProjectDto, ProjectDto>) ChallengeController::reportPmd);
-        methodMap.put("CheckStyle", (Function<ProjectDto, ProjectDto>) ChallengeController::reportCheckstyle);
-        methodMap.put("SpotBugs", (Function<ProjectDto, ProjectDto>) ChallengeController::reportSpotBugs);
-
+        methodMap.put("PMD", new MethodAndTypeAnalysis(ChallengeController::reportPmd, "Static"));
+        methodMap.put("CheckStyle", new MethodAndTypeAnalysis(ChallengeController::reportCheckstyle, "Static"));
+        methodMap.put("SpotBugs", new MethodAndTypeAnalysis(ChallengeController::reportSpotBugs, "Binary"));
+        methodMap.put("OWASP", new MethodAndTypeAnalysis(ChallengeController::reportOwasp, "Binary"));
     }
 
     @PostMapping("/init")
@@ -54,11 +54,17 @@ public class ChallengeController {
         } catch (GitAPIException e) {
             throw new RuntimeException(e);
         }
-        projectDto = (ProjectDto) methodMap.get("OWASP").apply(projectDto);
-        projectDto = (ProjectDto) methodMap.get("PMD").apply(projectDto);
+        for (String run : projectDto.getNeedReports()) {
+            projectDto = (ProjectDto) methodMap.get(run).getFunction().apply(projectDto);
+        }
         DeleteFileUtil.deleteDir(new File(dir));
 
         return projectDto;
+    }
+
+    @GetMapping("/get-hashmap")
+    public HashMap<String, MethodAndTypeAnalysis> getMethodMap(){
+        return methodMap;
     }
 
     private String reportSpotBugs() {

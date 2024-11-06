@@ -24,6 +24,8 @@ public class ProjectDto {
 
     private LocalDateTime createdDate;
 
+    private List<String> needReports;
+
     private List<ReportCheckStyleDto> reportCheckStyles;
 
     private List<ReportOWASPDto> reportOWASPS;
@@ -31,5 +33,5 @@ public class ProjectDto {
     private List<ReportPMDDto> reportPMDS;
 
     private List<ReportSpotBugsDto> reportSpotBugs;
-    
+
 }
