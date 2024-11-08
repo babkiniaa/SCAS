@@ -118,7 +118,7 @@
               </q-badge>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-none q-px-sm q-py-xs">
-              <q-btn label="View Report" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width"  @click="viewReport(project)" />
+              <q-btn label="View Report" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width"  @click="viewReport(project.id)" />
             </q-card-actions>
           </q-card>
         </div>
@@ -213,7 +213,8 @@ export default {
       return new Date(date).toLocaleDateString()
     },
     viewReport (project) {
-      this.$router.push(`/project/${project.id}/report`)
+      const id = project
+      this.$router.push(`/report/${id}`)
     },
     onSearch () {
       this.projectsDto.page = 0

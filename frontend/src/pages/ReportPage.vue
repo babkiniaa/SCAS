@@ -119,7 +119,8 @@ export default {
         avatar: null
       },
       isDarkMode: Dark.isActive,
-      projectData: null
+      projectData: null,
+      projectId: null
     }
   },
   methods: {
@@ -147,7 +148,8 @@ export default {
       this.user.avatar = response.data
     },
     async fetchProject () {
-      const response = await getProject(localStorage.getItem('currentProject'))
+      console.log(this.projectId)
+      const response = await getProject(this.projectId)
       this.projectData = response.data
       console.log(this.projectData)
     },
@@ -156,6 +158,7 @@ export default {
     }
   },
   mounted () {
+    this.projectId = this.$route.params.id
     this.fetchUser()
     this.fetchProject()
   }

@@ -2,9 +2,22 @@
   <q-layout view="hHh Lpr lff">
     <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
       <q-toolbar>
-        <q-btn flat round dense icon="arrow_back" @click="goBack" />
-        <q-toolbar-title :class="isDarkMode ? 'text-white' : ''">Analysis Progress</q-toolbar-title>
+        <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
+        <q-toolbar-title :class="isDarkMode ? 'text-white' : ''">Analysis Project</q-toolbar-title>
         <q-space />
+        <q-btn dense round icon="search" aria-label="Search" class="text-white" />
+        <q-btn
+          dense
+          round
+          :icon="isDarkMode ? 'light_mode' : 'dark_mode'"
+          @click="toggleDarkMode"
+          aria-label="Toggle Dark Mode"
+          class="text-white q-ml-sm"
+        />
+        <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
+          <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
+          <q-icon v-else name="person" class="text-white" />
+        </q-avatar>
       </q-toolbar>
     </q-header>
     <q-drawer
@@ -79,7 +92,10 @@ export default {
       allResponsesReceived: false,
       analysisResponses: [],
       projectData: null,
-      idReport: null
+      idReport: null,
+      user: {
+        avatar: null
+      }
     }
   },
   methods: {
