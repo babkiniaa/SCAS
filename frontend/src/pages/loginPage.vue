@@ -13,7 +13,7 @@
             style="background-color: black;"
           />
         </div>
-        <q-card :class="['q-pa-md', 'shadow-2', 'my_card', isDarkMode ? 'bg-grey-8 text-white' : '']" bordered>
+        <q-card :class="['q-pa-md', 'shadow-2', 'my_card', isDarkMode ? 'bg-grey-8 text-white' : '']" bordered style="max-width: 400px;">
           <q-card-section class="text-center">
             <div :class="isDarkMode ? 'text-white' : 'text-grey-9'">Sign in</div>
             <div :class="isDarkMode ? 'text-grey-5' : 'text-grey-8'">Sign in below to access your account</div>
@@ -25,7 +25,7 @@
                 outlined
                 v-model="username"
                 label="Email"
-                :class="isDarkMode ? 'bg-grey-9 text-white' : ''"
+                :class="isDarkMode ? 'bg-grey-8 text-white' : ''"
                 :error="!!errors.username"
                 :error-message="errors.username"
               ></q-input>
@@ -35,7 +35,7 @@
                 v-model="password"
                 type="password"
                 label="Password"
-                :class="isDarkMode ? 'bg-grey-9 text-white' : ''"
+                :class="isDarkMode ? 'bg-grey-8 text-white' : ''"
                 :error="!!errors.password"
                 :error-message="errors.password"
               ></q-input>

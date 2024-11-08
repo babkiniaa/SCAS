@@ -10,7 +10,7 @@ const routes = [
   { path: '/projects/:id', name: 'projects', component: () => import('pages/AllProjectPage.vue'), props: true },
   { path: '/reset-password', component: () => import('pages/EmailPage.vue') },
   { path: '/reset-password-page', component: () => import('pages/ResetPasswordPage.vue') },
-  { path: '/report', component: () => import('pages/ReportPage.vue') }
+  { path: '/report/:id', name: 'report', component: () => import('pages/ReportPage.vue'), props: true }
 ]
 
 export default routes
