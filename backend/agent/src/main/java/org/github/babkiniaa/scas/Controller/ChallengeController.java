@@ -63,8 +63,14 @@ public class ChallengeController {
     }
 
     @GetMapping("/get-hashmap")
-    public HashMap<String, MethodAndTypeAnalysis> getMethodMap(){
-        return methodMap;
+    public HashMap<String, String> getMethodMap(){
+        HashMap<String, String> hashMap = new HashMap<>();
+
+        for(String  m: methodMap.keySet()){
+            hashMap.put(m, methodMap.get(m).getType());
+        }
+
+        return hashMap;
     }
 
     private String reportSpotBugs() {
