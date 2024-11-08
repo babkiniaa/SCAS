@@ -1,13 +1,16 @@
 package org.github.babkiniaa.scas.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.client.MasterServiceClient;
 import org.github.babkiniaa.scas.dto.*;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectAndUserIdDto;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectIdAndReportId;
+import org.github.babkiniaa.scas.dto.typeForMap.MethodAndTypeAnalysis;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -15,6 +18,14 @@ import java.util.List;
 public class MyController {
 
     private final MasterServiceClient masterServiceClient;
+    private final AgentServiceClient agentServiceClient;
+
+    @GetMapping("analysis/get-hashmap")
+    public HashMap<String, String> getMethodMap() {
+        HashMap<String, String> hashMap = agentServiceClient.getMethodMap();
+
+        return hashMap;
+    }
 
     @PostMapping("/report/create")
     public int createReport(@RequestBody ProjectDto projectDto) {
