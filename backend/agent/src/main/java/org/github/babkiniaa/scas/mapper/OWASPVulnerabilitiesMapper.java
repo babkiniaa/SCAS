@@ -1,8 +1,6 @@
 package org.github.babkiniaa.scas.mapper;
 
-import net.sourceforge.pmd.reporting.RuleViolation;
-import org.github.babkiniaa.scas.dto.OWASPVulnerabilitiesDTO;
-import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
+import org.github.babkiniaa.scas.dto.oldReports.OWASPVulnerabilitiesDTO;
 import org.owasp.dependencycheck.dependency.Vulnerability;
 
 import java.util.ArrayList;

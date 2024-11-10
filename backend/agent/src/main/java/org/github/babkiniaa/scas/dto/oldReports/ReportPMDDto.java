@@ -1,10 +1,10 @@
-package org.github.babkiniaa.scas.dto;
+package org.github.babkiniaa.scas.dto.oldReports;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
+import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
 
 import java.util.List;
 
@@ -12,10 +12,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportCheckStyleDto {
+public class ReportPMDDto {
 
     private String hash;
 
-    private List<ViolationCustomDto> reportList;
+    private List<RuleViolationCustomDto> reportList;
 
 }
