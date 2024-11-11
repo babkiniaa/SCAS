@@ -13,7 +13,7 @@ import java.util.function.Function;
 @Setter
 public class MethodAndTypeAnalysis {
 
-    private Function<RegisterTaskDto, ?> function;
+    private Function<String, ?> function;
 
     private String type;
 
