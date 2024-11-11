@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.Request.RegisterTaskDto;
+import org.github.babkiniaa.scas.dto.Response.ReportAndDir;
 
 import java.util.function.Function;
 
@@ -13,7 +14,7 @@ import java.util.function.Function;
 @Setter
 public class MethodAndTypeAnalysis {
 
-    private Function<String, ?> function;
+    private Function<ReportAndDir, ?> function;
 
     private String type;
 

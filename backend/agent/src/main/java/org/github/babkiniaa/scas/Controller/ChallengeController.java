@@ -1,50 +1,24 @@
 package org.github.babkiniaa.scas.Controller;
 
 import lombok.RequiredArgsConstructor;
-import net.sourceforge.pmd.reporting.RuleViolation;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.github.babkiniaa.scas.dto.ProjectDto;
 import org.github.babkiniaa.scas.dto.Request.RegisterTaskDto;
-import org.github.babkiniaa.scas.dto.oldReports.ReportOWASPDto;
-import org.github.babkiniaa.scas.dto.oldReports.ReportPMDDto;
-import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
-import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
-import org.github.babkiniaa.scas.dto.typeForMap.MethodAndTypeAnalysis;
 import org.github.babkiniaa.scas.mapper.*;
 import org.github.babkiniaa.scas.service.TaskService;
-import org.github.babkiniaa.scas.utils.DeleteFileUtil;
-import org.github.babkiniaa.scas.utils.GitUtil;
-import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
-import org.owasp.dependencycheck.dependency.Dependency;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/analysis")
 public class ChallengeController {
 
-    private static ReportCheckStyleMapper reportCheckStyleMapper;
-    private static ReportOWASPMapper reportOWASPMapper;
-    private static ReportPMDMapper reportPMDMapper;
-    private static ReportSpotBugsMapper reportSpotBugsMapper;
+    private final TaskService taskService;
 
     @PostMapping("/start/queue")
-    public ResponseEntity<?> initTask(RegisterTaskDto registerTaskDto){
-        JobDetail j = JobBuilder.newJob().build();
-        return ResponseEntity.ok("ok ");
+    public Long initTask(@RequestBody RegisterTaskDto registerTaskDto) throws Exception {
+        return taskService.saveTask(registerTaskDto);
     }
 
-    public void HYIS(){
-        System.out.println("SPASIBA");
-    }
+
 
 //    @PostMapping("/start")
 //    public ProjectDto start(@RequestBody ProjectDto projectDto) {
