@@ -28,15 +28,15 @@ public class ReportController {
     private final ProjectMapper projectMapper;
     private final AgentServiceClient agentServiceClient;
 
-//    @PostMapping("/create")
-//    public int createReport(@RequestBody StartAnalysisDto startAnalysisDto) {
-//        ProjectDto projectDtoNew = agentServiceClient.init(projectDto);
-//        ReportPMDDto reportPmd = projectDtoNew.getReportPMDS().get(projectDtoNew.getReportPMDS().size() - 1);
-//        ReportOWASPDto reportOWASPDto = projectDtoNew.getReportOWASPS().get(projectDtoNew.getReportOWASPS().size() - 1);
-//        int idReportPMD = reportPMDService.create(reportPmd);
-//        int idReportOWASP = reportOWASPService.create(reportOWASPDto);
-//        return idReportOWASP;
-//    }
+    @PostMapping("/create")
+    public int createReport(@RequestBody StartAnalysisDto startAnalysisDto) {
+        ProjectDto projectDtoNew = agentServiceClient.init(projectDto);
+        ReportPMDDto reportPmd = projectDtoNew.getReportPMDS().get(projectDtoNew.getReportPMDS().size() - 1);
+        ReportOWASPDto reportOWASPDto = projectDtoNew.getReportOWASPS().get(projectDtoNew.getReportOWASPS().size() - 1);
+        int idReportPMD = reportPMDService.create(reportPmd);
+        int idReportOWASP = reportOWASPService.create(reportOWASPDto);
+        return idReportOWASP;
+    }
 
     @GetMapping("/get-all-owasp")
     public List<ReportOWASPDto> getAllReportsOwasp() {
