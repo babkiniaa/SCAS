@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -21,7 +20,7 @@ import java.util.List;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     private String name;
 
@@ -38,20 +37,8 @@ public class Project {
     private LocalDateTime createdDate;
 
     @OneToMany
-    @JoinColumn(name = "reportCheckStyle_id")
-    private List<ReportCheckStyle> reportCheckStyles;
-
-    @OneToMany
-    @JoinColumn(name = "reportOWASP_id")
-    private List<ReportOWASP> reportOWASPS;
-
-    @OneToMany
-    @JoinColumn(name = "reportPMD_id")
-    private List<ReportPMD> reportPMDS;
-
-    @OneToMany
-    @JoinColumn(name = "reportSpotBugs_id")
-    private List<ReportSpotBugs> reportSpotBugs;
+    @JoinColumn(name = "reports_id")
+    private List<Report> reports;
 
     private long userId;
 }

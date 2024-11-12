@@ -15,7 +15,7 @@ import lombok.Setter;
 public class ViolationCustom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     private int lineNo;
 

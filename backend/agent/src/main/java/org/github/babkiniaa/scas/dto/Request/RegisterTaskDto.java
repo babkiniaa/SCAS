@@ -11,6 +11,7 @@ public class RegisterTaskDto {
 
    private String url;
 
-   private List<String> analysis;
+   private List<String> needReports;
 
+   private long projectId;
 }

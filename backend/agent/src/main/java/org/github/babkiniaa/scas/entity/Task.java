@@ -24,7 +24,7 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "created_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -35,10 +35,12 @@ public class Task {
 
     private String url;
 
-    private List<String> analysis;
+    private List<String> needReports;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "report_id")
     private Report report;
+
+    private long projectId;
 
 }

@@ -1,14 +1,15 @@
-package org.github.babkiniaa.scas.dto.Request;
+package org.github.babkiniaa.scas.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StartAnalyseDto {
 
     private Long projectId;

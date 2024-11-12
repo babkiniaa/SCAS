@@ -27,23 +27,10 @@ public class ProjectController {
     private final ProjectAndUserIdMapper projectAndUserMapper;
 
     @PostMapping("/create")
-    public int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto) {
+    public long createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto) {
         ProjectDto projectDto = projectAndUserMapper.projectDtoToProjectAndUserIdDto(projectAndUserIdDto);
         return projectService.create(projectDto, projectAndUserIdDto.getUserId());
     }
-
-    @PostMapping("/connecting-report-owasp")
-    public ResponseEntity<?> connectionUserAndReportOwasp(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
-        projectService.connectingReportOWASPAndProject(projectIdAndReportId.getProjectId(), projectIdAndReportId.getReportId());
-        return ResponseEntity.ok("");
-    }
-
-    @PostMapping("/connecting-report-pmd")
-    public ResponseEntity<?> connectionUserAndReportPmd(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
-        projectService.connectingReportPMDAndProject(projectIdAndReportId.getProjectId(), projectIdAndReportId.getReportId());
-        return ResponseEntity.ok("");
-    }
-
 
     /**
      * Возвращает список проектов в соответствии с заданными параметрами.
