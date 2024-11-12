@@ -1,14 +1,23 @@
 package org.github.babkiniaa.scas.client;
 
-import org.github.babkiniaa.scas.dto.project.ProjectDto;
+import org.github.babkiniaa.scas.dto.ReportDto;
+import org.github.babkiniaa.scas.dto.StartAnalyseDto;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "agent-service", url = "http://localhost:8081")
 public interface AgentServiceClient {
 
-    @PostMapping("/analysis/init")
-    ProjectDto init(@RequestBody ProjectDto projectDto);
+    @PostMapping("/analysis/start/queue")
+    long init(@RequestBody StartAnalyseDto startAnalyseDto);
+
+    @GetMapping("/analysis/task/{id}/status")
+    String getStatus(@PathVariable("id") long id);
+
+    @GetMapping("/analysis/task/{id}/report")
+    ReportDto getReport(@PathVariable("id") long id);
 
 }

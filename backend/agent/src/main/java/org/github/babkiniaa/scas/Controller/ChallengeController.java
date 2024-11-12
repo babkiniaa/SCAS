@@ -24,19 +24,20 @@ public class ChallengeController {
         return taskService.saveTask(registerTaskDto);
     }
 
-    @GetMapping("/task/{id}/status")
-    public StatusTask initTask(@PathVariable long id) throws Exception {
-        return taskService.getStatus(id);
-    }
-
     @GetMapping("/get-hashmap")
     public HashMap<String, List<String>> getMethodMap() {
         return taskService.getMethodMap();
     }
+  
+    @GetMapping("/task/{id}/status")
+    public String getStatus(@PathVariable("id") long projectId) throws Exception {
+        return taskService.getStatusByProjectId(projectId).toString();
+
+    }
 
     @GetMapping("/task/{id}/report")
-    public ReportDto getReport(@PathVariable long id) {
-        return taskService.getReport(id);
+    public ReportDto getReport(@PathVariable("id") long projectId){
+        return taskService.getReportByProjectId(projectId);
     }
 
 }

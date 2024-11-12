@@ -23,7 +23,7 @@ import java.util.SortedSet;
 public class DependencyCustom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     private Set<String> projectReferences;
 

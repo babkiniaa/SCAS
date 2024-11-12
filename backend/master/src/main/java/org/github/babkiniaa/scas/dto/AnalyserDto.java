@@ -1,14 +1,17 @@
 package org.github.babkiniaa.scas.dto;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
-@Getter
 @Setter
-public class StartAnalysisDto {
+@Getter
+@RequiredArgsConstructor
+public class AnalyserDto {
+
+    private Long idProject;
+
     private List<String> needReports;
-    private String url;
-    private int id;
 }
