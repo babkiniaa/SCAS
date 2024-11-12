@@ -9,6 +9,9 @@ import org.github.babkiniaa.scas.mapper.*;
 import org.github.babkiniaa.scas.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/analysis")
@@ -21,21 +24,16 @@ public class ChallengeController {
         return taskService.saveTask(registerTaskDto);
     }
 
+    @GetMapping("/get-hashmap")
+    public HashMap<String, List<String>> getMethodMap() {
+        return taskService.getMethodMap();
+    }
+  
     @GetMapping("/task/{id}/status")
     public String getStatus(@PathVariable("id") long projectId) throws Exception {
         return taskService.getStatusByProjectId(projectId).toString();
-    }
 
-//    @GetMapping("/get-hashmap")
-//    public HashMap<String, List<String>> getMethodMap(){
-//        HashMap<String, List<String>> hashMap = new HashMap<>();
-//
-//        for(String  m: methodMap.keySet()){
-//            hashMap.computeIfAbsent(methodMap.get(m).getType().toLowerCase(), k -> new ArrayList<>()).add(m);
-//        }
-//
-//        return hashMap;
-//    }
+    }
 
     @GetMapping("/task/{id}/report")
     public ReportDto getReport(@PathVariable("id") long projectId){

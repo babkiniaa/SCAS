@@ -3,6 +3,8 @@ package org.github.babkiniaa.scas.client;
 import org.github.babkiniaa.scas.dto.*;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectAndUserIdDto;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectIdAndReportId;
+import org.github.babkiniaa.scas.dto.Response.ReportDto;
+import org.github.babkiniaa.scas.dto.project.AnalyserDto;
 import org.github.babkiniaa.scas.dto.project.GetProjectAllDto;
 import org.github.babkiniaa.scas.dto.project.ProjectDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -18,46 +20,22 @@ import java.util.List;
 public interface MasterServiceClient {
 
     @PostMapping("/report/create")
-    int createReport(@RequestBody StartAnalysisDto startAnalysisDto);
-
-    @PostMapping("report/get-owasp/")
-    ReportOWASPDto getReport(@RequestBody Integer idOWASP);
+    long createReport(@RequestBody AnalyserDto analyserDto);
 
     @PostMapping("/project/create")
-    int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto);
+    long createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto);
+
+    @GetMapping("report/status/{id}")
+    String getStatus(@PathVariable("id") Long id);
+
+    @GetMapping("report/find/{id}")
+    ReportDto getReport(@PathVariable("id") Long id);
+
+    @GetMapping("report/save/{id}")
+    ReportDto saveReport(@PathVariable("id") Long id);
 
     @PostMapping("/project/get-projects")
     List<ProjectDto> getProject(@RequestBody GetProjectAllDto projectsDto);
-
-    @GetMapping("report/get-all-owasp")
-    List<ReportOWASPDto> getAllReportsOwasp();
-
-    @GetMapping("report/get-all-pmd")
-    List<ReportPMDDto> getAllReportsPmd();
-
-    @GetMapping("report/get-all-checkstyle")
-    List<ReportCheckStyleDto> getAllReportsCheckstyle();
-
-    @GetMapping("report/get-all-spotbugs")
-    List<ReportSpotBugsDto> getAllReportsSpotBugs();
-
-    @GetMapping("report/get-owasp/{id}")
-    ReportOWASPDto getReportOwasp(@PathVariable("id") int id);
-
-    @GetMapping("report/get-pmd/{id}")
-    ReportPMDDto getReportPMD(@PathVariable("id") int id);
-
-    @GetMapping("report/get-checkstyle/{id}")
-    ReportCheckStyleDto getReportCheckstyle(@PathVariable("id") int id);
-
-    @GetMapping("report/get-spotbugs/{id}")
-    ReportSpotBugsDto getReportSpotBugs(@PathVariable("id") int id);
-
-    @PostMapping("project/connecting-report-owasp")
-    ResponseEntity<?> connectionUserAndReport(@RequestBody ProjectIdAndReportId projectIdAndReportId);
-
-    @PostMapping("project/connecting-report-pmd")
-    ResponseEntity<?> connectionUserAndReportPmd(@RequestBody ProjectIdAndReportId projectIdAndReportId);
 
     @GetMapping("project/get-all")
     List<ProjectDto> getAllProject();

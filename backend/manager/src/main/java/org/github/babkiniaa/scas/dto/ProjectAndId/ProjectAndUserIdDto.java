@@ -2,10 +2,10 @@ package org.github.babkiniaa.scas.dto.ProjectAndId;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.github.babkiniaa.scas.dto.ReportCheckStyleDto;
-import org.github.babkiniaa.scas.dto.ReportOWASPDto;
-import org.github.babkiniaa.scas.dto.ReportPMDDto;
-import org.github.babkiniaa.scas.dto.ReportSpotBugsDto;
+import org.github.babkiniaa.scas.dto.old.ReportCheckStyleDto;
+import org.github.babkiniaa.scas.dto.old.ReportOWASPDto;
+import org.github.babkiniaa.scas.dto.old.ReportPMDDto;
+import org.github.babkiniaa.scas.dto.old.ReportSpotBugsDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

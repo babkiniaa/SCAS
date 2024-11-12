@@ -52,6 +52,16 @@ public class TaskService {
         methodMap.put("OWASP", new MethodAndTypeAnalysis(this::reportOwasp, "Binary"));
     }
 
+    public HashMap<String, List<String>> getMethodMap(){
+        HashMap<String, List<String>> hashMap = new HashMap<>();
+
+        for(String  m: methodMap.keySet()){
+            hashMap.computeIfAbsent(methodMap.get(m).getType().toLowerCase(), k -> new ArrayList<>()).add(m);
+        }
+
+        return hashMap;
+    }
+
     public Long saveTask(RegisterTaskDto registerTaskDto) {
         Task task = taskMapper.RegisterTaskToTask(registerTaskDto);
         task.setStatusTask(StatusTask.TODO);
