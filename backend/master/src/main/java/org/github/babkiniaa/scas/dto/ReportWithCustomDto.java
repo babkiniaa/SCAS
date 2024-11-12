@@ -1,23 +1,13 @@
-package org.github.babkiniaa.scas.dto.Response;
+package org.github.babkiniaa.scas.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
-import org.github.babkiniaa.scas.entity.reportsEntity.BugInstanceCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.DependencyCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.ViolationCustom;
 
 import java.util.List;
 
-@Setter
-@Getter
-@RequiredArgsConstructor
-public class ReportDto {
+public class ReportWithCustomDto {
 
     private String hash;
 

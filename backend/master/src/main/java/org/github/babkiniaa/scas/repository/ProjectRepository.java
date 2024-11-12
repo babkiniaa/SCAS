@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * Репозиторий для работы с сущностью {@link Project}.
  */
 @Repository
-public interface ProjectRepository extends JpaRepository<Project, Integer> {
+public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     /**
      * Находит проекты, содержащие указанное имя и принадлежащие определенному пользователю.
@@ -32,4 +32,5 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
      * @return страница публичных проектов, соответствующих критериям поиска.
      */
     Page<Project> findByNameContainingAndUserIdAndVisibility(String name, long userId, boolean visibility, Pageable pageable);
+
 }

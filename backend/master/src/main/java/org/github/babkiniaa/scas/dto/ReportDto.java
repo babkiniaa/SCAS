@@ -1,4 +1,4 @@
-package org.github.babkiniaa.scas.dto.Response;
+package org.github.babkiniaa.scas.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

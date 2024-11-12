@@ -56,7 +56,7 @@ public class TaskService {
         Task task = taskMapper.RegisterTaskToTask(registerTaskDto);
         task.setStatusTask(StatusTask.TODO);
         Long idTask = taskRepository.save(task).getId();
-        StartAnalyseDto startAnalyseDto = new StartAnalyseDto(idTask, registerTaskDto.getUrl(), registerTaskDto.getAnalysis());
+        StartAnalyseDto startAnalyseDto = new StartAnalyseDto(idTask, registerTaskDto.getUrl(), registerTaskDto.getNeedReports());
         threadPoolExecutor.execute(() -> {
             try {
                 startAnalysis(startAnalyseDto);
@@ -108,10 +108,10 @@ public class TaskService {
     @Async
     public long startAnalysis(StartAnalyseDto startAnalyseDto) {
         long taskId;
-        Task task = taskRepository.findById(startAnalyseDto.getIdTask()).get();
+        Task task = taskRepository.findById(startAnalyseDto.getProjectId()).get();
         task.setStatusTask(StatusTask.Run);
         taskRepository.save(task);
-        String dir = System.getProperty("user.dir") + "/down/" + startAnalyseDto.getIdTask();
+        String dir = System.getProperty("user.dir") + "/down/" + startAnalyseDto.getProjectId();
         ReportAndDirDto reportAndDirDto = new ReportAndDirDto();
         reportAndDirDto.setDir(dir);
 
@@ -121,7 +121,7 @@ public class TaskService {
             throw new RuntimeException(e);
         }
 
-        for (String run : startAnalyseDto.getAnalysis()) {
+        for (String run : startAnalyseDto.getNeedReports()) {
             reportAndDirDto = (ReportAndDirDto) methodMap.get(run).getFunction().apply(reportAndDirDto);
         }
 
@@ -133,13 +133,15 @@ public class TaskService {
         return taskId;
     }
 
-    public StatusTask getStatus(long taskId){
-        return taskRepository.findById(taskId).get().getStatusTask();
+    public StatusTask getStatusByProjectId(long projectId){
+        return taskRepository.findTaskByProjectId(projectId).get().getStatusTask();
     }
 
-    public ReportDto getReport(long taskId){
-        if (getStatus(taskId) == StatusTask.EndS) {
-            return reportMapper.reportToReportDto(taskRepository.findById(taskId).get().getReport());
+    public ReportDto getReportByProjectId(long projectId){
+        if (getStatusByProjectId(projectId) == StatusTask.EndS) {
+            Task task = taskRepository.findTaskByProjectId(projectId).get();
+            taskRepository.delete(task);
+            return reportMapper.reportToReportDto(task.getReport());
         } else {
             return null;
         }
