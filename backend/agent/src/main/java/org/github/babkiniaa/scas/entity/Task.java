@@ -37,4 +37,8 @@ public class Task {
 
     private List<String> analysis;
 
+    @OneToOne
+    @JoinColumn(name = "report_id")
+    private Report report;
+
 }

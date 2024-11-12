@@ -2,6 +2,9 @@ package org.github.babkiniaa.scas.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.dto.Request.RegisterTaskDto;
+import org.github.babkiniaa.scas.dto.Response.ReportDto;
+import org.github.babkiniaa.scas.entity.Report;
+import org.github.babkiniaa.scas.entity.StatusTask;
 import org.github.babkiniaa.scas.mapper.*;
 import org.github.babkiniaa.scas.service.TaskService;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,15 @@ public class ChallengeController {
         return taskService.saveTask(registerTaskDto);
     }
 
+    @GetMapping("/task/{id}/status")
+    public StatusTask initTask(@PathVariable long id) throws Exception {
+        return taskService.getStatus(id);
+    }
+
+    @GetMapping("/task/{id}/report")
+    public ReportDto getReport(@PathVariable long id){
+        return taskService.getReport(id);
+    }
 
 
 //    @PostMapping("/start")

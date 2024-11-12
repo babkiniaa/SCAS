@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.dto.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
@@ -12,8 +13,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class ReportAndDir {
+@RequiredArgsConstructor
+public class ReportAndDirDto {
 
     private String dir;
 

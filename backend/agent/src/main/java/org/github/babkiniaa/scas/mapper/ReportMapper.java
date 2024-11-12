@@ -1,10 +1,19 @@
 package org.github.babkiniaa.scas.mapper;
 
-import org.github.babkiniaa.scas.dto.Response.Report;
-import org.github.babkiniaa.scas.dto.Response.ReportAndDir;
+import org.github.babkiniaa.scas.dto.Response.ReportDto;
+import org.github.babkiniaa.scas.dto.Response.ReportAndDirDto;
+import org.github.babkiniaa.scas.entity.Report;
+import org.mapstruct.Mapper;
 
+@Mapper(componentModel = "spring")
 public interface ReportMapper {
-    Report reportToReportAndDir(ReportAndDir reportAndDir);
+    ReportDto ReportAndDirDtoToReportDto(ReportAndDirDto reportAndDir);
 
-    ReportAndDir reportAndDirToReport(Report report);
+    ReportAndDirDto ReportDtoToReportAndDirDto(ReportDto report);
+
+    Report reportDtoToReport(ReportDto reportDto);
+
+    ReportDto reportToReportDto(Report report);
+
+    Report reportAndDirToReport(ReportAndDirDto reportAndDirDto);
 }

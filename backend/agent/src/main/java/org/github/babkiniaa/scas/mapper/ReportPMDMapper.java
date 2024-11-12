@@ -8,12 +8,34 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mapper
-public interface ReportPMDMapper {
+@Component
+public class ReportPMDMapper {
 
-    RuleViolationCustomDto PMDtoDTO(RuleViolation ruleViolation);
+    public RuleViolationCustomDto PMDtoDTO(RuleViolation ruleViolation) {
+        RuleViolationCustomDto ruleViolationCustomDto = new RuleViolationCustomDto();
 
-    RuleViolationCustom PMDtoCustom(RuleViolation ruleViolation);
+        ruleViolationCustomDto.setName(ruleViolation.getRule().getName());
+        ruleViolationCustomDto.setDescription(ruleViolation.getDescription());
+        ruleViolationCustomDto.setMessage(ruleViolation.getRule().getMessage());
+        ruleViolationCustomDto.setPriority(ruleViolation.getRule().getPriority().getName());
+        ruleViolationCustomDto.setBeginLine(ruleViolation.getBeginLine());
+        ruleViolationCustomDto.setBeginColumn(ruleViolation.getBeginColumn());
+        ruleViolationCustomDto.setEndLine(ruleViolation.getEndLine());
+        ruleViolationCustomDto.setEndColumn(ruleViolation.getEndColumn());
+        ruleViolationCustomDto.setFileName(ruleViolation.getFileId().getFileName());
 
-    List<RuleViolationCustomDto> PMDtoDTO(List<RuleViolation> ruleViolations);
+
+        return ruleViolationCustomDto;
+    }
+
+    public List<RuleViolationCustomDto> PMDtoDTO(List<RuleViolation> ruleViolations) {
+
+        List<RuleViolationCustomDto> pmdDTOs = new ArrayList<>();
+
+        for (RuleViolation rv : ruleViolations) {
+            pmdDTOs.add(PMDtoDTO(rv));
+        }
+
+        return pmdDTOs;
+    }
 }
