@@ -1,10 +1,10 @@
-package org.github.babkiniaa.scas.dto;
+package org.github.babkiniaa.scas.dto.old;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
+import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 
 import java.util.List;
 
@@ -12,12 +12,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportPMDDto {
+public class ReportSpotBugsDto {
 
     private int id;
 
     private String hash;
 
-    private List<RuleViolationCustomDto> reportList;
+    private List<BugInstanceCustomDto> reportList;
+
 
 }
