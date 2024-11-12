@@ -12,7 +12,7 @@ import java.util.Set;
 @Component
 public class ReportOWASPMapper {
 
-    public static Dependency owaspCustomToOwasp(DependencyCustomDto dependencyCustomDto) {
+    public Dependency owaspCustomToOwasp(DependencyCustomDto dependencyCustomDto) {
         if ( dependencyCustomDto == null ) {
             return null;
         }
@@ -47,7 +47,7 @@ public class ReportOWASPMapper {
         return dependency;
     }
 
-    public static DependencyCustomDto owaspToOwaspCustom(Dependency dependency) {
+    public DependencyCustomDto owaspToOwaspCustom(Dependency dependency) {
         if ( dependency == null ) {
             return null;
         }
@@ -83,7 +83,7 @@ public class ReportOWASPMapper {
         return dependencyCustomDto;
     }
 
-    public static List<Dependency> owaspCustomToOwaspList(List<DependencyCustomDto> reports) {
+    public List<Dependency> owaspCustomToOwaspList(List<DependencyCustomDto> reports) {
         if ( reports == null ) {
             return null;
         }
@@ -96,7 +96,7 @@ public class ReportOWASPMapper {
         return list;
     }
 
-    public static List<DependencyCustomDto> owaspToOwaspCustomList(List<Dependency> reports) {
+    public List<DependencyCustomDto> owaspToOwaspCustomList(List<Dependency> reports) {
         if ( reports == null ) {
             return null;
         }

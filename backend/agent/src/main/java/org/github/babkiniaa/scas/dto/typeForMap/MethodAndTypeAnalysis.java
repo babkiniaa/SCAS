@@ -3,7 +3,7 @@ package org.github.babkiniaa.scas.dto.typeForMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.github.babkiniaa.scas.dto.ProjectDto;
+import org.github.babkiniaa.scas.dto.Response.ReportAndDirDto;
 
 import java.util.function.Function;
 
@@ -12,7 +12,7 @@ import java.util.function.Function;
 @Setter
 public class MethodAndTypeAnalysis {
 
-    private Function<ProjectDto, ?> function;
+    private Function<ReportAndDirDto, ?> function;
 
     private String type;
 

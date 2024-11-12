@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.babkiniaa.scas.dto.oldReports.ReportCheckStyleDto;
+import org.github.babkiniaa.scas.dto.oldReports.ReportOWASPDto;
+import org.github.babkiniaa.scas.dto.oldReports.ReportPMDDto;
+import org.github.babkiniaa.scas.dto.oldReports.ReportSpotBugsDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

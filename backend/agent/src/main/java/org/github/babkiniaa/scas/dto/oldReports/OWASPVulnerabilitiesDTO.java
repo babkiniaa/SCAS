@@ -1,4 +1,4 @@
-package org.github.babkiniaa.scas.dto;
+package org.github.babkiniaa.scas.dto.oldReports;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

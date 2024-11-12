@@ -1,10 +1,11 @@
-package org.github.babkiniaa.scas.dto.reportsDto;
+package org.github.babkiniaa.scas.entity.reportsEntity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.github.babkiniaa.scas.dto.oldReports.OWASPVulnerabilitiesDTO;
+import org.github.babkiniaa.scas.entity.OWASPVulnerabilities;
 
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,12 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DependencyCustomDto {
+@Entity(name = "dependency")
+@Table
+public class DependencyCustom {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     private Set<String> projectReferences;
 
@@ -47,6 +53,7 @@ public class DependencyCustomDto {
 
     private String ecosystem;
 
-    private List<OWASPVulnerabilitiesDTO> owaspVulnerabilities;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<OWASPVulnerabilities> owaspVulnerabilities;
 
 }

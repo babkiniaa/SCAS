@@ -2,6 +2,8 @@ package org.github.babkiniaa.scas.mapper;
 
 import net.sourceforge.pmd.reporting.RuleViolation;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
+import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
 @Component
 public class ReportPMDMapper {
 
-    public static RuleViolationCustomDto PMDtoDTO(RuleViolation ruleViolation) {
+    public RuleViolationCustomDto PMDtoDTO(RuleViolation ruleViolation) {
         RuleViolationCustomDto ruleViolationCustomDto = new RuleViolationCustomDto();
 
         ruleViolationCustomDto.setName(ruleViolation.getRule().getName());
@@ -26,7 +28,7 @@ public class ReportPMDMapper {
         return ruleViolationCustomDto;
     }
 
-    public static List<RuleViolationCustomDto> PMDtoDTO(List<RuleViolation> ruleViolations) {
+    public List<RuleViolationCustomDto> PMDtoDTO(List<RuleViolation> ruleViolations) {
 
         List<RuleViolationCustomDto> pmdDTOs = new ArrayList<>();
 
