@@ -3,7 +3,7 @@ package org.github.babkiniaa.scas.dto.typeForMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.github.babkiniaa.scas.dto.ProjectDto;
+import org.github.babkiniaa.scas.dto.project.ProjectDto;
 
 import java.util.function.Function;
 

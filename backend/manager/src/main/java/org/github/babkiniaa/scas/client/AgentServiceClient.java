@@ -5,11 +5,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashMap;
+import java.util.List;
 
 @FeignClient(name = "agent-service", url = "http://localhost:8081")
 public interface AgentServiceClient {
 
     @GetMapping("analysis/get-hashmap")
-    HashMap<String, String> getMethodMap();
+    HashMap<String, List<String>>  getMethodMap();
 
 }

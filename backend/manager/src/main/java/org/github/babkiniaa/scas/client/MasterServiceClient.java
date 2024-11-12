@@ -3,6 +3,8 @@ package org.github.babkiniaa.scas.client;
 import org.github.babkiniaa.scas.dto.*;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectAndUserIdDto;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectIdAndReportId;
+import org.github.babkiniaa.scas.dto.project.GetProjectAllDto;
+import org.github.babkiniaa.scas.dto.project.ProjectDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,7 @@ import java.util.List;
 public interface MasterServiceClient {
 
     @PostMapping("/report/create")
-    int createReport(@RequestBody ProjectDto reportDto);
+    int createReport(@RequestBody StartAnalysisDto startAnalysisDto);
 
     @PostMapping("report/get-owasp/")
     ReportOWASPDto getReport(@RequestBody Integer idOWASP);
@@ -25,7 +27,7 @@ public interface MasterServiceClient {
     int createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto);
 
     @PostMapping("/project/get-projects")
-    List<ProjectDto> getProject(@RequestBody GetProjectDto projectsDto);
+    List<ProjectDto> getProject(@RequestBody GetProjectAllDto projectsDto);
 
     @GetMapping("report/get-all-owasp")
     List<ReportOWASPDto> getAllReportsOwasp();

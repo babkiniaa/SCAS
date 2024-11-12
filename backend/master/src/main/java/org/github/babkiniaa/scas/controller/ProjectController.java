@@ -2,10 +2,10 @@ package org.github.babkiniaa.scas.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.ProjectMapper;
-import org.github.babkiniaa.scas.dto.GetProjectDto;
+import org.github.babkiniaa.scas.dto.project.GetProjecAllDto;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectAndUserIdDto;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectIdAndReportId;
-import org.github.babkiniaa.scas.dto.ProjectDto;
+import org.github.babkiniaa.scas.dto.project.ProjectDto;
 import org.github.babkiniaa.scas.service.ProjectService;
 import org.github.babkiniaa.scas.Mapper.ProjectUserId.ProjectAndUserIdMapper;
 import org.springframework.http.ResponseEntity;
@@ -44,10 +44,6 @@ public class ProjectController {
         return ResponseEntity.ok("");
     }
 
-    @PostMapping("/get-all")
-    public List<ProjectDto> getAllProject() {
-        return projectService.findAll();
-    }
 
     /**
      * Возвращает список проектов в соответствии с заданными параметрами.
@@ -56,7 +52,7 @@ public class ProjectController {
      * @return список проектов, соответствующих заданным параметрам.
      */
     @PostMapping("/get-projects")
-    public List<ProjectDto> getProjects(@RequestBody GetProjectDto projectsDto) {
+    public List<ProjectDto> getProjects(@RequestBody GetProjecAllDto projectsDto) {
 
         return projectMapper.projectToListDto(projectService.getAllProject(projectsDto));
     }

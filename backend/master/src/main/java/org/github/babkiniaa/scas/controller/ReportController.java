@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.*;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.dto.*;
+import org.github.babkiniaa.scas.dto.project.ProjectDto;
 import org.github.babkiniaa.scas.service.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class ReportController {
     private final AgentServiceClient agentServiceClient;
 
     @PostMapping("/create")
-    public int createReport(@RequestBody ProjectDto projectDto) {
+    public int createReport(@RequestBody StartAnalysisDto startAnalysisDto) {
         ProjectDto projectDtoNew = agentServiceClient.init(projectDto);
         ReportPMDDto reportPmd = projectDtoNew.getReportPMDS().get(projectDtoNew.getReportPMDS().size() - 1);
         ReportOWASPDto reportOWASPDto = projectDtoNew.getReportOWASPS().get(projectDtoNew.getReportOWASPS().size() - 1);
@@ -76,6 +77,4 @@ public class ReportController {
     public ReportSpotBugsDto getReportSpotBugs(@PathVariable("id") int id) {
         return reportSpotBugsMapper.reportToDto(reportSpotBugsService.findById(id));
     }
-
-
 }

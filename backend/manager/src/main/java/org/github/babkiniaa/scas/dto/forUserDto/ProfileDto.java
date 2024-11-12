@@ -1,4 +1,4 @@
-package org.github.babkiniaa.scas.dto;
+package org.github.babkiniaa.scas.dto.forUserDto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

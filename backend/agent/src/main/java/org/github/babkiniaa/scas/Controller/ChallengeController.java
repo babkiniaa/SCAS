@@ -63,11 +63,11 @@ public class ChallengeController {
     }
 
     @GetMapping("/get-hashmap")
-    public HashMap<String, String> getMethodMap(){
-        HashMap<String, String> hashMap = new HashMap<>();
+    public HashMap<String, List<String>> getMethodMap(){
+        HashMap<String, List<String>> hashMap = new HashMap<>();
 
         for(String  m: methodMap.keySet()){
-            hashMap.put(m, methodMap.get(m).getType());
+            hashMap.computeIfAbsent(methodMap.get(m).getType().toLowerCase(), k -> new ArrayList<>()).add(m);
         }
 
         return hashMap;
