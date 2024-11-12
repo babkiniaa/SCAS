@@ -112,6 +112,40 @@
               </div>
             </q-card-section>
 
+            <q-card-section class="row q-col-gutter-md q-pt-none items-start">
+  <div class="col-6">
+    <q-btn-dropdown
+      color="primary"
+      :label="selectedAnalyzerCategory ? 'Category: ' + selectedAnalyzerCategory : 'Select Analyzer Category'"
+      :class="isDarkMode ? 'bg-grey-6 text-white' : ''"
+    >
+      <q-list>
+        <q-item
+          v-for="(category, index) in Object.keys(analyzers)"
+          :key="index"
+          clickable
+          v-ripple
+          @click="selectAnalyzerCategory(category)"
+        >
+          <q-item-section>
+            <q-item-label>{{ category }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-btn-dropdown>
+  </div>
+
+  <div class="col-6" v-if="availableAnalyzers.length">
+    <q-option-group
+      v-model="selectedAnalyzers"
+      :options="availableAnalyzers.map(analyzer => ({ label: analyzer, value: analyzer }))"
+      type="checkbox"
+      label="Select Analyzers"
+      dense
+      :class="isDarkMode ? 'bg-grey-9 text-white' : ''"
+    />
+  </div>
+</q-card-section>
             <q-card-section>
               <q-input v-model="projectDescription" outlined label="Description" type="textarea" :class="isDarkMode ? 'bg-grey-9 text-white' : ''" />
             </q-card-section>
@@ -131,6 +165,7 @@
 import { Dark } from 'quasar'
 import { createProject } from 'src/services/projectServices'
 import { getAvatar } from 'src/services/userServices'
+import { getAnalizator } from 'src/services/analysisServeces'
 export default {
   data () {
     return {
@@ -149,7 +184,11 @@ export default {
       projectCreated: false,
       userId: localStorage.getItem('currentId'),
       vis: true,
-      idProject: null
+      idProject: null,
+      analyzers: {},
+      selectedAnalyzerCategory: null,
+      selectedAnalyzers: [],
+      availableAnalyzers: []
     }
   },
   methods: {
@@ -212,10 +251,24 @@ export default {
     async fetchUser () {
       const response = await getAvatar(localStorage.getItem('currentId'))
       this.user.avatar = response.data
+    },
+    async fetchAnalyzers () {
+      try {
+        const response = await getAnalizator()
+        this.analyzers = response.data
+      } catch (error) {
+        this.$q.notify({ message: 'Failed to fetch analyzers', color: 'red' })
+      }
+    },
+    selectAnalyzerCategory (category) {
+      this.selectedAnalyzerCategory = category
+      this.availableAnalyzers = this.analyzers[category] || []
+      this.selectedAnalyzers = []
     }
   },
   created () {
     this.fetchUser()
+    this.fetchAnalyzers()
   }
 }
 </script>

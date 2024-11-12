@@ -1,11 +1,11 @@
-package org.github.babkiniaa.scas.dto;
+package org.github.babkiniaa.scas.dto.project;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class GetProjectDto {
+public class GetProjectAllDto {
     private int count;
     private int page;
     private String sortingField = "date";

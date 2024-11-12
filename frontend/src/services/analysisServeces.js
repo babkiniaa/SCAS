@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/report'
+  baseURL: 'http://localhost:8080'
 })
 api.interceptors.request.use(
   (config) => {
@@ -16,5 +16,9 @@ api.interceptors.request.use(
   }
 )
 export function reportCreate (projectData) {
-  return api.post('/create', projectData)
+  return api.post('/report/create', projectData)
+}
+
+export function getAnalizator () {
+  return api.get('/analysis/get-hashmap')
 }

@@ -1,7 +1,7 @@
 package org.github.babkiniaa.scas.mappers;
 
-import org.github.babkiniaa.scas.dto.ProfileDto;
-import org.github.babkiniaa.scas.dto.RegistrationDto;
+import org.github.babkiniaa.scas.dto.forUserDto.ProfileDto;
+import org.github.babkiniaa.scas.dto.forUserDto.RegistrationDto;
 import org.github.babkiniaa.scas.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

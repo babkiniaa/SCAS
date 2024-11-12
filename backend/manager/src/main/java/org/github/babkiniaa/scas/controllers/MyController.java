@@ -6,7 +6,9 @@ import org.github.babkiniaa.scas.client.MasterServiceClient;
 import org.github.babkiniaa.scas.dto.*;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectAndUserIdDto;
 import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectIdAndReportId;
-import org.github.babkiniaa.scas.dto.typeForMap.MethodAndTypeAnalysis;
+import org.github.babkiniaa.scas.dto.project.GetProjectAllDto;
+import org.github.babkiniaa.scas.dto.project.ProjectDto;
+import org.github.babkiniaa.scas.mappers.StartAnalysisMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,18 +21,19 @@ public class MyController {
 
     private final MasterServiceClient masterServiceClient;
     private final AgentServiceClient agentServiceClient;
+    private final StartAnalysisMapper startAnalysisMapper;
 
     @GetMapping("analysis/get-hashmap")
-    public HashMap<String, String> getMethodMap() {
-        HashMap<String, String> hashMap = agentServiceClient.getMethodMap();
+    public HashMap<String, List<String>>  getMethodMap() {
+        HashMap<String, List<String>> hashMap = agentServiceClient.getMethodMap();
 
         return hashMap;
     }
 
-    @PostMapping("/report/create")
-    public int createReport(@RequestBody ProjectDto projectDto) {
-
-        return masterServiceClient.createReport(projectDto);
+    @PostMapping("/report/create/{id}")
+    public int createReport(@PathVariable("id") int id) {
+        StartAnalysisDto startAnalisysDto = startAnalysisMapper.toStartAnalysisDto(masterServiceClient.getProject(id));
+        return masterServiceClient.createReport(startAnalisysDto);
     }
 
     @PostMapping("report/get-owasp/")
@@ -46,7 +49,7 @@ public class MyController {
     }
 
     @PostMapping("/project/get-projects")
-    public List<ProjectDto> getProject(@RequestBody GetProjectDto projectsDto) {
+    public List<ProjectDto> getProject(@RequestBody GetProjectAllDto projectsDto) {
 
         return masterServiceClient.getProject(projectsDto);
     }

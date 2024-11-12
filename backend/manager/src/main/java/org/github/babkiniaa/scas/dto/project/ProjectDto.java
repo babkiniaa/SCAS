@@ -1,4 +1,4 @@
-package org.github.babkiniaa.scas.dto;
+package org.github.babkiniaa.scas.dto.project;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,13 +26,4 @@ public class ProjectDto {
     private LocalDateTime createdDate;
 
     private List<String> needReports;
-
-    private List<ReportCheckStyleDto> reportCheckStyles;
-
-    private List<ReportOWASPDto> reportOWASPS;
-
-    private List<ReportPMDDto> reportPMDS;
-
-    private List<ReportSpotBugsDto> reportSpotBugs;
-
 }

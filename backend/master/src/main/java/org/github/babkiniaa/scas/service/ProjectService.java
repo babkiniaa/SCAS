@@ -2,8 +2,8 @@ package org.github.babkiniaa.scas.service;
 
 import lombok.AllArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.ProjectMapper;
-import org.github.babkiniaa.scas.dto.GetProjectDto;
-import org.github.babkiniaa.scas.dto.ProjectDto;
+import org.github.babkiniaa.scas.dto.project.GetProjecAllDto;
+import org.github.babkiniaa.scas.dto.project.ProjectDto;
 import org.github.babkiniaa.scas.entity.*;
 import org.github.babkiniaa.scas.repository.*;
 import org.springframework.data.domain.PageRequest;
@@ -106,7 +106,7 @@ public class ProjectService {
     }
 
     /**
-     * Возвращает список проектов, отфильтрованных и отсортированных по параметрам из {@link GetProjectDto}.
+     * Возвращает список проектов, отфильтрованных и отсортированных по параметрам из {@link GetProjecAllDto}.
      * <p>
      * Если флаг {@code isMyProject} равен true, возвращаются только проекты пользователя с заданным идентификатором.
      * Если флаг {@code isMyProject} равен false, возвращаются только публичные проекты данного пользователя.
@@ -114,7 +114,7 @@ public class ProjectService {
      * @param projectsDto DTO с параметрами для фильтрации и сортировки проектов.
      * @return список проектов, соответствующих фильтру.
      */
-    public List<Project> getAllProject(GetProjectDto projectsDto) {
+    public List<Project> getAllProject(GetProjecAllDto projectsDto) {
         Pageable pageable = PageRequest.of(
                 projectsDto.getPage(),
                 projectsDto.getCount(),

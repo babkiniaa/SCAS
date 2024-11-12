@@ -1,4 +1,4 @@
-package org.github.babkiniaa.scas.dto;
+package org.github.babkiniaa.scas.dto.forUserDto;
 
 import org.github.babkiniaa.scas.validatros.Password;
 import jakarta.validation.constraints.NotEmpty;
