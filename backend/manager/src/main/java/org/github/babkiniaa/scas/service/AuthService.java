@@ -1,8 +1,8 @@
 package org.github.babkiniaa.scas.service;
 
 import lombok.RequiredArgsConstructor;
-import org.github.babkiniaa.scas.dto.JwtResponse;
-import org.github.babkiniaa.scas.dto.LoginDto;
+import org.github.babkiniaa.scas.dto.forUserDto.JwtResponse;
+import org.github.babkiniaa.scas.dto.forUserDto.LoginDto;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.exception.NotFoundUserException;
 import org.github.babkiniaa.scas.security.JwtTokenProvider;

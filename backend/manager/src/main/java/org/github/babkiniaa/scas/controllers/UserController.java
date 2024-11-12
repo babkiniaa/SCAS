@@ -2,7 +2,7 @@ package org.github.babkiniaa.scas.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.github.babkiniaa.scas.dto.ProfileDto;
+import org.github.babkiniaa.scas.dto.forUserDto.ProfileDto;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.exception.NotFoundUserException;
 import org.github.babkiniaa.scas.mappers.UserMapper;

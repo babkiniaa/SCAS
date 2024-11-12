@@ -1,9 +1,13 @@
-package org.github.babkiniaa.scas.dto;
+package org.github.babkiniaa.scas.dto.project;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.babkiniaa.scas.dto.ReportCheckStyleDto;
+import org.github.babkiniaa.scas.dto.ReportOWASPDto;
+import org.github.babkiniaa.scas.dto.ReportPMDDto;
+import org.github.babkiniaa.scas.dto.ReportSpotBugsDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,5 +38,5 @@ public class ProjectDto {
     private List<ReportPMDDto> reportPMDS;
 
     private List<ReportSpotBugsDto> reportSpotBugs;
-    
+
 }
