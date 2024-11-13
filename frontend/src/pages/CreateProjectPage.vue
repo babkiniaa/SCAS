@@ -113,39 +113,39 @@
             </q-card-section>
 
             <q-card-section class="row q-col-gutter-md q-pt-none items-start">
-  <div class="col-6">
-    <q-btn-dropdown
-      color="primary"
-      :label="selectedAnalyzerCategory ? 'Category: ' + selectedAnalyzerCategory : 'Select Analyzer Category'"
-      :class="isDarkMode ? 'bg-grey-6 text-white' : ''"
-    >
-      <q-list>
-        <q-item
-          v-for="(category, index) in Object.keys(analyzers)"
-          :key="index"
-          clickable
-          v-ripple
-          @click="selectAnalyzerCategory(category)"
-        >
-          <q-item-section>
-            <q-item-label>{{ category }}</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-btn-dropdown>
-  </div>
+              <div class="col-6">
+                <q-btn-dropdown
+                  color="primary"
+                  :label="selectedAnalyzerCategory ? 'Category: ' + selectedAnalyzerCategory : 'Select Analyzer Category'"
+                  :class="isDarkMode ? 'bg-grey-6 text-white' : ''"
+                >
+                  <q-list>
+                    <q-item
+                      v-for="(category, index) in Object.keys(analyzers)"
+                      :key="index"
+                      clickable
+                      v-ripple
+                      @click="selectAnalyzerCategory(category)"
+                    >
+                      <q-item-section>
+                        <q-item-label>{{ category }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-btn-dropdown>
+              </div>
 
-  <div class="col-6" v-if="availableAnalyzers.length">
-    <q-option-group
-      v-model="selectedAnalyzers"
-      :options="availableAnalyzers.map(analyzer => ({ label: analyzer, value: analyzer }))"
-      type="checkbox"
-      label="Select Analyzers"
-      dense
-      :class="isDarkMode ? 'bg-grey-9 text-white' : ''"
-    />
-  </div>
-</q-card-section>
+              <div class="col-6" v-if="availableAnalyzers.length">
+                <q-option-group
+                  v-model="selectedAnalyzers"
+                  :options="availableAnalyzers.map(analyzer => ({ label: analyzer, value: analyzer }))"
+                  type="checkbox"
+                  label="Select Analyzers"
+                  dense
+                  :class="isDarkMode ? 'bg-grey-9 text-white' : ''"
+                />
+              </div>
+            </q-card-section>
             <q-card-section>
               <q-input v-model="projectDescription" outlined label="Description" type="textarea" :class="isDarkMode ? 'bg-grey-9 text-white' : ''" />
             </q-card-section>
@@ -165,7 +165,7 @@
 import { Dark } from 'quasar'
 import { createProject } from 'src/services/projectServices'
 import { getAvatar } from 'src/services/userServices'
-import { getAnalizator } from 'src/services/analysisServeces'
+import { getAnalizator, reportCreate } from 'src/services/analysisServeces'
 export default {
   data () {
     return {
@@ -227,9 +227,18 @@ export default {
         this.isCreating = false
       }
     },
-    startAnalysis () {
-      localStorage.setItem('currentProject', this.idProject)
-      this.$router.push('/analysis')
+    async startAnalysis () {
+      try {
+        await reportCreate({
+          idProject: this.idProject,
+          needReports: this.selectedAnalyzers
+        })
+        this.$q.notify({ message: 'Project created successfully', color: 'green' })
+      } catch (error) {
+        this.$q.notify({ message: 'Failed to create project', color: 'red' })
+      } finally {
+        this.$router.push(`/projects/${localStorage.getItem('currentId')}`)
+      }
     },
     handleFileUpload () {
       this.$q.notify({ message: 'File upload clicked', color: 'blue' })
