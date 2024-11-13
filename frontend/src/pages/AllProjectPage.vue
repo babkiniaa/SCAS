@@ -1,6 +1,6 @@
 <template>
-    <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
-      <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
+  <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
+    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">All Projects</q-toolbar-title>
@@ -51,7 +51,7 @@
         </q-item>
       </q-list>
     </q-drawer>
-    <q-page-container :class="isDarkMode ? 'bg-dark' : 'bg-grey-3'" >
+    <q-page-container :class="isDarkMode ? 'bg-dark' : 'bg-grey-3'">
       <q-page style="margin-top: 15px;">
         <div class="row q-mb-md items-center justify-center">
           <div class="search-sort-container row q-gutter-md col-8 justify-center">
@@ -105,10 +105,13 @@
             :class="['project-card', isDarkMode ? 'bg-grey-8 text-white' : 'bg-white']"
             class="q-my-sm q-px-sm q-py-xs"
           >
+            <div class="row items-center justify-between">
             <q-card-section class="q-pa-sm">
               <div :class="[isDarkMode ? 'text-white' : 'text-black', 'text-h6']">{{ project.name }}</div>
               <div :class="isDarkMode ? 'text-grey-4' : 'text-body1'" class="q-mt-xs">{{ project.description }}</div>
-              <div :class="isDarkMode ? 'text-grey-5' : 'text-caption'" class="q-mt-sm">Created: {{ formatDate(project.createdDate) }}</div>
+              <div :class="isDarkMode ? 'text-grey-5' : 'text-caption'" class="q-mt-sm">
+                Created: {{ formatDate(project.createdDate) }}
+              </div>
               <q-badge
                 v-if="isOwnProject"
                 :color="project.visibility ? 'green' : 'yellow'"
@@ -117,9 +120,30 @@
                 {{ project.visibility ? 'Public' : 'Private' }}
               </q-badge>
             </q-card-section>
-            <q-card-actions align="right" class="q-pa-none q-px-sm q-py-xs">
-              <q-btn label="View Report" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width"  @click="viewReport(project.id)" />
+            <q-card-actions class="column items-end justify-center">
+              <div v-if="projectStatus[project.id] === 'EndS'" class="full-width q-mt-md">
+                <q-btn
+                  label="View Report"
+                  :class="isDarkMode ? 'bg-grey-6' : ''"
+                  class="full-width"
+                  @click="viewReport(project.id)"
+                />
+              </div>
+              <div v-else-if="projectStatus[project.id] === 'NotFound'" class="full-width q-mt-md">
+                <q-btn
+                  label="Run"
+                  :icon="playIcon"
+                  :class="isDarkMode ? 'bg-grey-6' : ''"
+                  class="q-mb-xs text-green"
+                  @click="runProject(project.id)"
+                />
+              </div>
+              <div v-else class="text-caption text-right q-mt-md">
+                {{ projectStatus[project.id] }}
+                color: yellow
+              </div>
             </q-card-actions>
+            </div>
           </q-card>
         </div>
         <div class="row justify-between q-mt-md">
@@ -139,12 +163,15 @@
 import { getProjects } from 'src/services/projectServices'
 import { Dark } from 'quasar'
 import { getAvatar } from 'src/services/userServices'
+import { getStatus } from 'src/services/analysisServeces'
+
 export default {
   data () {
     return {
       drawer: false,
       miniState: true,
       projects: [],
+      projectStatus: {},
       user: {
         avatar: null
       },
@@ -163,7 +190,8 @@ export default {
       ],
       isOwnProject: false,
       currentUserId: null,
-      isDarkMode: Dark.isActive
+      isDarkMode: Dark.isActive,
+      playIcon: 'play_arrow'
     }
   },
   methods: {
@@ -185,6 +213,14 @@ export default {
         const response = await getProjects(this.projectsDto)
         this.projects = response.data
         this.isOwnProject = this.projectsDto.userId === localStorage.getItem('currentId')
+
+        // Fetch status for each project
+        for (const project of this.projects) {
+          console.log(project.id)
+          console.log(this.projects)
+          const statusResponse = await getStatus(project.id)
+          this.projectStatus[project.id] = statusResponse.data || null
+        }
       } catch (error) {
         this.$q.notify({ message: 'Error loading projects', color: 'red' })
       }
@@ -212,9 +248,11 @@ export default {
     formatDate (date) {
       return new Date(date).toLocaleDateString()
     },
-    viewReport (project) {
-      const id = project
-      this.$router.push(`/report/${id}`)
+    viewReport (projectId) {
+      this.$router.push(`/report/${projectId}`)
+    },
+    runProject (projectId) {
+      // Logic to run the project goes here
     },
     onSearch () {
       this.projectsDto.page = 0
@@ -257,7 +295,6 @@ export default {
 .text-white {
   color: #ffffff !important;
 }
-
 .text-grey-5 {
   color: #7f8c8d !important;
 }

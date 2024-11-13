@@ -69,36 +69,40 @@
                 Visibility: {{ projectData.visibility ? 'Public' : 'Private' }} | Created on: {{ formatDate(projectData.createdDate) }}
               </div>
             </q-card-section>
-            <q-card-section>
-              <div class="text-h6 text-weight-bold q-mb-md">OWASP Vulnerabilities Found</div>
-              <div v-for="owasp in projectData.reportOWASPS" :key="owasp.name" class="q-my-md q-pa-sm border-box shadow-1 rounded-borders">
-                <div v-for="dep in owasp.reportList" :key="dep.name">
-                  <div class="text-body1 text-weight-bold">{{ dep.name }} - {{ dep.version }}</div>
-                  <p>License: {{ dep.license }}</p>
-                  <p>Ecosystem: {{ dep.ecosystem }}</p>
-                  <p>Discription: {{ dep.discription }}</p>
-                  <p v-if="dep.isVirtual">This is a virtual package.</p>
-                  <ul>
-                    <li v-for="vulnerability in dep.owaspVulnerabilities" :key="vulnerability.name">
-                      <strong>{{ vulnerability.name }}</strong>: {{ vulnerability.description }}
-                      <p><em>Notes:</em> {{ vulnerability.notes }}</p>
-                    </li>
-                  </ul>
+            <div v-if="reportData.dependencyCustoms.length">
+              <q-card-section>
+                <div class="text-h6 text-weight-bold q-mb-md">OWASP Vulnerabilities Found</div>
+                <div v-for="owasp in reportData.dependencyCustoms" :key="owasp.name" class="q-my-md q-pa-sm border-box shadow-1 rounded-borders">
+                  <div v-for="dep in owasp.reportList" :key="dep.name">
+                    <div class="text-body1 text-weight-bold">{{ dep.name }} - {{ dep.version }}</div>
+                    <p>License: {{ dep.license }}</p>
+                    <p>Ecosystem: {{ dep.ecosystem }}</p>
+                    <p>Discription: {{ dep.discription }}</p>
+                    <p v-if="dep.isVirtual">This is a virtual package.</p>
+                    <ul>
+                      <li v-for="vulnerability in dep.owaspVulnerabilities" :key="vulnerability.name">
+                        <strong>{{ vulnerability.name }}</strong>: {{ vulnerability.description }}
+                        <p><em>Notes:</em> {{ vulnerability.notes }}</p>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            </q-card-section>
-            <q-card-section>
-              <div class="text-h6 text-weight-bold q-mb-md">PMD Violations Found</div>
-              <div v-for="pmd in projectData.reportPMDS" :key="pmd.name" class="q-my-md q-pa-sm border-box shadow-1 rounded-borders">
-                <div v-for="violation in pmd.reportList" :key="violation.name">
-                  <div class="text-body1 text-weight-bold">{{ violation.name }}</div>
-                  <p>Priority: {{ violation.priority }}</p>
-                  <p>Message: {{ violation.message }}</p>
-                  <p>File: {{ violation.fileName }} (Line: {{ violation.beginLine }}-{{ violation.endLine }}, Col: {{ violation.beginColumn }}-{{ violation.endColumn }})</p>
-                  <p>{{ violation.description }}</p>
+              </q-card-section>
+            </div>
+            <div v-if="reportData.ruleViolationCustoms.length">
+              <q-card-section>
+                <div class="text-h6 text-weight-bold q-mb-md">PMD Violations Found</div>
+                <div v-for="pmd in reportData.ruleViolationCustoms" :key="pmd.name" class="q-my-md q-pa-sm border-box shadow-1 rounded-borders">
+                  <div v-for="violation in pmd.reportList" :key="violation.name">
+                    <div class="text-body1 text-weight-bold">{{ violation.name }}</div>
+                    <p>Priority: {{ violation.priority }}</p>
+                    <p>Message: {{ violation.message }}</p>
+                    <p>File: {{ violation.fileName }} (Line: {{ violation.beginLine }}-{{ violation.endLine }}, Col: {{ violation.beginColumn }}-{{ violation.endColumn }})</p>
+                    <p>{{ violation.description }}</p>
+                  </div>
                 </div>
-              </div>
-            </q-card-section>
+              </q-card-section>
+            </div>
           </q-card>
         </q-page>
       </div>
@@ -110,6 +114,7 @@
 import { Dark } from 'quasar'
 import { getAvatar } from 'src/services/userServices'
 import { getProject } from 'src/services/projectServices'
+import { getReport } from 'src/services/analysisServeces'
 export default {
   data () {
     return {
@@ -120,7 +125,8 @@ export default {
       },
       isDarkMode: Dark.isActive,
       projectData: null,
-      projectId: null
+      projectId: null,
+      reportData: null
     }
   },
   methods: {
@@ -152,6 +158,8 @@ export default {
       const response = await getProject(this.projectId)
       this.projectData = response.data
       console.log(this.projectData)
+      const response1 = await getReport(this.projectId)
+      this.reportData = response1.data
     },
     formatDate (date) {
       return new Date(date).toLocaleDateString()

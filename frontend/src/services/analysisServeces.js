@@ -22,3 +22,11 @@ export function reportCreate (projectData) {
 export function getAnalizator () {
   return api.get('/analysis/get-hashmap')
 }
+
+export function getStatus (id) {
+  return api.get(`/report/status/${id}`)
+}
+
+export function getReport (id) {
+  return api.get(`/report/status/${id}`)
+}
