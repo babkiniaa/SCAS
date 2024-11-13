@@ -24,7 +24,7 @@ public class MyController {
     private final AgentServiceClient agentServiceClient;
 
     @GetMapping("analysis/get-hashmap")
-    public HashMap<String, List<String>>  getMethodMap() {
+    public HashMap<String, List<String>> getMethodMap() {
 
         return agentServiceClient.getMethodMap();
     }
@@ -35,17 +35,22 @@ public class MyController {
     }
 
     @GetMapping("report/status/{id}")
-    public String getStatus(@PathVariable("id") long idTask){
+    public String getStatus(@PathVariable("id") long idTask) {
         return masterServiceClient.getStatus(idTask);
     }
 
+    @GetMapping("/get-reports/{id}")
+    ReportDto getRep(@PathVariable("id") long projectId) {
+        return masterServiceClient.getRep(projectId);
+    }
+
     @GetMapping("report/find/{id}")
-    public ReportDto getReport(@PathVariable("id") Long idReport){
+    public ReportDto getReport(@PathVariable("id") Long idReport) {
         return masterServiceClient.getReport(idReport);
     }
 
     @GetMapping("report/save/{id}")
-    public ReportDto reportSave(@PathVariable("id") long idProject){
+    public ReportDto reportSave(@PathVariable("id") long idProject) {
         return masterServiceClient.getReport(idProject);
     }
 
