@@ -11,5 +11,7 @@ public enum StatusTask {
 
     EndF,
 
-    Err
+    Err,
+
+    NotFound
 }

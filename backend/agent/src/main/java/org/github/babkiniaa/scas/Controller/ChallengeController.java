@@ -20,7 +20,7 @@ public class ChallengeController {
     private final TaskService taskService;
 
     @PostMapping("/start/queue")
-    public Long initTask(@RequestBody RegisterTaskDto registerTaskDto) throws Exception {
+    public Long initTask(@RequestBody RegisterTaskDto registerTaskDto) {
         return taskService.saveTask(registerTaskDto);
     }
 
@@ -30,8 +30,12 @@ public class ChallengeController {
     }
   
     @GetMapping("/task/{id}/status")
-    public String getStatus(@PathVariable("id") long projectId) throws Exception {
-        return taskService.getStatusByProjectId(projectId).toString();
+    public String getStatus(@PathVariable("id") long projectId) {
+        try{
+            return taskService.getStatusByProjectId(projectId).toString();
+        }catch (Exception e){
+            return StatusTask.NotFound.toString();
+        }
 
     }
 
