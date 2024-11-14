@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Dto для подтверждения личности и поиск аккаунта который хочет поменять пароль
+ */
 @Getter
 @Setter
 public class VeritifyEmail {

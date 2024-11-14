@@ -3,16 +3,12 @@ package org.github.babkiniaa.scas.controllers;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.client.MasterServiceClient;
-import org.github.babkiniaa.scas.dto.*;
-import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectAndUserIdDto;
-import org.github.babkiniaa.scas.dto.ProjectAndId.ProjectIdAndReportId;
+import org.github.babkiniaa.scas.dto.project.ProjectCreateDto;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.github.babkiniaa.scas.dto.project.AnalyserDto;
 import org.github.babkiniaa.scas.dto.project.GetProjectAllDto;
 import org.github.babkiniaa.scas.dto.project.ProjectDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,9 +51,9 @@ public class MyController {
     }
 
     @PostMapping("/project/create")
-    public long createProject(@RequestBody ProjectAndUserIdDto projectAndUserIdDto) {
+    public long createProject(@RequestBody ProjectCreateDto projectCreateDto) {
 
-        return masterServiceClient.createProject(projectAndUserIdDto);
+        return masterServiceClient.createProject(projectCreateDto);
     }
 
     @PostMapping("/project/get-projects")
