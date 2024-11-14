@@ -1,22 +1,17 @@
 package org.github.babkiniaa.scas.dto.project;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
- * DTO для получния информации о проекте
+ * DTO для создания проекта
  */
 @Setter
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ProjectDto {
-    private int id;
+public class ProjectCreateDto {
+
+    private int userId;
 
     private String name;
 
