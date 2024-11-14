@@ -1,69 +1,14 @@
 <template>
-  <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
-    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
-      <q-toolbar>
-        <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
-        <q-toolbar-title :class="isDarkMode ? 'text-white' : ''">Create Project</q-toolbar-title>
-        <q-space />
-        <q-btn dense round icon="search" aria-label="Search" class="text-white" />
-        <q-btn
-          dense
-          round
-          :icon="isDarkMode ? 'light_mode' : 'dark_mode'"
-          @click="toggleDarkMode"
-          aria-label="Toggle Dark Mode"
-          class="text-white q-ml-sm"
-        />
-        <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
-          <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
-          <q-icon v-else name="person" class="text-white" />
-        </q-avatar>
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer
-      v-model="drawer"
-      show-if-above
-      :mini="miniState"
-      @mouseenter="miniState = false"
-      @mouseleave="miniState = true"
-      :width="200"
-      :breakpoint="500"
-      bordered
-      :content-class="isDarkMode ? 'bg-black' : 'bg-grey-9'"
-    >
-      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-        <q-list padding>
-          <q-item clickable v-ripple @click="goToHome">
-            <q-item-section avatar>
-              <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
-            </q-item-section>
-            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="goToCreateProject">
-            <q-item-section avatar>
-              <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
-            </q-item-section>
-            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="goToAllProjects">
-            <q-item-section avatar>
-              <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
-            </q-item-section>
-            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
-          </q-item>
-        </q-list>
-      </q-scroll-area>
-    </q-drawer>
-    <q-page-container  :class="isDarkMode ? 'bg-dark' : 'bg-grey-2'">
-      <q-page style="margin-top: 15px;">
+    <q-layout view="hHh Lpr lff">
         <q-card :class="['q-pa-md', 'shadow-2', 'my-card', isDarkMode ? 'bg-grey-8' : '']" bordered>
           <q-form @submit="submitCreateProject">
             <q-card-section class="row q-col-gutter-md">
-              <div class="col-8">
+              <div class="col-12">
                 <q-input v-model="projectName" outlined label="Project Name" dense :class="isDarkMode ? 'bg-grey-9 text-white' : ''" />
               </div>
-              <div class="col-4">
+            </q-card-section>
+            <q-card-section class="row q-col-gutter-md q-pt-none">
+              <div class="col-6">
                 <q-btn-dropdown
                   color="primary"
                   :class="isDarkMode ? 'bg-grey-6' : ''"
@@ -79,13 +24,10 @@
                   </q-list>
                 </q-btn-dropdown>
               </div>
-            </q-card-section>
-
-            <q-card-section class="row q-col-gutter-md q-pt-none">
-              <div class="col-12">
+              <div class="col-6">
                 <q-btn-dropdown
-                  :class="isDarkMode ? 'bg-grey-6' : ''"
                   color="primary"
+                  :class="isDarkMode ? 'bg-grey-6' : ''"
                   :label="selectedSource ? 'Source: ' + selectedSource : 'Select Source'"
                 >
                   <q-list>
@@ -156,9 +98,7 @@
             </q-card-section>
           </q-form>
         </q-card>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+    </q-layout>
 </template>
 
 <script>
@@ -283,9 +223,13 @@ export default {
 </script>
 
 <style scoped>
+.no-scroll-dropdown {
+  max-height: 200px;
+  overflow-y: auto;
+}
 .my-card {
-  max-width: 600px;
-  margin:  auto;
+  max-width: 800px;
+  margin: 100px auto;
 }
 .bg-dark {
   background-color: #121212;

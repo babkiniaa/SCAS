@@ -39,7 +39,7 @@
               </q-item-section>
               <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
             </q-item>
-            <q-item clickable v-ripple @click="goToCreateProject">
+            <q-item clickable v-ripple  @click="showCreateProjectModal = true">>
               <q-item-section avatar>
                 <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
               </q-item-section>
@@ -72,10 +72,13 @@
               </q-list>
             </q-card-section>
             <q-card-section v-else>
-              <q-btn label="Create Project" color="dark" @click="goToCreateProject" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" />
+              <q-btn label="Create Project" color="dark" @click="showCreateProjectModal = true" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" />
             </q-card-section>
           </q-card>
         </q-page>
+        <q-dialog v-model="showCreateProjectModal">
+          <create-project-form :isDarkMode="isDarkMode" />
+        </q-dialog>
       </q-page-container>
     </q-layout>
 </template>
@@ -83,6 +86,7 @@
 import { Dark } from 'quasar'
 import { getProjects } from 'src/services/projectServices'
 import { getAvatar } from 'src/services/userServices'
+import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
   data () {
     return {
@@ -101,8 +105,12 @@ export default {
         myProject: true,
         name: '',
         sortDirection: 'DESC'
-      }
+      },
+      showCreateProjectModal: false
     }
+  },
+  components: {
+    CreateProjectForm
   },
   methods: {
     async fetchProjects () {
@@ -123,9 +131,6 @@ export default {
     },
     goToHome () {
       this.$router.push('/home')
-    },
-    goToCreateProject () {
-      this.$router.push('/create-project')
     },
     goToAllProjects () {
       const id = localStorage.getItem('currentId')
