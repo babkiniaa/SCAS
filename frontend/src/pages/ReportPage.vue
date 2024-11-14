@@ -39,7 +39,7 @@
               </q-item-section>
               <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
             </q-item>
-            <q-item clickable v-ripple @click="goToCreateProject">
+            <q-item clickable v-ripple  @click="showCreateProjectModal = true">
               <q-item-section avatar>
                 <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
               </q-item-section>
@@ -106,6 +106,9 @@
           </q-card>
         </q-page>
       </div>
+      <q-dialog v-model="showCreateProjectModal">
+          <create-project-form :isDarkMode="isDarkMode" />
+    </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
@@ -114,7 +117,8 @@
 import { Dark } from 'quasar'
 import { getAvatar } from 'src/services/userServices'
 import { getProject } from 'src/services/projectServices'
-import { getReport } from 'src/services/analysisServeces'
+import { getReport, save } from 'src/services/analysisServeces'
+import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
   data () {
     return {
@@ -126,8 +130,12 @@ export default {
       isDarkMode: Dark.isActive,
       projectData: null,
       projectId: null,
-      reportData: null
+      reportData: null,
+      showCreateProjectModal: false
     }
+  },
+  components: {
+    CreateProjectForm
   },
   methods: {
     toggleDarkMode () {
@@ -136,9 +144,6 @@ export default {
     },
     goToHome () {
       this.$router.push('/home')
-    },
-    goToCreateProject () {
-      this.$router.push('/create-project')
     },
     goToAllProjects () {
       const id = localStorage.getItem('currentId')
@@ -154,6 +159,7 @@ export default {
       this.user.avatar = response.data
     },
     async fetchProject () {
+      save(this.projectId)
       console.log(this.projectId)
       const response = await getProject(this.projectId)
       this.projectData = response.data

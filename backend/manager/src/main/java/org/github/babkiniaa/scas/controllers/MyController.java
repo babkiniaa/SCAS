@@ -39,7 +39,7 @@ public class MyController {
         return masterServiceClient.getStatus(idTask);
     }
 
-    @GetMapping("/get-reports/{id}")
+    @GetMapping("report/get-reports/{id}")
     ReportDto getRep(@PathVariable("id") long projectId) {
         return masterServiceClient.getRep(projectId);
     }
@@ -51,7 +51,7 @@ public class MyController {
 
     @GetMapping("report/save/{id}")
     public ReportDto reportSave(@PathVariable("id") long idProject) {
-        return masterServiceClient.getReport(idProject);
+        return masterServiceClient.saveReport(idProject);
     }
 
     @PostMapping("/project/create")

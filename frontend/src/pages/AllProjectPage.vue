@@ -37,7 +37,7 @@
           </q-item-section>
           <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
         </q-item>
-        <q-item clickable v-ripple @click="goToCreateProject">
+        <q-item clickable v-ripple  @click="showCreateProjectModal = true">
           <q-item-section avatar>
             <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
           </q-item-section>
@@ -155,6 +155,9 @@
           />
         </div>
       </q-page>
+      <q-dialog v-model="showCreateProjectModal">
+          <create-project-form :isDarkMode="isDarkMode" />
+    </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
@@ -164,7 +167,7 @@ import { getProjects } from 'src/services/projectServices'
 import { Dark } from 'quasar'
 import { getAvatar } from 'src/services/userServices'
 import { getStatus } from 'src/services/analysisServeces'
-
+import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
   data () {
     return {
@@ -191,8 +194,12 @@ export default {
       isOwnProject: false,
       currentUserId: null,
       isDarkMode: Dark.isActive,
-      playIcon: 'play_arrow'
+      playIcon: 'play_arrow',
+      showCreateProjectModal: false
     }
+  },
+  components: {
+    CreateProjectForm
   },
   methods: {
     toggleDarkMode () {

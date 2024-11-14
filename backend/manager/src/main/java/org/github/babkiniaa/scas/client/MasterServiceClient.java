@@ -28,7 +28,7 @@ public interface MasterServiceClient {
     @GetMapping("report/status/{id}")
     String getStatus(@PathVariable("id") Long id);
 
-    @GetMapping("/get-reports/{id}")
+    @GetMapping("report/get-reports/{id}")
     ReportDto getRep(@PathVariable("id") long projectId);
 
     @GetMapping("report/find/{id}")
