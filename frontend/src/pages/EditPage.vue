@@ -37,7 +37,7 @@
           </q-item-section>
           <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
         </q-item>
-        <q-item clickable v-ripple @click="goToCreateProject">
+        <q-item clickable v-ripple  @click="showCreateProjectModal = true">
           <q-item-section avatar>
             <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
           </q-item-section>
@@ -117,12 +117,16 @@
           </div>
         </div>
       </q-page>
+      <q-dialog v-model="showCreateProjectModal">
+          <create-project-form :isDarkMode="isDarkMode" />
+    </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
 <script>
 import { getUserProfile, updateUserProfile, uploadUserAvatar, deleteUserAvatar } from 'src/services/userServices'
 import { Dark } from 'quasar'
+import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
   data () {
     return {
@@ -134,8 +138,12 @@ export default {
         avatar: null,
         about: ''
       },
-      isDarkMode: Dark.isActive
+      isDarkMode: Dark.isActive,
+      showCreateProjectModal: false
     }
+  },
+  components: {
+    CreateProjectForm
   },
   async created () {
     await this.loadUserProfile()
@@ -191,9 +199,6 @@ export default {
     },
     goToHome () {
       this.$router.push('/home')
-    },
-    goToCreateProject () {
-      this.$router.push('/create-project')
     },
     goToAllProjects () {
       const id = localStorage.getItem('currentId')
