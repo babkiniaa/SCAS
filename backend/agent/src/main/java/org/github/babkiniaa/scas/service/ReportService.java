@@ -12,6 +12,9 @@ import org.github.babkiniaa.scas.repository.ReportRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+/**
+ * The type Report service.
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -21,10 +24,22 @@ public class ReportService {
     private final ReportRepository repository;
     private final ReportMapper reportMapper;
 
+    /**
+     * Save report.
+     *
+     * @param reportDto the report dto
+     * @return the report
+     */
     public Report save(ReportDto reportDto){
         return repository.save(reportMapper.reportDtoToReport(reportDto));
     }
 
+    /**
+     * Save report.
+     *
+     * @param reportAndDirDto the report and dir dto
+     * @return the report
+     */
     public Report save(ReportAndDirDto reportAndDirDto){
         return repository.save(reportMapper.reportAndDirToReport(reportAndDirDto));
     }

@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 
 @EnableScheduling
 @SpringBootApplication
+@EnableFeignClients
 public class AgentRun {
 
     public static void main(String[] args) {

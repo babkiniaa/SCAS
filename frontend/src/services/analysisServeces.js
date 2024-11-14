@@ -28,5 +28,5 @@ export function getStatus (id) {
 }
 
 export function getReport (id) {
-  return api.get(`/report/status/${id}`)
+  return api.get(`/get-reports/${id}`)
 }
