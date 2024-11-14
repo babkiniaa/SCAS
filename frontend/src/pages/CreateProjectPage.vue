@@ -53,8 +53,27 @@
                 <q-btn label="Upload File" color="primary" @click="handleFileUpload" />
               </div>
             </q-card-section>
+            <q-card-section>
+              <q-input v-model="projectDescription" outlined label="Description" type="textarea" :class="isDarkMode ? 'bg-grey-9 text-white' : ''" />
+            </q-card-section>
 
-            <q-card-section class="row q-col-gutter-md q-pt-none items-start">
+            <q-card-section class="text-center">
+              <q-btn label="Create Project" color="primary" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" type="submit" :disable="isCreating" />
+              <q-btn label="Start Analysis" color="primary" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width"
+              clickable v-ripple
+              @click="showModal = true"
+               :disable="!projectCreated"
+              />
+            </q-card-section>
+          </q-form>
+        </q-card>
+        <q-dialog v-model="showModal">
+          <q-card style="width: 450px; height: 250px; padding: 16px;">
+            <q-card-section class="text-center">
+              <h6 style="margin: 0;">Select Analizator</h6>
+            </q-card-section>
+
+            <q-card-section class="row q-col-gutter-md q-pt-none items-start" style="padding: 0 10px;">
               <div class="col-6">
                 <q-btn-dropdown
                   color="primary"
@@ -76,7 +95,6 @@
                   </q-list>
                 </q-btn-dropdown>
               </div>
-
               <div class="col-6" v-if="availableAnalyzers.length">
                 <q-option-group
                   v-model="selectedAnalyzers"
@@ -88,32 +106,27 @@
                 />
               </div>
             </q-card-section>
-            <q-card-section>
-              <q-input v-model="projectDescription" outlined label="Description" type="textarea" :class="isDarkMode ? 'bg-grey-9 text-white' : ''" />
+            <q-card-section class="text-center" style="padding: 30px; margin-top: auto;">
+              <q-btn
+                  label="Run"
+                  :icon="playIcon"
+                  :class="isDarkMode ? 'bg-grey-6' : ''"
+                  class="q-mb-xs text-green"
+                  @click="startAnalysis"
+                />
             </q-card-section>
-
-            <q-card-section class="text-center">
-              <q-btn label="Create Project" color="primary" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" type="submit" :disable="isCreating" />
-              <q-btn label="Start Analysis" color="primary" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" @click="startAnalysis" :disable="!projectCreated" />
-            </q-card-section>
-          </q-form>
-        </q-card>
+          </q-card>
+        </q-dialog>
     </q-layout>
 </template>
 
 <script>
 import { Dark } from 'quasar'
 import { createProject } from 'src/services/projectServices'
-import { getAvatar } from 'src/services/userServices'
 import { getAnalizator, reportCreate } from 'src/services/analysisServeces'
 export default {
   data () {
     return {
-      drawer: false,
-      miniState: true,
-      user: {
-        avatar: null
-      },
       isDarkMode: Dark.isActive,
       projectName: '',
       selectedSource: '',
@@ -128,7 +141,9 @@ export default {
       analyzers: {},
       selectedAnalyzerCategory: null,
       selectedAnalyzers: [],
-      availableAnalyzers: []
+      availableAnalyzers: [],
+      showModal: false,
+      playIcon: 'play_arrow'
     }
   },
   methods: {
@@ -183,24 +198,6 @@ export default {
     handleFileUpload () {
       this.$q.notify({ message: 'File upload clicked', color: 'blue' })
     },
-    goToHome () {
-      this.$router.push('/home')
-    },
-    goToCreateProject () {
-      this.$router.push('/create-project')
-    },
-    goToAllProjects () {
-      const id = localStorage.getItem('currentId')
-      this.$router.push(`/projects/${id}`)
-    },
-    goToProfile () {
-      const userId = localStorage.getItem('currentId')
-      this.$router.push(`/profile/${userId}`)
-    },
-    async fetchUser () {
-      const response = await getAvatar(localStorage.getItem('currentId'))
-      this.user.avatar = response.data
-    },
     async fetchAnalyzers () {
       try {
         const response = await getAnalizator()
@@ -216,7 +213,6 @@ export default {
     }
   },
   created () {
-    this.fetchUser()
     this.fetchAnalyzers()
   }
 }
