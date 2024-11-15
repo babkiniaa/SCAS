@@ -6,9 +6,11 @@ import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
-
 import java.util.List;
 
+/**
+ * DTO пля получения отчета
+ */
 @Setter
 @Getter
 public class ReportDto {

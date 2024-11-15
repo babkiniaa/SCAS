@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/**
+ * DTO для получения информации о user
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor
