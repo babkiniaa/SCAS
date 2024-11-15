@@ -7,10 +7,6 @@ import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
-import org.github.babkiniaa.scas.entity.reportsEntity.BugInstanceCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.DependencyCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.ViolationCustom;
 
 import java.util.List;
 

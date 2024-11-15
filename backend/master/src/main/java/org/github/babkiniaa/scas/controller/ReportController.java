@@ -6,6 +6,7 @@ import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.dto.*;
 import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.service.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,12 +36,10 @@ public class ReportController {
         return agentServiceClient.getStatus(projectId);
     }
 
-    @GetMapping("/save/{id}")
-    public ReportDto getReport(@PathVariable("id") long projectId) {
-        ReportDto reportDto = agentServiceClient.getReport(projectId);
+    @PostMapping("/save/{id}")
+    public void saveReport(@PathVariable("id") long idProject,@RequestBody ReportDto reportDto){
         Report report = reportService.save(reportDto);
-        projectService.addReport(projectId, report);
-        return reportMapper.reportToReportDto(report);
+        projectService.addReport(idProject, report);
     }
 
     @GetMapping("/get-reports/{id}")

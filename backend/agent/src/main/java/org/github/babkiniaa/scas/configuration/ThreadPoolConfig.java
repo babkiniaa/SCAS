@@ -7,9 +7,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The type Thread pool config.
+ */
 @Configuration
 public class ThreadPoolConfig {
 
+    /**
+     * Thread pool executor thread pool executor.
+     *
+     * @return the thread pool executor
+     */
     @Bean
     public ThreadPoolExecutor threadPoolExecutor() {
         return new ThreadPoolExecutor(

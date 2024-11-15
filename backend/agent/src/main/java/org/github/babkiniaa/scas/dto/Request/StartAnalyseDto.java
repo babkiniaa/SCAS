@@ -11,7 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 public class StartAnalyseDto {
 
-    private Long projectId;
+    private long taskId;
+
+    private long projectId;
 
     private String url;
 

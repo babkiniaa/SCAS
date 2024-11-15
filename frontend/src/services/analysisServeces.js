@@ -28,9 +28,7 @@ export function getStatus (id) {
 }
 
 export function getReport (id) {
-  return api.get(`/report/get-reports/${id}`)
-}
 
-export function save (id) {
-  return api.get(`/report/save/${id}`)
+  return api.get(`/report/get-reports/${id}`)
+
 }
