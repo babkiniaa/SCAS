@@ -26,6 +26,7 @@ public class ReportService {
     public Report save(Long projectId, ReportDto report) {
         Report reportEntity = reportMapper.reportDtoToReport(report);
         reportEntity.setProjectId(projectId);
+
         return reportRepository.save(reportEntity);
     }
 
