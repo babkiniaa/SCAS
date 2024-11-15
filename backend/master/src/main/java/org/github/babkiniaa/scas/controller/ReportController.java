@@ -26,8 +26,8 @@ public class ReportController {
     @PostMapping("/create")
     public long createReport(@RequestBody AnalyserDto analyserDto) {
         StartAnalyseDto startAnalyseDto = projectService.startInfo(analyserDto);
-
         long taskId = agentServiceClient.init(startAnalyseDto);
+
         return taskId;
     }
 
@@ -36,23 +36,19 @@ public class ReportController {
         return agentServiceClient.getStatus(projectId);
     }
 
-    @PostMapping("/save/{id}")
-    public void saveReport(@PathVariable("id") long idProject,@RequestBody ReportDto reportDto){
-        Report report = reportService.save(reportDto);
-        projectService.addReport(idProject, report);
-    }
-
-    @GetMapping("/get-reports/{id}")
-    public ReportDto getRep(@PathVariable("id") long projectId) {
-        List<ReportDto> reportDto = reportMapper.reportsToReportsDto(projectService.findById(projectId).getReports());
-        return reportDto.get(reportDto.size() - 1);
-
-    }
-
     @GetMapping("/find/{id}")
     public ReportDto findReport(@PathVariable("id") long reportId) {
         return reportService.findById(reportId);
     }
 
+    @GetMapping("/get-by-project/{id}")
+    public List<ReportDto> findReportsByProjectId(@PathVariable("id") long projectId){
+        return reportService.findAllByProjectId(projectId);
+    }
+
+    @PostMapping("/save/{id}")
+    public void saveReport(@PathVariable("id") long idProject,@RequestBody ReportDto reportDto){
+        reportService.save(idProject, reportDto);
+    }
 
 }

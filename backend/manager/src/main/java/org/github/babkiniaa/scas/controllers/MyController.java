@@ -9,6 +9,7 @@ import org.github.babkiniaa.scas.dto.project.AnalyserDto;
 import org.github.babkiniaa.scas.dto.project.GetProjectAllDto;
 import org.github.babkiniaa.scas.dto.project.ProjectDto;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,6 +29,11 @@ public class MyController {
     @PostMapping("/report/create")
     public long createReport(@RequestBody AnalyserDto analyserDto) {
         return masterServiceClient.createReport(analyserDto);
+    }
+
+    @GetMapping("/get-by-project/{id}")
+    public List<ReportDto> findReportsByProjectId(@PathVariable("id") long projectId) {
+        return masterServiceClient.findReportsByProjectId(projectId);
     }
 
     @GetMapping("report/status/{id}")
