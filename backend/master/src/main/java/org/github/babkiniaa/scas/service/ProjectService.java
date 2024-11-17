@@ -79,11 +79,4 @@ public class ProjectService {
         return startAnalyseDto;
     }
 
-    public void addReport(long projectId, Report report) {
-        Project project = projectMapper.projectToEntity(findById(projectId));
-        List<Report> reports = project.getReports();
-        reports.add(report);
-        project.setReports(reports);
-        projectRepository.save(project);
-    }
 }

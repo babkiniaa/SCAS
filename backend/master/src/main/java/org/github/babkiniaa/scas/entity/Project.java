@@ -36,9 +36,5 @@ public class Project {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany
-    @JoinColumn(name = "reports_id")
-    private List<Report> reports;
-
     private long userId;
 }

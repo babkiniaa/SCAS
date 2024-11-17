@@ -11,6 +11,8 @@ import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.repository.ReportRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Setter
 @Getter
@@ -21,12 +23,19 @@ public class ReportService {
     private final ReportPMDMapper reportPMDMapper;
     private final ReportOWASPMapper reportOWASPMapper;
 
-    public Report save(ReportDto report) {
-        return reportRepository.save(reportMapper.reportDtoToReport(report));
+    public Report save(Long projectId, ReportDto report) {
+        Report reportEntity = reportMapper.reportDtoToReport(report);
+        reportEntity.setProjectId(projectId);
+
+        return reportRepository.save(reportEntity);
     }
 
     public ReportDto findById(long reportId){
         return reportMapper.reportToReportDto(reportRepository.findById(reportId).get());
+    }
+
+    public List<ReportDto> findAllByProjectId(long projectId){
+        return reportMapper.reportsToReportsDto(reportRepository.findAllByProjectId(projectId));
     }
 
 }
