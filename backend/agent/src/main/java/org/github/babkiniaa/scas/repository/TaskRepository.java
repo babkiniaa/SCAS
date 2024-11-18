@@ -1,12 +1,16 @@
 package org.github.babkiniaa.scas.repository;
 
+import org.github.babkiniaa.scas.entity.StatusTask;
 import org.github.babkiniaa.scas.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findTaskByIdProject(long projectId);
+
+    List<Task> findAllByStatusTask(StatusTask statusTask);
 }

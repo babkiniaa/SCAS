@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnalyserDto {
 
-    private Long idProject;
+    private long idProject;
 
     private List<String> needReports;
 

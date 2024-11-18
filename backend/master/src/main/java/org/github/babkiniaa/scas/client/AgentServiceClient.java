@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @FeignClient(name = "agent-service", url = "http://localhost:8081")
 public interface AgentServiceClient {
 
@@ -20,4 +22,12 @@ public interface AgentServiceClient {
     @GetMapping("/analysis/task/{id}/report")
     ReportDto getReport(@PathVariable("id") long id);
 
+    @GetMapping("/analysis/count-queue")
+    int getCountQueue();
+
+    @GetMapping("/analysis/get-run-task")
+    List<Long> getRunTask();
+
+    @PostMapping("/analysis/task/ban/{id}")
+    void banTask(@PathVariable("id") long taskId);
 }

@@ -43,4 +43,13 @@ public interface MasterServiceClient {
     @GetMapping("project/get-project/{id}")
     ProjectDto getProject(@PathVariable int id);
 
+    @GetMapping("/agent/count-queue")
+    int getCountQueue();
+
+    @GetMapping("/agent/get-run-task")
+    List<Long> getRunTask();
+
+    @PostMapping("/agent/task/ban/{id}")
+    void banTask(@PathVariable("id") long taskId);
+
 }

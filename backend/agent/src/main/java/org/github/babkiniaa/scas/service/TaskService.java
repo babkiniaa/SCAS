@@ -24,6 +24,7 @@ import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.owasp.dependencycheck.dependency.Dependency;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,7 +82,6 @@ public class TaskService {
         task.setStatusTask(StatusTask.TODO);
         Long idTask = taskRepository.save(task).getId();
         StartAnalyseDto startAnalyseDto = new StartAnalyseDto(idTask, registerTaskDto.getIdProject(), registerTaskDto.getUrl(), registerTaskDto.getNeedReports());
-
         threadPoolExecutor.execute(() -> {
             try {
                 startAnalysis(startAnalyseDto);
@@ -138,37 +138,37 @@ public class TaskService {
      * @return the long
      */
     @Async
-    public long startAnalysis(StartAnalyseDto startAnalyseDto) {
-        long taskId;
+    public void startAnalysis(StartAnalyseDto startAnalyseDto) {
         Task task = taskRepository.findById(startAnalyseDto.getTaskId()).get();
-        task.setStatusTask(StatusTask.Run);
-        taskRepository.save(task);
-        String dir = System.getProperty("user.dir") + "/down/" + startAnalyseDto.getTaskId();
-        ReportAndDirDto reportAndDirDto = new ReportAndDirDto();
-        reportAndDirDto.setDir(dir);
+        System.out.println(task.getStatusTask());
+        if (task.getStatusTask().equals(StatusTask.TODO)) {
+            task.setStatusTask(StatusTask.Run);
+            taskRepository.save(task);
+            String dir = System.getProperty("user.dir") + "/down/" + startAnalyseDto.getTaskId();
+            ReportAndDirDto reportAndDirDto = new ReportAndDirDto();
+            reportAndDirDto.setDir(dir);
 
-        try {
-            GitUtil.cloneRepository(startAnalyseDto.getUrl(), dir);
-        } catch (GitAPIException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            for (String run : startAnalyseDto.getNeedReports()) {
-                reportAndDirDto = (ReportAndDirDto) methodMap.get(run).getFunction().apply(reportAndDirDto);
+            try {
+                GitUtil.cloneRepository(startAnalyseDto.getUrl(), dir);
+            } catch (GitAPIException e) {
+                throw new RuntimeException(e);
             }
-            task.setStatusTask(StatusTask.EndS);
-            task.setReport(reportService.save(reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto)));
-            taskId = taskRepository.save(task).getId();
-            saveReportInMaster(task, reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto), startAnalyseDto.getProjectId());
-        } catch (Exception e) {
-            task.setStatusTask(StatusTask.Err);
-            taskRepository.save(task).getId();
-            throw new RuntimeException(e);
-        } finally {
-            DeleteFileUtil.deleteDir(new File(dir));
+            try {
+                for (String run : startAnalyseDto.getNeedReports()) {
+                    reportAndDirDto = (ReportAndDirDto) methodMap.get(run).getFunction().apply(reportAndDirDto);
+                }
+                task.setStatusTask(StatusTask.EndS);
+                task.setReport(reportService.save(reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto)));
+                taskRepository.save(task);
+                saveReportInMaster(task, reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto), startAnalyseDto.getProjectId());
+            } catch (Exception e) {
+                task.setStatusTask(StatusTask.Err);
+                taskRepository.save(task).getId();
+                throw new RuntimeException(e);
+            } finally {
+                DeleteFileUtil.deleteDir(new File(dir));
+            }
         }
-
-        return taskId;
     }
 
     /**
@@ -191,12 +191,56 @@ public class TaskService {
     /*
      * Тут надо бы еще хеш посчитать 🙄
      */
+    @Async
     public void saveReportInMaster(Task task, ReportDto reportDto, long projectId) {
         if (getStatusByProjectId(projectId) == StatusTask.EndS) {
             reportDto.setHash("You method hash");
             agentClient.saveInMasterReport(projectId, reportDto);
             taskRepository.delete(task);
         }
+    }
+
+    /**
+     * Ban task.
+     *
+     * @param taskId the task id
+     */
+    @Async
+    public void banTask(long taskId) {
+        try {
+            Task task = taskRepository.findById(taskId).get();
+            task.setStatusTask(StatusTask.Ban);
+            taskRepository.save(task);
+        } catch (Exception e) {
+
+        }
+    }
+
+    /**
+     * Gets run task.
+     *
+     * @return the run task
+     */
+    @Async
+    public List<Long> getRunTask() {
+        List<Task> tasks = taskRepository.findAllByStatusTask(StatusTask.Run);
+        List<Long> idList = new ArrayList<>();
+
+        for (var task : tasks) {
+            idList.add(task.getId());
+        }
+
+        return idList;
+
+    }
+
+    /**
+     * Gets count.
+     *
+     * @return the count
+     */
+    public int getCount() {
+        return threadPoolExecutor.getActiveCount();
     }
 
 

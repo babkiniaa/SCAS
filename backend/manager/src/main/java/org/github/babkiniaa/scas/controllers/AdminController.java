@@ -1,5 +1,7 @@
 package org.github.babkiniaa.scas.controllers;
 
+import lombok.RequiredArgsConstructor;
+import org.github.babkiniaa.scas.client.MasterServiceClient;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Контроллер для управления пользователями в административной панели.
@@ -19,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdminController {
 
     @Autowired
     private UserService userService;
+    private final MasterServiceClient masterServiceClient;
 
     /**
      * Получает список всех пользователей с постраничной разбивкой.
@@ -58,4 +61,20 @@ public class AdminController {
         userService.blockUser(userId);
         return "redirect:/admin/users";
     }
+
+    @GetMapping("/agent/count-queue")
+    int getCountQueue(){
+        return masterServiceClient.getCountQueue();
+    }
+
+    @GetMapping("/agent/get-run-task")
+    List<Long> getRunTask(){
+        return masterServiceClient.getRunTask();
+    }
+
+    @PostMapping("/agent/task/ban/{id}")
+    void banTask(@PathVariable("id") long taskId){
+        masterServiceClient.banTask(taskId);
+    }
+
 }
