@@ -49,7 +49,7 @@ public class TokenService {
     }
 
     public Token getByVerifyCode(String verificationCode) {
-        return tokenRepository.findByVerificationToken(verificationCode).orElseThrow();
+        return tokenRepository.findByVerificationToken(verificationCode);
     }
 
     public void deleteByToken(String verificationCode) {

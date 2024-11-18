@@ -89,12 +89,4 @@ public class AuthController {
      * @param code код подтверждения, отправленный на email пользователя.
      * @return ResponseEntity с сообщением об успешной верификации или ошибке.
      */
-    @GetMapping("/verify")
-    public ResponseEntity<?> verifyUser(@RequestParam("code") String code) {
-        if (userService.verify(code)) {
-            return ResponseEntity.ok("Verification successful. You can now log in.");
-        } else {
-            return ResponseEntity.badRequest().body("Verification failed.");
-        }
-    }
 }

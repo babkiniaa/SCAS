@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TokenRepository extends JpaRepository<Token, Long> {
-    Optional<Token> findByVerificationToken(String token);
+    Token findByVerificationToken(String token);
 
     void deleteByVerificationToken(String verificationCode);
 

@@ -37,7 +37,7 @@ public class EmailService {
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
                 + "Thank you,<br>"
                 + "SCASIK_STASIK.";
-        sendEmail(email, subject, content, verificationCode, request, "/auth/verify?code=");
+        sendEmail(email, subject, content, verificationCode, request, "/verify?code=");
     }
 
     private String getSiteURL(HttpServletRequest request) {
