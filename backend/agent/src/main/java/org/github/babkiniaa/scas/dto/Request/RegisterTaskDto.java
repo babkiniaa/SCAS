@@ -13,5 +13,5 @@ public class RegisterTaskDto {
 
    private List<String> needReports;
 
-   private long projectId;
+   private long idProject;
 }

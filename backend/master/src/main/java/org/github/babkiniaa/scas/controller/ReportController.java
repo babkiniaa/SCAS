@@ -1,14 +1,10 @@
 package org.github.babkiniaa.scas.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.github.babkiniaa.scas.Mapper.*;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.dto.*;
-import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.service.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,14 +15,12 @@ public class ReportController {
 
     private final ProjectService projectService;
     private final ReportService reportService;
-    private final ProjectMapper projectMapper;
     private final AgentServiceClient agentServiceClient;
-    private final ReportMapper reportMapper;
 
     @PostMapping("/create")
     public long createReport(@RequestBody AnalyserDto analyserDto) {
-        StartAnalyseDto startAnalyseDto = projectService.startInfo(analyserDto);
-        long taskId = agentServiceClient.init(startAnalyseDto);
+        analyserDto.setUrl(projectService.findById(analyserDto.getIdProject()).getUrl());
+        long taskId = agentServiceClient.init(analyserDto);
 
         return taskId;
     }
@@ -42,7 +36,7 @@ public class ReportController {
     }
 
     @GetMapping("/get-by-project/{id}")
-    public List<ReportDto> findReportsByProjectId(@PathVariable("id") long projectId){
+    public List<ListReportDto> findReportsByProjectId(@PathVariable("id") long projectId){
         return reportService.findAllByProjectId(projectId);
     }
 

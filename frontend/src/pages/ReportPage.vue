@@ -1,124 +1,180 @@
-<template>
-  <q-layout view="hHh lpR fF" class="shadow-2 rounded-borders">
+<template href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <q-layout>
     <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
-        <q-toolbar>
-          <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
-          <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
-          <q-space />
-          <q-btn dense round icon="search" @click="search" aria-label="Search" class="text-white" />
-          <q-btn
-            dense
-            round
-            :icon="isDarkMode ? 'light_mode' : 'dark_mode'"
-            @click="toggleDarkMode"
-            aria-label="Toggle Dark Mode"
-            class="text-white q-ml-sm"
-          />
-          <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
-            <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
-            <q-icon v-else name="person" class="text-white" />
-          </q-avatar>
-        </q-toolbar>
-      </q-header>
-      <q-drawer
-        v-model="drawer"
-        show-if-above
-        :mini="miniState"
-        @mouseenter="miniState = false"
-        @mouseleave="miniState = true"
-        :width="200"
-        :breakpoint="500"
-        bordered
-        :content-class="isDarkMode ? 'bg-black' : 'bg-grey-8'"
-      >
-        <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-          <q-list padding>
-            <q-item clickable v-ripple @click="goToHome">
-              <q-item-section avatar>
-                <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
-              </q-item-section>
-              <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
-            </q-item>
-            <q-item clickable v-ripple  @click="showCreateProjectModal = true">
-              <q-item-section avatar>
-                <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
-              </q-item-section>
-              <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
-            </q-item>
-            <q-item clickable v-ripple @click="goToAllProjects">
-              <q-item-section avatar>
-                <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
-              </q-item-section>
-              <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
-      </q-drawer>
+      <q-toolbar>
+        <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
+        <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
+        <q-space />
+        <q-btn dense round icon="search" @click="search" aria-label="Search" class="text-white" />
+        <q-btn
+          dense
+          round
+          :icon="isDarkMode ? 'light_mode' : 'dark_mode'"
+          @click="toggleDarkMode"
+          aria-label="Toggle Dark Mode"
+          class="text-white q-ml-sm"
+        />
+        <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
+          <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
+          <q-icon v-else name="person" class="text-white" />
+        </q-avatar>
+      </q-toolbar>
+    </q-header>
+
+    <q-drawer
+      v-model="drawer"
+      show-if-above
+      :mini="miniState"
+      @mouseenter="miniState = false"
+      @mouseleave="miniState = true"
+      :width="200"
+      :breakpoint="500"
+      bordered
+      :content-class="isDarkMode ? 'bg-black' : 'bg-grey-8'"
+    >
+      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+        <q-list padding>
+          <q-item clickable v-ripple @click="goToHome">
+            <q-item-section avatar>
+              <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
+            </q-item-section>
+            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple @click="showCreateProjectModal = true">
+            <q-item-section avatar>
+              <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
+            </q-item-section>
+            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple @click="goToAllProjects">
+            <q-item-section avatar>
+              <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
+            </q-item-section>
+            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
     <q-page-container :class="isDarkMode ? 'bg-dark' : 'bg-grey-2'">
-      <div v-if="projectData != null" class="q-mt-md">
+      <div v-if="reportData != null" class="q-mt-md">
         <q-page style="margin-top: 15px;">
           <q-card :class="['q-pa-md', 'shadow-2', 'my-card', isDarkMode ? 'bg-grey-8' : '']" bordered>
-            <q-card-section>
-              <div class="text-h5 text-center q-mb-md">
-                {{ projectData.name }}
-              </div>
-              <div class="text-subtitle1 text-center q-mb-md">
-                {{ projectData.description }}
-              </div>
-              <div class="text-caption text-center">
-                Visibility: {{ projectData.visibility ? 'Public' : 'Private' }} | Created on: {{ formatDate(projectData.createdDate) }}
-              </div>
-            </q-card-section>
-            <div v-if="reportData.dependencyCustoms.length">
-              <q-card-section>
+            <div class="q-mb-md text-right">
+              <q-btn
+                outline
+                color="primary"
+                :icon="viewMode === 'document' ? 'description' : 'table_chart'"
+                label="Toggle View"
+                @click="toggleViewMode"
+              />
+            </div>
+
+            <div v-if="viewMode === 'document'">
+              <q-card-section v-if="reportData.dependencyCustoms.length">
                 <div class="text-h6 text-weight-bold q-mb-md">OWASP Vulnerabilities Found</div>
-                <div v-for="owasp in reportData.dependencyCustoms" :key="owasp.name" class="q-my-md q-pa-sm border-box shadow-1 rounded-borders">
-                  <div v-for="dep in owasp.reportList" :key="dep.name">
-                    <div class="text-body1 text-weight-bold">{{ dep.name }} - {{ dep.version }}</div>
-                    <p>License: {{ dep.license }}</p>
-                    <p>Ecosystem: {{ dep.ecosystem }}</p>
-                    <p>Discription: {{ dep.discription }}</p>
-                    <p v-if="dep.isVirtual">This is a virtual package.</p>
-                    <ul>
-                      <li v-for="vulnerability in dep.owaspVulnerabilities" :key="vulnerability.name">
-                        <strong>{{ vulnerability.name }}</strong>: {{ vulnerability.description }}
-                        <p><em>Notes:</em> {{ vulnerability.notes }}</p>
-                      </li>
-                    </ul>
-                  </div>
+                <div
+                  v-for="dep in reportData.dependencyCustoms"
+                  :key="dep.name"
+                  class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
+                >
+                  <div class="text-body1 text-weight-bold">{{ dep.name }} - {{ dep.version }}</div>
+                  <p>License: {{ dep.license }}</p>
+                  <p>Ecosystem: {{ dep.ecosystem }}</p>
+                  <p>Description: {{ dep.description }}</p>
+                  <p v-if="dep.isVirtual">This is a virtual package.</p>
+                  <ul>
+                    <li v-for="vulnerability in dep.owaspVulnerabilities" :key="vulnerability.name">
+                      <strong>{{ vulnerability.name }}</strong>: {{ vulnerability.description }}
+                      <p><em>Notes:</em> {{ vulnerability.notes }}</p>
+                    </li>
+                  </ul>
+                </div>
+              </q-card-section>
+              <q-card-section v-if="reportData.ruleViolationCustoms.length">
+                <div class="text-h6 text-weight-bold q-mb-md">PMD Violations Found</div>
+                <div
+                  v-for="violation in reportData.ruleViolationCustoms"
+                  :key="violation.name"
+                  class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
+                >
+                  <div class="text-body1 text-weight-bold">{{ violation.name }}</div>
+                  <p>Priority: {{ violation.priority }}</p>
+                  <p>Message: {{ violation.message }}</p>
+                  <p>File: {{ violation.fileName }} (Line: {{ violation.beginLine }}-{{ violation.endLine }}, Col: {{ violation.beginColumn }}-{{ violation.endColumn }})</p>
+                  <p>{{ violation.description }}</p>
                 </div>
               </q-card-section>
             </div>
-            <div v-if="reportData.ruleViolationCustoms.length">
-              <q-card-section>
-                <div class="text-h6 text-weight-bold q-mb-md">PMD Violations Found</div>
-                <div v-for="pmd in reportData.ruleViolationCustoms" :key="pmd.name" class="q-my-md q-pa-sm border-box shadow-1 rounded-borders">
-                  <div v-for="violation in pmd.reportList" :key="violation.name">
-                    <div class="text-body1 text-weight-bold">{{ violation.name }}</div>
-                    <p>Priority: {{ violation.priority }}</p>
-                    <p>Message: {{ violation.message }}</p>
-                    <p>File: {{ violation.fileName }} (Line: {{ violation.beginLine }}-{{ violation.endLine }}, Col: {{ violation.beginColumn }}-{{ violation.endColumn }})</p>
-                    <p>{{ violation.description }}</p>
-                  </div>
-                </div>
-              </q-card-section>
+            <div v-else>
+              <q-card class="shadow-2 q-pa-md" bordered style="width: 100%;">
+                <q-btn-dropdown
+                  label="Filter by File"
+                  dense
+                  class="q-mb-md"
+                  no-caps
+                  flat
+                  color="primary"
+                >
+                  <q-list>
+                    <q-item clickable v-ripple @click="filterByFile(null)">
+                      <q-item-section>Clear Filter</q-item-section>
+                    </q-item>
+                    <q-item
+                      v-for="file in fileOptions"
+                      :key="file.value"
+                      clickable
+                      v-ripple
+                      @click="filterByFile(file.value)"
+                    >
+                      <q-item-section>{{ file.label }}</q-item-section>
+                    </q-item>
+                    </q-list>
+                </q-btn-dropdown>
+                <q-table
+                  :rows="filteredRows"
+                  :columns="columns"
+                  row-key="uniqueKey"
+                  flat
+                  dense
+                  class="full-width"
+                  :rows-per-page-options="[0]"
+                >
+                  <template v-slot:body-cell-priority="props">
+                    <q-td>{{ props.row.priority }}</q-td>
+                  </template>
+                  <template v-slot:body-cell-name="props">
+                    <q-td>{{ props.row.name }}</q-td>
+                  </template>
+                  <template v-slot:body-cell-message="props">
+                    <q-td>{{ props.row.message }}</q-td>
+                  </template>
+                  <template v-slot:body-cell-fileName="props">
+                    <q-td>{{ props.row.fileName }}</q-td>
+                  </template>
+                  <template v-slot:body-cell-lineRange="props">
+                    <q-td>
+                      {{ props.row.beginLine }} - {{ props.row.endLine }}
+                    </q-td>
+                  </template>
+                </q-table>
+              </q-card>
             </div>
           </q-card>
         </q-page>
       </div>
+
       <q-dialog v-model="showCreateProjectModal">
-          <create-project-form :isDarkMode="isDarkMode" />
-    </q-dialog>
+        <create-project-form :isDarkMode="isDarkMode" />
+      </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
-
 <script>
 import { Dark } from 'quasar'
 import { getAvatar } from 'src/services/userServices'
-import { getProject } from 'src/services/projectServices'
-import { getReport, save } from 'src/services/analysisServeces'
+import { getReport } from 'src/services/analysisServeces'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
+
 export default {
   data () {
     return {
@@ -128,10 +184,20 @@ export default {
         avatar: null
       },
       isDarkMode: Dark.isActive,
-      projectData: null,
       projectId: null,
       reportData: null,
-      showCreateProjectModal: false
+      showCreateProjectModal: false,
+      viewMode: 'table_chart',
+      selectedFile: null,
+      columns: [
+        { name: 'name', label: 'Name', field: 'name', sortable: true },
+        { name: 'priority', label: 'Priority', field: 'priority', sortable: true, sortMethod: (a, b) => this.sortPriority(a, b) },
+        { name: 'message', label: 'Message', field: 'message', sortable: false },
+        { name: 'fileName', label: 'File', field: 'fileName', sortable: true },
+        { name: 'lineRange', label: 'Lines (Begin-End)', field: 'lineRange' }
+      ],
+      fileOptions: [],
+      filteredRows: []
     }
   },
   components: {
@@ -141,6 +207,9 @@ export default {
     toggleDarkMode () {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
+    },
+    toggleViewMode () {
+      this.viewMode = this.viewMode === 'document' ? 'table' : 'document'
     },
     goToHome () {
       this.$router.push('/home')
@@ -159,16 +228,49 @@ export default {
       this.user.avatar = response.data
     },
     async fetchProject () {
-      save(this.projectId)
-      console.log(this.projectId)
-      const response = await getProject(this.projectId)
-      this.projectData = response.data
-      console.log(this.projectData)
-      const response1 = await getReport(this.projectId)
-      this.reportData = response1.data
+      const response = await getReport(this.projectId)
+      this.reportData = response.data
+      this.initializeFileOptions()
+      this.filterByFile()
     },
-    formatDate (date) {
-      return new Date(date).toLocaleDateString()
+    initializeFileOptions () {
+      const files = [...new Set(this.reportData.ruleViolationCustoms.map((item) => item.fileName))]
+      this.fileOptions = files.map((file) => ({ label: file, value: file }))
+    },
+    filterByFile (fileValue) {
+      this.selectedFile = fileValue
+      if (this.selectedFile) {
+        this.filteredRows = this.reportData.ruleViolationCustoms.filter(
+          (item) => item.fileName === this.selectedFile
+        )
+      } else {
+        this.filteredRows = this.reportData.ruleViolationCustoms
+      }
+    },
+    sortPriority (a, b) {
+      console.log(a)
+      const priorityOrder = {
+        High: 1,
+        'Medium High': 2,
+        Medium: 3,
+        'Medium Low': 4,
+        Low: 5
+      }
+      return (priorityOrder[a] || 999) - (priorityOrder[b] || 999)
+    },
+    sortTable (column) {
+      if (this.sortBy === column) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
+      } else {
+        this.sortBy = column
+        this.sortOrder = 'asc'
+      }
+      this.reportData.ruleViolationCustoms.sort((a, b) => {
+        const order = this.sortOrder === 'asc' ? 1 : -1
+        if (a[column] < b[column]) return -order
+        if (a[column] > b[column]) return order
+        return 0
+      })
     }
   },
   mounted () {
@@ -178,10 +280,17 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 .my-card {
-  max-width: 600px;
+  max-width: 1000px;
   margin: 0 auto;
+}
+.q-table {
+  font-size: 1.2rem;
+}
+.wide-card {
+  max-width: 100%;
 }
 .q-toolbar-title {
   font-size: 20px;

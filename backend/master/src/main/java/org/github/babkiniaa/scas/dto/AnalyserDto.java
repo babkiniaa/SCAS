@@ -14,4 +14,6 @@ public class AnalyserDto {
     private Long idProject;
 
     private List<String> needReports;
+
+    private String url;
 }

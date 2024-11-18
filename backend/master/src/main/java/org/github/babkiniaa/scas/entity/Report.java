@@ -9,7 +9,10 @@ import org.github.babkiniaa.scas.entity.reportsEntity.BugInstanceCustom;
 import org.github.babkiniaa.scas.entity.reportsEntity.DependencyCustom;
 import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
 import org.github.babkiniaa.scas.entity.reportsEntity.ViolationCustom;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -18,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity(name = "reports")
 @Table
+@EntityListeners(AuditingEntityListener.class)
 public class Report {
 
     @Id
@@ -39,4 +43,9 @@ public class Report {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ViolationCustom> violationCustoms;
+
+    @Column(name = "created_date", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    private LocalDateTime createdDate;
 }

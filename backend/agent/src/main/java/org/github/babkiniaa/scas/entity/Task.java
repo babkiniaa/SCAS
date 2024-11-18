@@ -37,6 +37,6 @@ public class Task {
     @JoinColumn(name = "report_id")
     private Report report;
 
-    private long projectId;
+    private long idProject;
 
 }
