@@ -66,6 +66,9 @@ public class UserService {
      */
     @Transactional
     public boolean verify(String verificationCode) {
+        if (tokenService.getByVerifyCode(verificationCode) == null){
+            return false;
+        }
         User user = tokenService.getByVerifyCode(verificationCode).getUser();
         user.setEnable(true);
         userRepository.save(user);
