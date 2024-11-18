@@ -80,7 +80,7 @@ public class TaskService {
         Task task = taskMapper.RegisterTaskToTask(registerTaskDto);
         task.setStatusTask(StatusTask.TODO);
         Long idTask = taskRepository.save(task).getId();
-        StartAnalyseDto startAnalyseDto = new StartAnalyseDto(idTask, registerTaskDto.getProjectId(), registerTaskDto.getUrl(), registerTaskDto.getNeedReports());
+        StartAnalyseDto startAnalyseDto = new StartAnalyseDto(idTask, registerTaskDto.getIdProject(), registerTaskDto.getUrl(), registerTaskDto.getNeedReports());
 
         threadPoolExecutor.execute(() -> {
             try {
@@ -178,7 +178,7 @@ public class TaskService {
      * @return the status by project id
      */
     public StatusTask getStatusByProjectId(long projectId) {
-        return taskRepository.findTaskByProjectId(projectId).get().getStatusTask();
+        return taskRepository.findTaskByIdProject(projectId).get().getStatusTask();
     }
 
     /**

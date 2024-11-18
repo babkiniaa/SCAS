@@ -6,11 +6,11 @@ import lombok.Setter;
 import org.github.babkiniaa.scas.Mapper.Custom.ReportOWASPMapper;
 import org.github.babkiniaa.scas.Mapper.Custom.ReportPMDMapper;
 import org.github.babkiniaa.scas.Mapper.ReportMapper;
+import org.github.babkiniaa.scas.dto.ListReportDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.repository.ReportRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -34,7 +34,7 @@ public class ReportService {
         return reportMapper.reportToReportDto(reportRepository.findById(reportId).get());
     }
 
-    public List<ReportDto> findAllByProjectId(long projectId){
+    public List<ListReportDto> findAllByProjectId(long projectId){
         return reportMapper.reportsToReportsDto(reportRepository.findAllByProjectId(projectId));
     }
 

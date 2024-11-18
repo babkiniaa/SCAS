@@ -192,7 +192,7 @@ export default {
       } catch (error) {
         this.$q.notify({ message: 'Failed to create project', color: 'red' })
       } finally {
-        this.$router.push(`/projects/${localStorage.getItem('currentId')}`)
+        this.$router.push(`/projects/${this.idProject}`)
       }
     },
     handleFileUpload () {

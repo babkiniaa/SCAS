@@ -1,14 +1,13 @@
-package org.github.babkiniaa.scas.dto.ProjectAndId;
+package org.github.babkiniaa.scas.dto.project;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Setter
 @Getter
-public class ProjectAndUserIdDto {
+public class CreateProjectDto {
 
     private int userId;
 

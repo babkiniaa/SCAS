@@ -2,18 +2,15 @@ package org.github.babkiniaa.scas.service;
 
 import lombok.AllArgsConstructor;
 import org.github.babkiniaa.scas.Mapper.ProjectMapper;
-import org.github.babkiniaa.scas.dto.AnalyserDto;
-import org.github.babkiniaa.scas.dto.StartAnalyseDto;
+import org.github.babkiniaa.scas.dto.project.CreateProjectDto;
 import org.github.babkiniaa.scas.dto.project.GetProjecAllDto;
 import org.github.babkiniaa.scas.dto.project.ProjectDto;
 import org.github.babkiniaa.scas.entity.*;
 import org.github.babkiniaa.scas.repository.*;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 /**
@@ -31,18 +28,18 @@ public class ProjectService {
      * Создает новый проект для пользователя с указанным идентификатором.
      *
      * @param projectDto DTO с данными проекта для создания.
-     * @param id         идентификатор пользователя, которому будет принадлежать проект.
      */
-    public long create(ProjectDto projectDto, long id) {
+    public long create(CreateProjectDto projectDto) {
         Project project = projectMapper.projectToEntity(projectDto);
-        project.setUserId(id);
+        project.setUserId(projectDto.getUserId());
         return projectRepository.save(project).getId();
     }
 
-    public List<ProjectDto> findAll() {
-        return projectMapper.projectToListDto(projectRepository.findAll());
-    }
-
+    /**
+     * Метод для поиска проекта по его id в базе данных по id
+     * @param id ID проекта котрыый мы собираемся искать
+     * @return
+     */
     public ProjectDto findById(long id){
         return projectMapper.projectToDto(projectRepository.findById(id).get());
     }
@@ -69,14 +66,4 @@ public class ProjectService {
                 : projectRepository
                 .findByNameContainingAndUserIdAndVisibility(projectsDto.getName(), projectsDto.getUserId(), true, pageable).getContent();
     }
-
-
-    public StartAnalyseDto startInfo(AnalyserDto analyserDto) {
-        StartAnalyseDto startAnalyseDto = new StartAnalyseDto();
-        startAnalyseDto.setUrl(findById(analyserDto.getIdProject()).getUrl());
-        startAnalyseDto.setProjectId(analyserDto.getIdProject());
-        startAnalyseDto.setNeedReports(analyserDto.getNeedReports());
-        return startAnalyseDto;
-    }
-
 }

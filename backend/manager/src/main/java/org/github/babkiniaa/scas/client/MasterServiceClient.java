@@ -1,5 +1,6 @@
 package org.github.babkiniaa.scas.client;
 
+import org.github.babkiniaa.scas.dto.ListReportDto;
 import org.github.babkiniaa.scas.dto.project.ProjectCreateDto;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.github.babkiniaa.scas.dto.project.AnalyserDto;
@@ -27,14 +28,11 @@ public interface MasterServiceClient {
     @GetMapping("report/get-reports/{id}")
     ReportDto getRep(@PathVariable("id") long projectId);
 
-    @GetMapping("/get-by-project/{id}")
-    List<ReportDto> findReportsByProjectId(@PathVariable("id") long projectId);
+    @GetMapping("report/get-by-project/{id}")
+    List<ListReportDto> findReportsByProjectId(@PathVariable("id") long projectId);
 
     @GetMapping("report/find/{id}")
     ReportDto getReport(@PathVariable("id") Long id);
-
-    @GetMapping("report/save/{id}")
-    ReportDto saveReport(@PathVariable("id") Long id);
 
     @PostMapping("/project/get-projects")
     List<ProjectDto> getProject(@RequestBody GetProjectAllDto projectsDto);

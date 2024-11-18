@@ -25,8 +25,6 @@ public class ProjectDto {
 
     private LocalDateTime createdDate;
 
-    private List<String> needReports;
-
     private List<Report> reports;
 
 }

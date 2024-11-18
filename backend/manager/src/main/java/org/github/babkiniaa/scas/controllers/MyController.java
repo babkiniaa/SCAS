@@ -3,6 +3,7 @@ package org.github.babkiniaa.scas.controllers;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.client.MasterServiceClient;
+import org.github.babkiniaa.scas.dto.ListReportDto;
 import org.github.babkiniaa.scas.dto.project.ProjectCreateDto;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.github.babkiniaa.scas.dto.project.AnalyserDto;
@@ -31,8 +32,8 @@ public class MyController {
         return masterServiceClient.createReport(analyserDto);
     }
 
-    @GetMapping("/get-by-project/{id}")
-    public List<ReportDto> findReportsByProjectId(@PathVariable("id") long projectId) {
+    @GetMapping("report/get-by-project/{id}")
+    public List<ListReportDto> findReportsByProjectId(@PathVariable("id") long projectId) {
         return masterServiceClient.findReportsByProjectId(projectId);
     }
 
@@ -51,10 +52,6 @@ public class MyController {
         return masterServiceClient.getReport(idReport);
     }
 
-    @GetMapping("report/save/{id}")
-    public ReportDto reportSave(@PathVariable("id") long idProject) {
-        return masterServiceClient.saveReport(idProject);
-    }
 
     @PostMapping("/project/create")
     public long createProject(@RequestBody ProjectCreateDto projectCreateDto) {

@@ -121,27 +121,34 @@
               </q-badge>
             </q-card-section>
             <q-card-actions class="column items-end justify-center">
-              <div v-if="projectStatus[project.id] === 'EndS'" class="full-width q-mt-md">
-                <q-btn
-                  label="View Report"
-                  :class="isDarkMode ? 'bg-grey-6' : ''"
-                  class="full-width"
-                  @click="viewReport(project.id)"
-                />
+              <div v-if="projectStatus[project.id] === 'EndS' || projectStatus[project.id] === 'NotFound'" class="full-width q-mt-md">
+                <div class="row items-center">
+                  <q-btn
+                    label="Run"
+                    :icon="playIcon"
+                    :class="isDarkMode ? 'bg-grey-6' : ''"
+                    class="q-mb-xs text-green"
+                    @click="showModal = true"
+                  />
+                  <q-btn
+                    label="View Report"
+                    :class="isDarkMode ? 'bg-grey-6' : ''"
+                    class="q-ml-md"
+                    @click="viewReport(project.id)"
+                  />
+                </div>
               </div>
-              <div v-else-if="projectStatus[project.id] === 'NotFound'" class="full-width q-mt-md">
-                <q-btn
-                  label="Run"
-                  :icon="playIcon"
-                  :class="isDarkMode ? 'bg-grey-6' : ''"
-                  class="q-mb-xs text-green"
-                  @click="runProject(project.id)"
-                />
-              </div>
-              <div v-else class="text-caption text-right q-mt-md">
-                {{ projectStatus[project.id] }}
-                color: yellow
-              </div>
+              <q-card
+              v-else
+              class="column items-end justify-center"
+              style="border: 1px solid yellow; background-color: #fffde7; max-width: 200px;"
+            >
+              <q-card-section class="text-center">
+                <div class="text-black text-subtitle2 font-weight-bold">
+                  {{ projectStatus[project.id] }}
+                </div>
+              </q-card-section>
+            </q-card>
             </q-card-actions>
             </div>
           </q-card>
@@ -158,6 +165,67 @@
       <q-dialog v-model="showCreateProjectModal">
           <create-project-form :isDarkMode="isDarkMode" />
     </q-dialog>
+    <q-dialog v-model="showModal">
+          <q-card style="width: 450px; height: 250px; padding: 16px;">
+            <q-card-section class="text-center">
+              <h6 style="margin: 0;">Select Analizator</h6>
+            </q-card-section>
+
+            <q-card-section class="row q-col-gutter-md q-pt-none items-start" style="padding: 0 10px;">
+              <div class="col-6">
+                <q-btn-dropdown
+                  color="primary"
+                  :label="selectedAnalyzerCategory ? 'Category: ' + selectedAnalyzerCategory : 'Select Analyzer Category'"
+                  :class="isDarkMode ? 'bg-grey-6 text-white' : ''"
+                >
+                  <q-list>
+                    <q-item
+                      v-for="(category, index) in Object.keys(analyzers)"
+                      :key="index"
+                      clickable
+                      v-ripple
+                      @click="selectAnalyzerCategory(category)"
+                    >
+                      <q-item-section>
+                        <q-item-label>{{ category }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-btn-dropdown>
+              </div>
+              <div class="col-6" v-if="availableAnalyzers.length">
+                <q-option-group
+                  v-model="selectedAnalyzers"
+                  :options="availableAnalyzers.map(analyzer => ({ label: analyzer, value: analyzer }))"
+                  type="checkbox"
+                  label="Select Analyzers"
+                  dense
+                  :class="isDarkMode ? 'bg-grey-9 text-white' : ''"
+                />
+              </div>
+            </q-card-section>
+            <q-card-section class="text-center" style="padding: 30px; margin-top: auto;">
+              <q-btn
+                  label="Run"
+                  :icon="playIcon"
+                  :class="isDarkMode ? 'bg-grey-6' : ''"
+                  class="q-mb-xs text-green"
+                  @click="runProject(project.id)"
+                />
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+        <q-dialog v-model="showModalReport">
+          <q-card>
+            <q-card-section>
+                <q-list bordered>
+                  <q-item v-for="report in listReporst" :key="report.id" clickable @click="showReport(report.id)">
+                    <q-item-section :class="isDarkMode ? 'text-white' : ''"> {{ formatDate(report.createdDate) }} </q-item-section>
+                  </q-item>
+                </q-list>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
@@ -166,7 +234,7 @@
 import { getProjects } from 'src/services/projectServices'
 import { Dark } from 'quasar'
 import { getAvatar } from 'src/services/userServices'
-import { getStatus } from 'src/services/analysisServeces'
+import { getStatus, reportCreate, getReports, getAnalizator } from 'src/services/analysisServeces'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
   data () {
@@ -195,7 +263,14 @@ export default {
       currentUserId: null,
       isDarkMode: Dark.isActive,
       playIcon: 'play_arrow',
-      showCreateProjectModal: false
+      showModal: false,
+      showCreateProjectModal: false,
+      analyzers: {},
+      selectedAnalyzerCategory: null,
+      selectedAnalyzers: [],
+      availableAnalyzers: [],
+      showModalReport: false,
+      listReporst: null
     }
   },
   components: {
@@ -245,9 +320,6 @@ export default {
     goToHome () {
       this.$router.push('/home')
     },
-    goToCreateProject () {
-      this.$router.push('/create-project')
-    },
     goToProfile () {
       const id = localStorage.getItem('currentId')
       this.$router.push(`/profile/${id}`)
@@ -255,11 +327,25 @@ export default {
     formatDate (date) {
       return new Date(date).toLocaleDateString()
     },
-    viewReport (projectId) {
-      this.$router.push(`/report/${projectId}`)
+    async viewReport (projectId) {
+      this.listReporst = (await getReports(projectId)).data
+      this.showModalReport = true
     },
-    runProject (projectId) {
-      // Logic to run the project goes here
+    showReport (reportId) {
+      this.$router.push(`/report/${reportId}`)
+    },
+    async runProject (projectId) {
+      try {
+        await reportCreate({
+          idProject: projectId,
+          needReports: this.selectedAnalyzers
+        })
+        this.$q.notify({ message: 'Project created successfully', color: 'green' })
+      } catch (error) {
+        this.$q.notify({ message: 'Failed to create project', color: 'red' })
+      } finally {
+        this.$router.push(`/projects/${localStorage.getItem('currentId')}`)
+      }
     },
     onSearch () {
       this.projectsDto.page = 0
@@ -279,12 +365,26 @@ export default {
     async fetchUser () {
       const response = await getAvatar(localStorage.getItem('currentId'))
       this.user.avatar = response.data
+    },
+    async fetchAnalyzers () {
+      try {
+        const response = await getAnalizator()
+        this.analyzers = response.data
+      } catch (error) {
+        this.$q.notify({ message: 'Failed to fetch analyzers', color: 'red' })
+      }
+    },
+    selectAnalyzerCategory (category) {
+      this.selectedAnalyzerCategory = category
+      this.availableAnalyzers = this.analyzers[category] || []
+      this.selectedAnalyzers = []
     }
   },
   created () {
     this.fetchUser()
     this.currentUserId = localStorage.getItem('currentId')
     this.loadProjects()
+    this.fetchAnalyzers()
   }
 }
 </script>
