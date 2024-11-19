@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.MasterServiceClient;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +16,11 @@ import java.util.List;
  * Контроллер для управления пользователями в административной панели.
  * Обеспечивает функциональность просмотра всех пользователей и блокировки пользователя.
  */
-@Controller
+@RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
-    @Autowired
     private UserService userService;
     private final MasterServiceClient masterServiceClient;
 
@@ -32,8 +29,8 @@ public class AdminController {
      * Добавляет список пользователей и информацию о страницах в модель.
      *
      * @param model объект для передачи данных в представление.
-     * @param page номер текущей страницы (по умолчанию 0).
-     * @param size количество пользователей на странице (по умолчанию 10).
+     * @param page  номер текущей страницы (по умолчанию 0).
+     * @param size  количество пользователей на странице (по умолчанию 10).
      * @return имя шаблона для отображения списка пользователей.
      */
     @GetMapping("/users")
@@ -62,18 +59,33 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
+    /**
+     * Возвращает количество активных задач с агента
+     *
+     * @return количество тасок
+     */
     @GetMapping("/agent/count-queue")
-    int getCountQueue(){
+    public int getCountQueue(){
         return masterServiceClient.getCountQueue();
     }
 
+    /**
+     * Возвращает Id тасок, которые непосредственно выполняются на агенте
+     *
+     * @return the list
+     */
     @GetMapping("/agent/get-run-task")
-    List<Long> getRunTask(){
+    public List<Long> getRunTask(){
         return masterServiceClient.getRunTask();
     }
 
+    /**
+     * Ban Таски, если она не начала выполняться, статус ban не даст ей начать выполнение
+     *
+     * @param taskId Id таски для ban
+     */
     @PostMapping("/agent/task/ban/{id}")
-    void banTask(@PathVariable("id") long taskId){
+    public void banTask(@PathVariable("id") long taskId){
         masterServiceClient.banTask(taskId);
     }
 
