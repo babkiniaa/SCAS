@@ -56,4 +56,34 @@ public class ChallengeController {
 
     }
 
+    /**
+     * Get count queue int.
+     *
+     * @return the int
+     */
+    @GetMapping("/count-queue")
+    public int getCountQueue(){
+        return taskService.getCount();
+    }
+
+    /**
+     * Get run task list.
+     *
+     * @return the list
+     */
+    @GetMapping("/get-run-task")
+    public List<Long> getRunTask(){
+        return taskService.getRunTask();
+    }
+
+    /**
+     * Ban task.
+     *
+     * @param taskId the task id
+     */
+    @PostMapping("/task/ban/{id}")
+    public void banTask(@PathVariable("id") long taskId){
+        taskService.banTask(taskId);
+    }
+
 }

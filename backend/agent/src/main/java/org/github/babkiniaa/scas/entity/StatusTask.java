@@ -11,5 +11,7 @@ public enum StatusTask {
 
     Err,
 
+    Ban,
+
     NotFound
 }
