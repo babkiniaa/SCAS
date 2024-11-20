@@ -24,6 +24,6 @@ public interface AgentClient {
     ResponseEntity<?> saveInMasterReport(@PathVariable("id") long projectId, @RequestBody ReportDto reportDto);
 
     @GetMapping("/report/get-analyzers")
-    List<String> getAnalyzers(@RequestParam String hash);
+    List<String> getAnalyzers(@RequestParam String hash, @RequestParam long projectId);
 
 }

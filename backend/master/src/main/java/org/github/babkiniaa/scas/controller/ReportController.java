@@ -46,8 +46,8 @@ public class ReportController {
     }
 
     @GetMapping("/get-analyzers")
-    public List<String> getAnalyzers(@RequestParam String hash){
-        return reportService.findAnalyzes(hash);
+    public List<String> getAnalyzers(@RequestParam String hash, @RequestParam long projectId){
+        return reportService.findAnalyzes(hash, projectId);
     }
 
 }

@@ -12,5 +12,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     List<Report> findAllByProjectId(long ProjectId);
 
-    Optional<Report> findByHash(String hash);
+    Optional<Report> findByHashAndProjectId(String hash, long projectId);
 }

@@ -29,7 +29,7 @@ public class ReportService {
     private final ReportOWASPMapper reportOWASPMapper;
 
     public Report save(Long projectId, ReportDto report) {
-        Optional<Report> previous = reportRepository.findByHash(report.getHash());
+        Optional<Report> previous = reportRepository.findByHashAndProjectId(report.getHash(), projectId);
         Report reportEntity = new Report();
         if (previous.isEmpty()) {
             reportEntity = reportMapper.reportDtoToReport(report);
@@ -53,8 +53,8 @@ public class ReportService {
         return reportMapper.reportsToReportsDto(reportRepository.findAllByProjectId(projectId));
     }
 
-    public List<String> findAnalyzes(String hash) {
-        Optional<Report> report = reportRepository.findByHash(hash);
+    public List<String> findAnalyzes(String hash, long projectId) {
+        Optional<Report> report = reportRepository.findByHashAndProjectId(hash, projectId);
         return report.map(Report::getAnalyzers).orElse(new ArrayList<>());
     }
 }
