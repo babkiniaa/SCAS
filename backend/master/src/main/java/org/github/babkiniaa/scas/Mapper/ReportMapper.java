@@ -4,9 +4,12 @@ import org.github.babkiniaa.scas.dto.ListReportDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE , componentModel = "spring")
 public interface ReportMapper {
 
     Report reportDtoToReport(ReportDto reportDto);
@@ -14,4 +17,7 @@ public interface ReportMapper {
     ReportDto reportToReportDto(Report report);
 
     List<ListReportDto> reportsToReportsDto(List<Report> reports);
+
+
+    void updateReportFromDto(ReportDto reportDto, @MappingTarget Report report);
 }

@@ -48,4 +48,6 @@ public class Report {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private LocalDateTime createdDate;
+
+    private List<String> analyzers;
 }

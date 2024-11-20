@@ -24,4 +24,6 @@ public class ReportDto {
     private List<RuleViolationCustomDto> ruleViolationCustoms;
 
     private List<ViolationCustomDto> violationCustoms;
+
+    private List<String> analyzers;
 }
