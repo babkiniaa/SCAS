@@ -141,7 +141,11 @@ export default {
       }
     },
     goToHome () {
-      this.$router.push('/home')
+      if (localStorage.getItem('role') === 'admin') {
+        this.$router.push('/admin')
+      } else {
+        this.$router.push('/home')
+      }
     },
     goToAllProjects () {
       const id = this.user.id

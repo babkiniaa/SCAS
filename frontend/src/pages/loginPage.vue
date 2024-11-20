@@ -116,6 +116,7 @@ export default {
         this.$q.notify({ message: response.data, color: 'green' })
         // eslint-disable-next-line eqeqeq
         if (response.data.role == 'ADMIN') {
+          localStorage.setItem('role', 'admin')
           this.$router.push('/admin')
         } else {
           this.$router.push('/home')
