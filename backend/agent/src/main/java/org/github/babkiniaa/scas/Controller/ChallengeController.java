@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.dto.Request.RegisterTaskDto;
+import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
 import org.github.babkiniaa.scas.entity.StatusTask;
 import org.github.babkiniaa.scas.service.TaskService;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +73,7 @@ public class ChallengeController {
      * @return the list
      */
     @GetMapping("/get-run-task")
-    public List<Long> getRunTask(){
+    public List<TaskInQueueDto> getRunTask(){
         return taskService.getRunTask();
     }
 

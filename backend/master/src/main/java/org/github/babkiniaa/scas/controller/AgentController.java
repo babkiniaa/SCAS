@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
+import org.github.babkiniaa.scas.dto.TaskInQueueDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class AgentController {
     }
 
     @GetMapping("/get-run-task")
-    public List<Long> getRunTask(){
+    public List<TaskInQueueDto> getRunTask(){
         return agentServiceClient.getRunTask();
     }
 
