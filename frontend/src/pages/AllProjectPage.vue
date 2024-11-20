@@ -338,7 +338,7 @@ export default {
       this.$router.push(`/profile/${id}`)
     },
     formatDate (date) {
-      return new Date(date).toLocaleDateString()
+      return new Date(date).toLocaleString()
     },
     async viewReport (projectId) {
       this.listReporst = (await getReports(projectId)).data

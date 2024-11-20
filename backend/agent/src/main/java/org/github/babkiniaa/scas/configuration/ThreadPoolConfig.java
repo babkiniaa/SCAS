@@ -21,7 +21,7 @@ public class ThreadPoolConfig {
     @Bean
     public ThreadPoolExecutor threadPoolExecutor() {
         return new ThreadPoolExecutor(
-                10,
+                1,
                 50,
                 60L,
                 TimeUnit.SECONDS,
