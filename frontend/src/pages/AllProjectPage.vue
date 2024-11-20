@@ -95,7 +95,7 @@
             icon="add_circle"
             :class="isDarkMode ? 'bg-grey-6' : ''" class="q-ml-md sticky-create-btn"
             color="dark"
-            v-model="showCreateProjectModal"
+            @click="showCreateProjectModal = true"
           />
         </div>
         <div v-if="projects.length" class="q-mt-md">
@@ -353,6 +353,7 @@ export default {
           idProject: this.projectId,
           needReports: this.selectedAnalyzers
         })
+        this.showModal = false
         this.$q.notify({ message: 'Project created successfully', color: 'green' })
       } catch (error) {
         this.$q.notify({ message: 'Failed to create project', color: 'red' })

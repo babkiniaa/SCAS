@@ -171,7 +171,6 @@ export default {
           url: this.gitHubLink,
           description: this.projectDescription,
           userId: this.userId
-
         })
         this.$q.notify({ message: 'Project created successfully', color: 'green' })
         this.projectCreated = true
@@ -188,6 +187,7 @@ export default {
           idProject: this.idProject,
           needReports: this.selectedAnalyzers
         })
+        this.showModal = false
         this.$q.notify({ message: 'Project created successfully', color: 'green' })
       } catch (error) {
         this.$q.notify({ message: 'Failed to create project', color: 'red' })

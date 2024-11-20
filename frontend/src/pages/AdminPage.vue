@@ -72,6 +72,7 @@
                 class="q-pb-sm"
               >
                 <q-item-section>{{ task.id }}</q-item-section>
+                <q-item-section>{{ task.statusTask }}</q-item-section>
                 <q-item-section side>
                   <q-btn
                     label="Stop"
@@ -187,10 +188,7 @@ export default {
         try {
           if (this.showQueue) {
             const response = await getAllTask()
-            this.queueTasks = response.data.map((id) => ({
-              id,
-              status: 'queued'
-            }))
+            this.queueTasks = response.data
           }
           this.showQueue = !this.showQueue
         } catch (error) {
