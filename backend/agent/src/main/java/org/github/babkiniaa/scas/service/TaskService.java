@@ -147,9 +147,11 @@ public class TaskService {
             String dir = System.getProperty("user.dir") + "/down/" + startAnalyseDto.getTaskId();
             ReportAndDirDto reportAndDirDto = new ReportAndDirDto();
             reportAndDirDto.setDir(dir);
+            String hash = "";
 
             try {
-                GitUtil.cloneRepository(startAnalyseDto.getUrl(), dir);
+                hash = GitUtil.cloneRepository(startAnalyseDto.getUrl(), dir);
+                reportAndDirDto.setHash(hash);
             } catch (GitAPIException e) {
                 throw new RuntimeException(e);
             }
@@ -160,7 +162,7 @@ public class TaskService {
                 task.setStatusTask(StatusTask.EndS);
                 task.setReport(reportService.save(reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto)));
                 taskRepository.save(task);
-                saveReportInMaster(task, reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto), startAnalyseDto.getProjectId());
+                saveReportInMaster(task, reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto), startAnalyseDto.getProjectId(), startAnalyseDto.getNeedReports());
             } catch (Exception e) {
                 task.setStatusTask(StatusTask.Err);
                 taskRepository.save(task).getId();
@@ -192,9 +194,10 @@ public class TaskService {
      * Тут надо бы еще хеш посчитать 🙄
      */
     @Async
-    public void saveReportInMaster(Task task, ReportDto reportDto, long projectId) {
+    public void saveReportInMaster(Task task, ReportDto reportDto, long projectId, List<String> needReports) {
         if (getStatusByProjectId(projectId) == StatusTask.EndS) {
-            reportDto.setHash("You method hash");
+            //reportDto.setHash("You method hash");
+            reportDto.setAnalyzers(needReports);
             agentClient.saveInMasterReport(projectId, reportDto);
             taskRepository.delete(task);
         }
