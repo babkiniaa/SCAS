@@ -113,7 +113,7 @@ export default {
         localStorage.setItem('jwtToken', token)
         const currentUserId = response.data.currentId
         localStorage.setItem('currentId', currentUserId)
-        this.$q.notify({ message: response.data, color: 'green' })
+        this.$q.notify({ message: 'Welcome', color: 'green' })
         // eslint-disable-next-line eqeqeq
         if (response.data.role == 'ADMIN') {
           localStorage.setItem('role', 'admin')
