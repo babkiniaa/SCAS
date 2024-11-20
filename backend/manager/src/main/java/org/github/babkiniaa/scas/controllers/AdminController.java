@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.MasterServiceClient;
+import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
 import org.github.babkiniaa.scas.dto.forUserDto.ViewUserForAdmin;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.mappers.UserMapper;
@@ -70,7 +71,7 @@ public class AdminController {
      * @return the list
      */
     @GetMapping("/agent/get-run-task")
-    public List<Long> getRunTask(){
+    public List<TaskInQueueDto> getRunTask(){
         return masterServiceClient.getRunTask();
     }
 

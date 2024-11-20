@@ -1,6 +1,7 @@
 package org.github.babkiniaa.scas.client;
 
 import org.github.babkiniaa.scas.dto.ListReportDto;
+import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
 import org.github.babkiniaa.scas.dto.project.ProjectCreateDto;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.github.babkiniaa.scas.dto.project.AnalyserDto;
@@ -47,7 +48,7 @@ public interface MasterServiceClient {
     int getCountQueue();
 
     @GetMapping("/agent/get-run-task")
-    List<Long> getRunTask();
+    List<TaskInQueueDto> getRunTask();
 
     @PostMapping("/agent/task/ban/{id}")
     void banTask(@PathVariable("id") long taskId);

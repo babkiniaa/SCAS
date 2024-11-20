@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.client;
 
 import org.github.babkiniaa.scas.dto.AnalyserDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
+import org.github.babkiniaa.scas.dto.TaskInQueueDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,7 @@ public interface AgentServiceClient {
     int getCountQueue();
 
     @GetMapping("/analysis/get-run-task")
-    List<Long> getRunTask();
+    List<TaskInQueueDto> getRunTask();
 
     @PostMapping("/analysis/task/ban/{id}")
     void banTask(@PathVariable("id") long taskId);

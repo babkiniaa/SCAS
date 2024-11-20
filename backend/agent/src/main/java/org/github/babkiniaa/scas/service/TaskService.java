@@ -2,12 +2,14 @@ package org.github.babkiniaa.scas.service;
 
 import lombok.RequiredArgsConstructor;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import org.apache.tomcat.util.threads.TaskQueue;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.github.babkiniaa.scas.client.AgentClient;
 import org.github.babkiniaa.scas.dto.Request.RegisterTaskDto;
 import org.github.babkiniaa.scas.dto.Request.StartAnalyseDto;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.github.babkiniaa.scas.dto.Response.ReportAndDirDto;
+import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
 import org.github.babkiniaa.scas.dto.typeForMap.MethodAndTypeAnalysis;
@@ -233,15 +235,15 @@ public class TaskService {
      * @return the run task
      */
     @Async
-    public List<Long> getRunTask() {
-        List<Task> tasks = taskRepository.findAllByStatusTask(StatusTask.Run);
-        List<Long> idList = new ArrayList<>();
+    public List<TaskInQueueDto> getRunTask() {
+        List<Task> tasks = taskRepository.findAll();
+        List<TaskInQueueDto> taskInQueueDtos = new ArrayList<>();
 
         for (var task : tasks) {
-            idList.add(task.getId());
+            taskInQueueDtos.add(taskMapper.TaskToTaskQueue(task));
         }
 
-        return idList;
+        return taskInQueueDtos;
 
     }
 
