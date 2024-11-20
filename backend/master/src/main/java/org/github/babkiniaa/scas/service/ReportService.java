@@ -11,7 +11,12 @@ import org.github.babkiniaa.scas.dto.ReportDto;
 import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.repository.ReportRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Setter
@@ -24,9 +29,19 @@ public class ReportService {
     private final ReportOWASPMapper reportOWASPMapper;
 
     public Report save(Long projectId, ReportDto report) {
-        Report reportEntity = reportMapper.reportDtoToReport(report);
-        reportEntity.setProjectId(projectId);
-
+        Optional<Report> previous = reportRepository.findByHash(report.getHash());
+        Report reportEntity = new Report();
+        if (previous.isEmpty()) {
+            reportEntity = reportMapper.reportDtoToReport(report);
+            reportEntity.setProjectId(projectId);
+        } else {
+            reportEntity = previous.get();
+            List<String> analyzers = report.getAnalyzers();
+            analyzers.addAll(reportEntity.getAnalyzers());
+            report.setAnalyzers(analyzers);
+            reportMapper.updateReportFromDto(report, reportEntity);
+            reportEntity.setCreatedDate(LocalDateTime.now());
+        }
         return reportRepository.save(reportEntity);
     }
 
@@ -38,4 +53,8 @@ public class ReportService {
         return reportMapper.reportsToReportsDto(reportRepository.findAllByProjectId(projectId));
     }
 
+    public List<String> findAnalyzes(String hash) {
+        Optional<Report> report = reportRepository.findByHash(hash);
+        return report.map(Report::getAnalyzers).orElse(new ArrayList<>());
+    }
 }

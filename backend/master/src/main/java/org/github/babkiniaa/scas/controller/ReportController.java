@@ -45,4 +45,9 @@ public class ReportController {
         reportService.save(idProject, reportDto);
     }
 
+    @GetMapping("/get-analyzers")
+    public List<String> getAnalyzers(@RequestParam String hash){
+        return reportService.findAnalyzes(hash);
+    }
+
 }

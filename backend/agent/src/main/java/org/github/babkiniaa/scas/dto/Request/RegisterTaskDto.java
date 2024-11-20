@@ -3,6 +3,7 @@ package org.github.babkiniaa.scas.dto.Request;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Setter
@@ -14,4 +15,6 @@ public class RegisterTaskDto {
    private List<String> needReports;
 
    private long idProject;
+
+   private HashMap<String, List<String>> hashAndAnalyze;
 }

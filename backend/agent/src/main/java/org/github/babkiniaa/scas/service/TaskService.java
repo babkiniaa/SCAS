@@ -156,6 +156,14 @@ public class TaskService {
                 throw new RuntimeException(e);
             }
             try {
+                List<String> lastAnalyze = agentClient.getAnalyzers(hash);
+                if(!lastAnalyze.isEmpty()) {
+                    List<String> filterAnalyze = startAnalyseDto.getNeedReports();
+                    for (String analyze : lastAnalyze) {
+                        filterAnalyze.remove(analyze);
+                    }
+                    startAnalyseDto.setNeedReports(filterAnalyze);
+                }
                 for (String run : startAnalyseDto.getNeedReports()) {
                     reportAndDirDto = (ReportAndDirDto) methodMap.get(run).getFunction().apply(reportAndDirDto);
                 }
