@@ -15,7 +15,7 @@
         />
         <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
           <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
-          <q-icon v-else name="person" class="text-white" />
+          <q-icon v-else name="person" class="text-black" />
         </q-avatar>
       </q-toolbar>
     </q-header>
@@ -95,7 +95,7 @@
             icon="add_circle"
             :class="isDarkMode ? 'bg-grey-6' : ''" class="q-ml-md sticky-create-btn"
             color="dark"
-            @click="goToCreateProject"
+            v-model="showCreateProjectModal"
           />
         </div>
         <div v-if="projects.length" class="q-mt-md">

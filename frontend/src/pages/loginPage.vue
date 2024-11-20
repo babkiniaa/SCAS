@@ -114,7 +114,12 @@ export default {
         const currentUserId = response.data.currentId
         localStorage.setItem('currentId', currentUserId)
         this.$q.notify({ message: response.data, color: 'green' })
-        this.$router.push('/home')
+        // eslint-disable-next-line eqeqeq
+        if (response.data.role == 'ADMIN') {
+          this.$router.push('/admin')
+        } else {
+          this.$router.push('/home')
+        }
       } catch (error) {
         if (error.response && error.response.data) {
           this.errors = error.response.data

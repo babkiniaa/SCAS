@@ -34,6 +34,7 @@ public class AuthService {
                 .findByEmailOrUsername(loginRequest.getUsername(), loginRequest.getUsername())
                 .orElseThrow(() -> new NotFoundUserException("Не найден пользователь"));
         jwtResponse.setCurrentId(user.getId());
+        jwtResponse.setRole(user.getRole().toString());
         jwtResponse.setAccessToken(jwtTokenProvider.createAccessToken(user.getId(),  user.getEmail(), user.getRole()));
         jwtResponse.setRefreshToken(jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail()));
 
