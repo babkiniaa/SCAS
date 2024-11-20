@@ -128,7 +128,7 @@
                     :icon="playIcon"
                     :class="isDarkMode ? 'bg-grey-6' : ''"
                     class="q-mb-xs text-green"
-                    @click="showModal = true"
+                    @click="startAnalysis(project.id)"
                   />
                   <q-btn
                     label="View Report"
@@ -210,7 +210,7 @@
                   :icon="playIcon"
                   :class="isDarkMode ? 'bg-grey-6' : ''"
                   class="q-mb-xs text-green"
-                  @click="runProject(project.id)"
+                  @click="runProject"
                 />
             </q-card-section>
           </q-card>
@@ -270,13 +270,21 @@ export default {
       selectedAnalyzers: [],
       availableAnalyzers: [],
       showModalReport: false,
-      listReporst: null
+      listReporst: null,
+      projectId: null
     }
   },
   components: {
     CreateProjectForm
   },
   methods: {
+    GoToAdmin () {
+      this.$router.push('/admin')
+    },
+    startAnalysis (id) {
+      this.showModal = true
+      this.projectId = id
+    },
     toggleDarkMode () {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
@@ -318,7 +326,12 @@ export default {
       }
     },
     goToHome () {
-      this.$router.push('/home')
+      console.log(localStorage.getItem('role'))
+      if (localStorage.getItem('role') === 'admin') {
+        this.$router.push('/admin')
+      } else {
+        this.$router.push('/home')
+      }
     },
     goToProfile () {
       const id = localStorage.getItem('currentId')
@@ -334,10 +347,10 @@ export default {
     showReport (reportId) {
       this.$router.push(`/report/${reportId}`)
     },
-    async runProject (projectId) {
+    async runProject () {
       try {
         await reportCreate({
-          idProject: projectId,
+          idProject: this.projectId,
           needReports: this.selectedAnalyzers
         })
         this.$q.notify({ message: 'Project created successfully', color: 'green' })

@@ -192,7 +192,7 @@ export default {
       } catch (error) {
         this.$q.notify({ message: 'Failed to create project', color: 'red' })
       } finally {
-        this.$router.push(`/projects/${this.idProject}`)
+        this.$router.push(`/projects/${this.userId}`)
       }
     },
     handleFileUpload () {
