@@ -3,9 +3,9 @@ package org.github.babkiniaa.scas.client;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * The interface Agent client.
@@ -22,5 +22,8 @@ public interface AgentClient {
      */
     @PostMapping("/report/save/{id}")
     ResponseEntity<?> saveInMasterReport(@PathVariable("id") long projectId, @RequestBody ReportDto reportDto);
+
+    @GetMapping("/report/get-analyzers")
+    List<String> getAnalyzers(@RequestParam String hash, @RequestParam long projectId);
 
 }

@@ -3,11 +3,14 @@ package org.github.babkiniaa.scas.controllers;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.MasterServiceClient;
 import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
+import org.github.babkiniaa.scas.dto.forUserDto.ViewUserForAdmin;
 import org.github.babkiniaa.scas.entity.User;
+import org.github.babkiniaa.scas.mappers.UserMapper;
 import org.github.babkiniaa.scas.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,45 +22,37 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin")
+@CrossOrigin(origins = "http://localhost:9000")
 @RequiredArgsConstructor
 public class AdminController {
 
-    private UserService userService;
+    private final UserService userService;
+    private final UserMapper userMapper;
     private final MasterServiceClient masterServiceClient;
 
     /**
      * Получает список всех пользователей с постраничной разбивкой.
      * Добавляет список пользователей и информацию о страницах в модель.
      *
-     * @param model объект для передачи данных в представление.
-     * @param page  номер текущей страницы (по умолчанию 0).
-     * @param size  количество пользователей на странице (по умолчанию 10).
+
      * @return имя шаблона для отображения списка пользователей.
      */
     @GetMapping("/users")
-    public String getAllUsers(
-            Model model, @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<User> userPage = userService.getAllUsers(pageable);
-        model.addAttribute("users", userPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", userPage.getTotalPages());
-        return "admin/user-list";
+    public ResponseEntity<List<ViewUserForAdmin>> getAllUsers() {
+        List<ViewUserForAdmin> userPage = userMapper.toAdmin(userService.getAllUsers());
+        return ResponseEntity.ok(userPage);
     }
 
     /**
      * Блокирует пользователя по его ID.
-     * После блокировки пользователя выполняется перенаправление на страницу со списком пользователей.
      *
      * @param userId ID пользователя, которого необходимо заблокировать.
-     * @return редирект на страницу со списком пользователей.
+     * @return статус выполнения.
      */
     @PostMapping("/blockUser")
-    public String blockUser(@RequestParam("userId") Long userId) {
+    public ResponseEntity<String> blockUser(@RequestParam("userId") Long userId) {
         userService.blockUser(userId);
-        return "redirect:/admin/users";
+        return ResponseEntity.ok("User with ID " + userId + " has been blocked.");
     }
 
     /**

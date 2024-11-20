@@ -9,18 +9,22 @@ import java.io.File;
 
 public class GitUtil {
 
-  public static void cloneRepository(String url, String cloneDirectoryPath) throws GitAPIException {
+  public static String cloneRepository(String url, String cloneDirectoryPath) throws GitAPIException {
     File cloneDirectory = new File(cloneDirectoryPath);
+    String hash;
 
     try {
       Git git = Git.cloneRepository()
               .setURI(url)
               .setDirectory(cloneDirectory)
               .call();
+      hash = git.log().setMaxCount(1).call().iterator().next().getName();
       git.close();
     } catch (GitAPIException e) {
       throw e;
     }
+
+    return hash;
   }
 
   public static void downloadUrl(String url, Integer idReport) throws GitAPIException {

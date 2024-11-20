@@ -17,6 +17,8 @@ public class ReportAndDirDto {
 
     private String dir;
 
+    private String hash;
+
     private List<BugInstanceCustomDto> bugInstanceCustoms;
 
     private List<DependencyCustomDto> dependencyCustoms;
