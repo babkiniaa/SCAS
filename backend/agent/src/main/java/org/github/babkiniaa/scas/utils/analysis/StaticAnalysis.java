@@ -8,20 +8,47 @@ import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.reporting.RuleViolation;
 
+import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
+import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
 import org.github.babkiniaa.scas.reporters.MyList;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.dependency.Dependency;
 import org.owasp.dependencycheck.exception.ExceptionCollection;
 import org.owasp.dependencycheck.utils.Settings;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public class StaticAnalysis {
+
+
+    private static List<File> listFiles(File node) {
+        // could be replaced with org.apache.commons.io.FileUtils.list() method
+        // if only we add commons-io library
+        final List<File> result = new LinkedList<>();
+
+        if (node.canRead()) {
+            if (node.isDirectory()) {
+                final File[] files = node.listFiles();
+                // listFiles() can return null, so we need to check it
+                if (files != null) {
+                    for (File element : files) {
+                        result.addAll(listFiles(element));
+                    }
+                }
+            }
+            else if (node.isFile() && node.toString().endsWith(".java")) {
+                result.add(node);
+            }
+        }
+        return result;
+    }
 
     public static List<RuleViolation> startPmd(String path) throws Exception {
         PMDConfiguration config = new PMDConfiguration();
@@ -58,20 +85,32 @@ public class StaticAnalysis {
         return dependencies;
     }
 
-    public static List<Violation> startCheckStyle(String path) throws Exception {
+    public static List<ViolationCustomDto> startCheckStyle(String dir) throws Exception {
         Checker checker = new Checker();
         Configuration config2 = ConfigurationLoader.loadConfiguration("checkstyle.xml",
                 new PropertiesExpander(System.getProperties()), ConfigurationLoader.IgnoredModulesOptions.OMIT,
                 new ThreadModeSettings(1, 1));
         ClassLoader moduleClassLoader = Checker.class.getClassLoader();
         ModuleFactory factory = new PackageObjectFactory(Checker.class.getPackage().getName(), moduleClassLoader);
-//        RootModule factory.createModule(config.getName()); (new DefaultLogger(System.out, AbstractAutomaticBean.OutputStreamOptions.CLOSE))
         checker.setModuleFactory(factory);
         checker.configure(config2);
-        checker.addListener(new MyList());
-        List<File> list = new ArrayList<File>();
-        list.add(new File(path));
-        int process = checker.process(list);
-        return null;
+        String bugOut = dir + "\\Style.check";
+        checker.addListener(new MyList(new ObjectOutputStream(new FileOutputStream(bugOut))));
+        List<File> files = listFiles(new File(dir));
+        int process = checker.process(files);
+
+        ObjectInputStream bugInputStream = new ObjectInputStream(new FileInputStream(bugOut));
+        List<ViolationCustomDto> bugs = new ArrayList<>();
+
+        while(true) {
+            try {
+                bugs.add((ViolationCustomDto) bugInputStream.readObject());
+            } catch (EOFException | ClassNotFoundException e) {
+                bugInputStream.close();
+                break;
+            }
+        }
+
+        return bugs;
     }
 }

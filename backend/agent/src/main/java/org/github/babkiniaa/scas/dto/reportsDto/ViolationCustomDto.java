@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ViolationCustomDto {
+public class ViolationCustomDto  implements Serializable {
 
     private int lineNo;
 
@@ -26,6 +28,8 @@ public class ViolationCustomDto {
     private String bundle;
 
     private String customMessage;
+
+    private String source;
 
 
 }

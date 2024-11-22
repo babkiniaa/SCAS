@@ -22,6 +22,7 @@ public class ReportCheckStyleMapper {
         violationCustomDto.setTokenType( violation.getTokenType() );
         violationCustomDto.setModuleId( violation.getModuleId() );
         violationCustomDto.setKey( violation.getKey() );
+        violationCustomDto.setSource( violation.getSourceName());
 
         return violationCustomDto;
     }

@@ -35,5 +35,6 @@ public class ViolationCustom {
 
     private String customMessage;
 
+    private String source;
 
 }

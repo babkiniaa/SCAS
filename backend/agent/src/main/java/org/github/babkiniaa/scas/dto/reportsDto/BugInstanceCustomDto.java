@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BugInstanceCustomDto {
+public class BugInstanceCustomDto implements Serializable{
 
     private String type;
 
