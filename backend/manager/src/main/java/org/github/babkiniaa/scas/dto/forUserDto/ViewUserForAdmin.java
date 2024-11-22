@@ -9,4 +9,6 @@ public class ViewUserForAdmin {
     private String username;
     private String avatarUrl;
     private long id;
+    private boolean isEnable;
+
 }

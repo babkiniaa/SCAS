@@ -22,7 +22,7 @@
           <q-card-section>
             <div class="row q-col-gutter-md items-center">
               <div class="col-6">
-                <h6>Projects in Queue for Analysis</h6>
+                <h6>Active projects during Analyze</h6>
               </div>
               <div class="col-6 text-right">
                 <span class="text-h3 text-primary">
@@ -73,7 +73,7 @@
               >
                 <q-item-section>{{ task.id }}</q-item-section>
                 <q-item-section>{{ task.statusTask }}</q-item-section>
-                <q-item-section side>
+                <q-item-section side v-if="task.statusTask!='Run'">
                   <q-btn
                     label="Stop"
                     color="red"
@@ -107,11 +107,12 @@
               >
                 <q-item-section avatar>
                   <q-avatar class="q-ml-md">
-                    <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
+                    <img v-if="user.avatarUrl" :src="user.avatarUrl" alt="User Avatar" />
                     <q-icon v-else name="person" class="text-white" />
                   </q-avatar>
                 </q-item-section>
                 <q-item-section>{{ user.username }}</q-item-section>
+                <q-item-section style="color:red" v-if="!user.enable">Забанено</q-item-section>
                 <q-item-section side>
                   <q-btn
                     label="Block"
@@ -169,8 +170,6 @@ export default {
           message: `User with ID ${userId} blocked successfully`,
           color: 'green'
         })
-        this.users = this.users.filter((user) => user.id !== userId)
-        this.userCount -= 1
       } catch (error) {
         this.$q.notify({ message: `Failed to block user ${userId}`, color: 'red' })
       }
