@@ -5,6 +5,8 @@ import org.github.babkiniaa.scas.dto.Request.RegisterTaskDto;
 import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
 import org.github.babkiniaa.scas.entity.StatusTask;
 import org.github.babkiniaa.scas.service.TaskService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;

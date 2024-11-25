@@ -1,0 +1,20 @@
+package org.github.babkiniaa.scas.configuration;
+
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.TopicBuilder;
+
+import java.util.Map;
+
+@Configuration
+public class KafkaConfiguration {
+
+    @Bean
+    NewTopic createTopic() {
+        return TopicBuilder.name("report-create-events-topic")
+                .partitions(3)
+                .replicas(3)
+                .build();
+    }
+}
