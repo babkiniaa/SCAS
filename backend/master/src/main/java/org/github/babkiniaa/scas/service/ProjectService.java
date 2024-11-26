@@ -23,6 +23,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
+    private final MetricsService metricsService;
 
     /**
      * Создает новый проект для пользователя с указанным идентификатором.
@@ -32,6 +33,7 @@ public class ProjectService {
     public long create(CreateProjectDto projectDto) {
         Project project = projectMapper.projectToEntity(projectDto);
         project.setUserId(projectDto.getUserId());
+        metricsService.userAnalysis(projectDto.getUserId(), 1);
         return projectRepository.save(project).getId();
     }
 
