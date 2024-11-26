@@ -26,6 +26,8 @@ public class Report {
 
     private String hash;
 
+    private String branch;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<BugInstanceCustom> bugInstanceCustoms;
 

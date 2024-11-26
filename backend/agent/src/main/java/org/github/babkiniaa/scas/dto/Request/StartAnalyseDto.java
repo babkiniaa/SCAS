@@ -13,9 +13,13 @@ public class StartAnalyseDto {
 
     private long taskId;
 
-    private long projectId;
+    private long idProject;
 
     private String url;
+
+    private String branch;
+
+    private String commit;
 
     private List<String> needReports;
 

@@ -10,8 +10,11 @@ import java.util.List;
 @Setter
 @Getter
 public class AnalyserDto {
-
     private Long idProject;
+
+    private String branch;
+
+    private String commit;
 
     private List<String> needReports;
 }

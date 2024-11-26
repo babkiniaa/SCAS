@@ -4,20 +4,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Setter
 @Getter
 @RequiredArgsConstructor
-public class AnalyserDto {
+public class GitDto {
 
-    private long idProject;
-
-    private List<String> needReports;
+    private String hash;
 
     private String branch;
-
-    private String commit;
-
-    private String url;
 }
