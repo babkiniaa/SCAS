@@ -21,6 +21,8 @@ public class ReportAndIdProjectDto {
 
     private String hash;
 
+    private String branch;
+
     private List<BugInstanceCustomDto> bugInstanceCustoms;
 
     private List<DependencyCustomDto> dependencyCustoms;
