@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * DTO посылаемое на мастер для проведения анализа проекта
- */
+ **/
 @Setter
 @Getter
 public class AnalyserDto {

@@ -202,6 +202,7 @@ public class TaskService {
                 saveReportInMaster(task, reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto), startAnalyseDto.getIdProject(), startAnalyseDto.getNeedReports());
             } catch (Exception e) {
                 task.setStatusTask(StatusTask.Err);
+                task.setIdProject(0);
                 taskRepository.save(task).getId();
                 throw new RuntimeException(e);
             } finally {
