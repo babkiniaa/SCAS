@@ -10,18 +10,18 @@ import org.github.babkiniaa.scas.dto.Request.StartAnalyseDto;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.github.babkiniaa.scas.dto.Response.ReportAndDirDto;
 import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
+import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
+import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
 import org.github.babkiniaa.scas.dto.typeForMap.MethodAndTypeAnalysis;
 import org.github.babkiniaa.scas.entity.StatusTask;
 import org.github.babkiniaa.scas.entity.Task;
-import org.github.babkiniaa.scas.mapper.ReportMapper;
-import org.github.babkiniaa.scas.mapper.ReportOWASPMapper;
-import org.github.babkiniaa.scas.mapper.ReportPMDMapper;
-import org.github.babkiniaa.scas.mapper.TaskMapper;
+import org.github.babkiniaa.scas.mapper.*;
 import org.github.babkiniaa.scas.repository.TaskRepository;
 import org.github.babkiniaa.scas.utils.DeleteFileUtil;
 import org.github.babkiniaa.scas.utils.GitUtil;
+import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
 import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.owasp.dependencycheck.dependency.Dependency;
 import org.springframework.scheduling.annotation.Async;
@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,7 @@ public class TaskService {
     private final TaskMapper taskMapper;
     private final ReportPMDMapper reportPMDMapper;
     private final ReportOWASPMapper reportOWASPMapper;
+    private final ReportSpotBugsMapper reportSpotBugsMapper;
     private final ReportMapper reportMapper;
     private final ReportService reportService;
     private final TaskRepository taskRepository;
@@ -109,10 +111,27 @@ public class TaskService {
     }
 
     private ReportAndDirDto reportSpotBugs(ReportAndDirDto reportAndDir) {
+        List<BugInstanceCustomDto> bugInstanceCustomDtos;
+        try {
+            bugInstanceCustomDtos = BinAnalysis.spotbugs(reportAndDir.getDir());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        reportAndDir.setBugInstanceCustoms(bugInstanceCustomDtos);
         return reportAndDir;
     }
 
     private ReportAndDirDto reportCheckstyle(ReportAndDirDto reportAndDir) {
+        List<ViolationCustomDto> violationCustomDtos;
+
+        try {
+            violationCustomDtos = StaticAnalysis.startCheckStyle(reportAndDir.getDir());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        reportAndDir.setViolationCustoms(violationCustomDtos);
+
         return reportAndDir;
     }
 

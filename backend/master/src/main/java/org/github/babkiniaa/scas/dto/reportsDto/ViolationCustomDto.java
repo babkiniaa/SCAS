@@ -27,5 +27,7 @@ public class ViolationCustomDto {
 
     private String customMessage;
 
+    private String source;
+
 
 }
