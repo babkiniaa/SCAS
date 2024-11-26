@@ -133,6 +133,11 @@
             <artifactId>dependency-check-utils</artifactId>
             <version>11.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
         <!--        <dependency>-->
         <!--            <groupId>org.slf4j</groupId>-->
         <!--            <artifactId>slf4j-api</artifactId>-->
@@ -196,5 +201,16 @@
 
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.baeldung.spring.kafka.KafkaApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
