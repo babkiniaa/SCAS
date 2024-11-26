@@ -10,8 +10,8 @@ CREATE TABLE users (
     avatar_url VARCHAR(255)
 );
 
-insert into users (email, username, password, role, is_enable, avatar_url)
-values  ('scasproject66@gmail.com','admin', '$2a$12$cC6WLP9f8GXCVPDw3yFq8ODf9pnWh/jvM1Z3uEhU4N0ALU7CRSViW', 'ADMIN', 'true', 'http://localhost:9002/avatars/avatar_photo_5312079920823920430_y.jpg');
+insert into users (email, username, password, role, is_enable)
+values  ('scasproject66@gmail.com','admin', '$2a$12$cC6WLP9f8GXCVPDw3yFq8ODf9pnWh/jvM1Z3uEhU4N0ALU7CRSViW', 'ADMIN', 'true');
 --Admin123
 
 insert into users (email, username, password, role, is_enable)

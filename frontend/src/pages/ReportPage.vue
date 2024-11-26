@@ -104,6 +104,54 @@
                   <p>{{ violation.description }}</p>
                 </div>
               </q-card-section>
+
+              <q-card-section v-if="reportData.bugInstanceCustomDtos.length">
+                <div class="text-h6 text-weight-bold q-mb-md">Bug Instances Found</div>
+                <div
+                  v-for="bugInstance in reportData.bugInstanceCustomDtos"
+                  :key="bugInstance.instanceHash"
+                  class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
+                >
+                  <div class="text-body1 text-weight-bold">Type: {{ bugInstance.type }}</div>
+                  <p>Priority: {{ bugInstance.priority }}</p>
+                  <p>Hash Code: {{ bugInstance.cachedHashCode }}</p>
+                  <p>Old Hash: {{ bugInstance.oldInstanceHash }}</p>
+                  <p>New Hash: {{ bugInstance.instanceHash }}</p>
+                  <p>Occurrence: {{ bugInstance.instanceOccurrenceNum }} / {{ bugInstance.instanceOccurrenceMax }}</p>
+                  <p>First Version: {{ bugInstance.firstVersion }}</p>
+                  <p>Last Version: {{ bugInstance.lastVersion }}</p>
+                  <p>
+                    Introduced by Change of Existing Class: 
+                    <q-badge color="green" v-if="bugInstance.introducedByChangeOfExistingClass">Yes</q-badge>
+                    <q-badge color="red" v-else>No</q-badge>
+                  </p>
+                  <p>
+                    Removed by Change of Persisting Class: 
+                    <q-badge color="green" v-if="bugInstance.removedByChangeOfPersistingClass">Yes</q-badge>
+                    <q-badge color="red" v-else>No</q-badge>
+                  </p>
+                </div>
+              </q-card-section>
+
+
+              <q-card-section v-if="reportData.violationCustomDtos.length">
+                <div class="text-h6 text-weight-bold q-mb-md">Code Violations Found</div>
+                <div
+                  v-for="violation in reportData.violationCustomDtos"
+                  :key="violation.key"
+                  class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
+                >
+                  <div class="text-body1 text-weight-bold">Module: {{ violation.moduleId }}</div>
+                  <p>Line: {{ violation.lineNo }}</p>
+                  <p>Column: {{ violation.columnNo }}</p>
+                  <p>Char Index: {{ violation.columnCharIndex }}</p>
+                  <p>Token Type: {{ violation.tokenType }}</p>
+                  <p>Key: {{ violation.key }}</p>
+                  <p>Bundle: {{ violation.bundle }}</p>
+                  <p>Source: {{ violation.source }}</p>
+                  <p>Custom Message: {{ violation.customMessage }}</p>
+                </div>
+              </q-card-section>
             </div>
             <div v-else>
               <q-card class="shadow-2 q-pa-md" bordered style="width: 100%;">
