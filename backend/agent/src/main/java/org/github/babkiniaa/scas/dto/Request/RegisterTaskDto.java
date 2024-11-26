@@ -16,5 +16,9 @@ public class RegisterTaskDto {
 
    private long idProject;
 
+   private String branch;
+
+   private String commit;
+
    private HashMap<String, List<String>> hashAndAnalyze;
 }

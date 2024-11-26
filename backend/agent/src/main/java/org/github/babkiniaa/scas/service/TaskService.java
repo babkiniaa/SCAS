@@ -2,9 +2,9 @@ package org.github.babkiniaa.scas.service;
 
 import lombok.RequiredArgsConstructor;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.apache.tomcat.util.threads.TaskQueue;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.github.babkiniaa.scas.client.AgentClient;
+import org.github.babkiniaa.scas.dto.GitDto;
 import org.github.babkiniaa.scas.dto.Request.RegisterTaskDto;
 import org.github.babkiniaa.scas.dto.Request.StartAnalyseDto;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
@@ -26,7 +26,6 @@ import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.owasp.dependencycheck.dependency.Dependency;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,10 +81,11 @@ public class TaskService {
      * @return the long
      */
     public Long saveTask(RegisterTaskDto registerTaskDto) {
-        Task task = taskMapper.RegisterTaskToTask(registerTaskDto);
+        Task task = taskMapper.registerTaskToTask(registerTaskDto);
         task.setStatusTask(StatusTask.TODO);
         Long idTask = taskRepository.save(task).getId();
-        StartAnalyseDto startAnalyseDto = new StartAnalyseDto(idTask, registerTaskDto.getIdProject(), registerTaskDto.getUrl(), registerTaskDto.getNeedReports());
+        StartAnalyseDto startAnalyseDto = taskMapper.registerTaskToStartAnalyze(registerTaskDto);
+        startAnalyseDto.setTaskId(idTask);
         threadPoolExecutor.execute(() -> {
             try {
                 startAnalysis(startAnalyseDto);
@@ -168,16 +168,17 @@ public class TaskService {
             String dir = System.getProperty("user.dir") + "/down/" + startAnalyseDto.getTaskId();
             ReportAndDirDto reportAndDirDto = new ReportAndDirDto();
             reportAndDirDto.setDir(dir);
-            String hash = "";
+            GitDto gitDto = new GitDto();
 
             try {
-                hash = GitUtil.cloneRepository(startAnalyseDto.getUrl(), dir);
-                reportAndDirDto.setHash(hash);
-            } catch (GitAPIException e) {
+                gitDto = GitUtil.cloneRepository(startAnalyseDto.getUrl(), dir, startAnalyseDto.getBranch(), startAnalyseDto.getCommit());
+                reportAndDirDto.setHash(gitDto.getHash());
+                reportAndDirDto.setBranch(gitDto.getBranch());
+            } catch (GitAPIException | IOException e) {
                 throw new RuntimeException(e);
             }
             try {
-                List<String> lastAnalyze = agentClient.getAnalyzers(hash, startAnalyseDto.getProjectId());
+                List<String> lastAnalyze = agentClient.getAnalyzers(reportAndDirDto.getHash(), startAnalyseDto.getIdProject());
                 if(!lastAnalyze.isEmpty()) {
                     List<String> filterAnalyze = startAnalyseDto.getNeedReports();
                     for (String analyze : lastAnalyze) {
@@ -191,7 +192,7 @@ public class TaskService {
                 task.setStatusTask(StatusTask.EndS);
                 task.setReport(reportService.save(reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto)));
                 taskRepository.save(task);
-                saveReportInMaster(task, reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto), startAnalyseDto.getProjectId(), startAnalyseDto.getNeedReports());
+                saveReportInMaster(task, reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto), startAnalyseDto.getIdProject(), startAnalyseDto.getNeedReports());
             } catch (Exception e) {
                 task.setStatusTask(StatusTask.Err);
                 taskRepository.save(task).getId();
@@ -259,7 +260,7 @@ public class TaskService {
         List<TaskInQueueDto> taskInQueueDtos = new ArrayList<>();
 
         for (var task : tasks) {
-            taskInQueueDtos.add(taskMapper.TaskToTaskQueue(task));
+            taskInQueueDtos.add(taskMapper.taskToTaskQueue(task));
         }
 
         return taskInQueueDtos;

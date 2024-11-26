@@ -30,6 +30,8 @@ public class Report {
 
     private String hash;
 
+    private String branch;
+
     private long projectId;
 
     @OneToMany(cascade = CascadeType.ALL)
