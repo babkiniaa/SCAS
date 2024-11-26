@@ -7,6 +7,7 @@ import org.github.babkiniaa.scas.client.AgentClient;
 import org.github.babkiniaa.scas.dto.GitDto;
 import org.github.babkiniaa.scas.dto.Request.RegisterTaskDto;
 import org.github.babkiniaa.scas.dto.Request.StartAnalyseDto;
+import org.github.babkiniaa.scas.dto.Response.ReportAndIdProjectDto;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.github.babkiniaa.scas.dto.Response.ReportAndDirDto;
 import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
@@ -24,6 +25,8 @@ import org.github.babkiniaa.scas.utils.GitUtil;
 import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
 import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.owasp.dependencycheck.dependency.Dependency;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +35,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -40,6 +45,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Service
 @RequiredArgsConstructor
 public class TaskService {
+
+    private final KafkaTemplate<String, ReportAndIdProjectDto> kafkaTemplate;
 
     private final AgentClient agentClient;
     private final TaskMapper taskMapper;
@@ -220,15 +227,17 @@ public class TaskService {
      * @param reportDto the report dto
      * @param projectId the project id
      */
-    /*
-     * Тут надо бы еще хеш посчитать 🙄
-     */
     @Async
     public void saveReportInMaster(Task task, ReportDto reportDto, long projectId, List<String> needReports) {
         if (getStatusByProjectId(projectId) == StatusTask.EndS) {
-            //reportDto.setHash("You method hash");
             reportDto.setAnalyzers(needReports);
-            agentClient.saveInMasterReport(projectId, reportDto);
+            ReportAndIdProjectDto reportAndIdProjectDto = reportMapper.ReportDtoToReportAndIdProjectDto(reportDto);
+            reportAndIdProjectDto.setProjectId(projectId);
+            String prodactId = UUID.randomUUID().toString();
+
+            CompletableFuture<SendResult<String, ReportAndIdProjectDto>> future =
+                    kafkaTemplate.send("report-create-events-topic", prodactId, reportAndIdProjectDto);
+
             taskRepository.delete(task);
         }
     }

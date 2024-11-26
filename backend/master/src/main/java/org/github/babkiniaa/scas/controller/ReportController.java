@@ -40,10 +40,10 @@ public class ReportController {
         return reportService.findAllByProjectId(projectId);
     }
 
-    @PostMapping("/save/{id}")
-    public void saveReport(@PathVariable("id") long idProject,@RequestBody ReportDto reportDto){
-        reportService.save(idProject, reportDto);
-    }
+//    @PostMapping("/save/{id}")
+//    public void saveReport(@PathVariable("id") long idProject,@RequestBody ReportDto reportDto){
+//        reportService.save(idProject, reportDto);
+//    }
 
     @GetMapping("/get-analyzers")
     public List<String> getAnalyzers(@RequestParam String hash, @RequestParam long projectId){
