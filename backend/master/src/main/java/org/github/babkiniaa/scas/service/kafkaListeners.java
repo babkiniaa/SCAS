@@ -20,12 +20,15 @@ public class kafkaListeners {
 
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
+    private final MetricsService metricsService;
+    private final ProjectService projectService;
 
     @KafkaHandler
     public void save(ReportAndIdProjectDto reportAndIdProjectDto) {
         Optional<Report> previous = reportRepository.findByHashAndProjectId(reportAndIdProjectDto.getHash(), reportAndIdProjectDto.getProjectId());
         Report reportEntity = new Report();
         if (previous.isEmpty()) {
+            metricsService.userReport(projectService.findById(reportAndIdProjectDto.getProjectId()).getId(), 1, reportAndIdProjectDto);
             reportEntity = reportMapper.reportReportAndIdProjectDto(reportAndIdProjectDto);
             reportEntity.setProjectId(reportAndIdProjectDto.getProjectId());
         } else {
@@ -36,6 +39,6 @@ public class kafkaListeners {
             reportMapper.updateReportFromDto(reportAndIdProjectDto, reportEntity);
             reportEntity.setCreatedDate(LocalDateTime.now());
         }
-        reportRepository.save(reportEntity);
+        metricsService.bagsInAnalyze(reportAndIdProjectDto, reportRepository.save(reportEntity).getId());
     }
 }

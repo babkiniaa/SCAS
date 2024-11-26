@@ -16,10 +16,12 @@ public class ReportController {
     private final ProjectService projectService;
     private final ReportService reportService;
     private final AgentServiceClient agentServiceClient;
+    private final MetricsService metricsService;
 
     @PostMapping("/create")
     public long createReport(@RequestBody AnalyserDto analyserDto) {
         analyserDto.setUrl(projectService.findById(analyserDto.getIdProject()).getUrl());
+        metricsService.userTask(projectService.findById(analyserDto.getIdProject()).getId(), 1);
         long taskId = agentServiceClient.init(analyserDto);
 
         return taskId;
@@ -39,11 +41,6 @@ public class ReportController {
     public List<ListReportDto> findReportsByProjectId(@PathVariable("id") long projectId){
         return reportService.findAllByProjectId(projectId);
     }
-
-//    @PostMapping("/save/{id}")
-//    public void saveReport(@PathVariable("id") long idProject,@RequestBody ReportDto reportDto){
-//        reportService.save(idProject, reportDto);
-//    }
 
     @GetMapping("/get-analyzers")
     public List<String> getAnalyzers(@RequestParam String hash, @RequestParam long projectId){
