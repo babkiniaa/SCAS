@@ -23,7 +23,6 @@ public class MyBg extends DelegatingBugReporter {
     }
 
     public void reportBug(@Nonnull BugInstance bugInstance) {
-        System.out.println("Added " + bugInstance);
         try {
             objectOutputStream.writeObject(ReportSpotBugsMapper.bugInstanceToBugInstanceCustom(bugInstance));
         } catch (IOException e) {
@@ -32,7 +31,6 @@ public class MyBg extends DelegatingBugReporter {
     }
 
     public void finish(){
-        System.out.println("GETOUT!!!!!!!");
         try {
             objectOutputStream.close();
         } catch (IOException e) {

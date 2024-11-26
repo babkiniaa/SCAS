@@ -24,8 +24,6 @@ public class MyList implements AuditListener {
 
     @Override
     public void auditStarted(AuditEvent auditEvent) {
-        System.out.println("Start Scanning");
-
     }
 
     @Override
@@ -35,17 +33,16 @@ public class MyList implements AuditListener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("End scanning");
     }
 
     @Override
     public void fileStarted(AuditEvent auditEvent) {
-        System.out.println("Scanning " + auditEvent.getFileName());
+
     }
 
     @Override
     public void fileFinished(AuditEvent auditEvent) {
-        System.out.println("End Scanning " + auditEvent.getFileName());
+
     }
 
     @Override
@@ -59,7 +56,6 @@ public class MyList implements AuditListener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Error: " + auditEvent.getMessage());
     }
 
     @Override

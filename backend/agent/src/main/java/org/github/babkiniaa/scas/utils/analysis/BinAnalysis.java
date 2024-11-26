@@ -17,23 +17,11 @@ import java.util.List;
 public class BinAnalysis {
 
     public static List<BugInstanceCustomDto> spotbugs(String dir) throws IOException {
-//        System.setProperty("maven.home", System.getenv("M2_HOME"));
-//        InvocationRequest request = new DefaultInvocationRequest();
-//        Invoker invoker = new DefaultInvoker();
-//        String ddist = "-Ddist=" + dir + " -Dspotout=" + dir.split("/")[dir.split("/").length - 1] + " spotbugs:check";
-//        request.setPomFile(new File(System.getProperty("user.dir") + "\\backend\\agent\\pom.xml"));
-//        request.setGoals(Collections.singletonList(ddist));
-//
-//        try {
-//            invoker.execute(request);
-//        } catch (Exception e) {
-//            throw e;
-//        }
-
         String bugOut = dir + "\\Bugs.spot";
         FindBugs2 findBugs2 = new FindBugs2();
         String[] arg = new String[1];
         arg[0] = dir;
+
         FindBugs.processCommandLine(new TextUICommandLine(), arg, findBugs2);
         findBugs2.setBugReporter(new MyBg(findBugs2.getBugReporter(), bugOut));
         FindBugs.runMain(findBugs2, new TextUICommandLine());
