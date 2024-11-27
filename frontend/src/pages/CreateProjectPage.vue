@@ -68,11 +68,10 @@
           </q-form>
         </q-card>
         <q-dialog v-model="showModal">
-          <q-card style="width: 450px; height: 250px; padding: 16px;">
+          <q-card style="width: 450px; height: 350px; padding: 16px;">
             <q-card-section class="text-center">
-              <h6 style="margin: 0;">Select Analizator</h6>
+              <h6 style="margin: 0;">Select Analyzer</h6>
             </q-card-section>
-
             <q-card-section class="row q-col-gutter-md q-pt-none items-start" style="padding: 0 10px;">
               <div class="col-6">
                 <q-btn-dropdown
@@ -106,14 +105,38 @@
                 />
               </div>
             </q-card-section>
+            <q-card-section class="row q-col-gutter-md items-center" style="padding: 10px;">
+              <div class="col-12">
+                <q-input
+                  v-model="branchName"
+                  label="Branch (e.g., origin/main)"
+                  filled
+                  dense
+                  prefix="origin/"
+                  :class="isDarkMode ? 'bg-grey-7 text-white' : ''"
+                />
+              </div>
+            </q-card-section>
+            <q-card-section class="row q-col-gutter-md items-center" style="padding: 10px;">
+              <div class="col-12">
+                <q-input
+                  v-model="commitHash"
+                  label="Commit Hash"
+                  filled
+                  dense
+                  placeholder="Enter commit hash"
+                  :class="isDarkMode ? 'bg-grey-7 text-white' : ''"
+                />
+              </div>
+            </q-card-section>
             <q-card-section class="text-center" style="padding: 30px; margin-top: auto;">
               <q-btn
-                  label="Run"
-                  :icon="playIcon"
-                  :class="isDarkMode ? 'bg-grey-6' : ''"
-                  class="q-mb-xs text-green"
-                  @click="startAnalysis"
-                />
+                label="Run"
+                :icon="playIcon"
+                :class="isDarkMode ? 'bg-grey-6' : ''"
+                class="q-mb-xs text-green"
+                @click="startAnalysis"
+              />
             </q-card-section>
           </q-card>
         </q-dialog>
@@ -143,7 +166,9 @@ export default {
       selectedAnalyzers: [],
       availableAnalyzers: [],
       showModal: false,
-      playIcon: 'play_arrow'
+      playIcon: 'play_arrow',
+      branchName: null,
+      commitHash: null
     }
   },
   methods: {
@@ -185,7 +210,9 @@ export default {
       try {
         await reportCreate({
           idProject: this.idProject,
-          needReports: this.selectedAnalyzers
+          needReports: this.selectedAnalyzers,
+          branch: this.branchName,
+          commit: this.commitHash
         })
         this.showModal = false
         this.$q.notify({ message: 'Project created successfully', color: 'green' })

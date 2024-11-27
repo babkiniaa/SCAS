@@ -59,6 +59,32 @@
       <div v-if="reportData != null" class="q-mt-md">
         <q-page style="margin-top: 15px;">
           <q-card :class="['q-pa-md', 'shadow-2', 'my-card', isDarkMode ? 'bg-grey-8' : '']" bordered>
+            <q-btn-dropdown
+              label="Select Report"
+              dense
+              class="q-mr-sm"
+              no-caps
+              flat
+              color="primary"
+            >
+              <q-list>
+                <q-item clickable v-ripple @click="selectReport = 'all'">
+                  <q-item-section>All</q-item-section>
+                </q-item>
+                <q-item clickable v-ripple @click="selectReport = 'PMD'">
+                  <q-item-section>PMD</q-item-section>
+                </q-item>
+                <q-item clickable v-ripple @click="selectReport = 'OWAPS'">
+                  <q-item-section>OWAPS</q-item-section>
+                </q-item>
+                <q-item clickable v-ripple @click="selectReport = 'StopBugs'">
+                  <q-item-section>StopBugs</q-item-section>
+                </q-item>
+                <q-item clickable v-ripple @click="selectReport = 'CheckStyle'">
+                  <q-item-section>CheckStyle</q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
             <div class="q-mb-md text-right">
               <q-btn
                 outline
@@ -70,7 +96,7 @@
             </div>
 
             <div v-if="viewMode === 'document'">
-              <q-card-section v-if="reportData.dependencyCustoms.length">
+              <q-card-section v-if="reportData.dependencyCustoms.length && (selectReport ===  'all' || selectReport === 'OWAPS')">
                 <div class="text-h6 text-weight-bold q-mb-md">OWASP Vulnerabilities Found</div>
                 <div
                   v-for="dep in reportData.dependencyCustoms"
@@ -90,7 +116,7 @@
                   </ul>
                 </div>
               </q-card-section>
-              <q-card-section v-if="reportData.ruleViolationCustoms.length">
+              <q-card-section v-if="reportData.ruleViolationCustoms.length && (selectReport ===  'all' || selectReport === 'PMD')">
                 <div class="text-h6 text-weight-bold q-mb-md">PMD Violations Found</div>
                 <div
                   v-for="violation in reportData.ruleViolationCustoms"
@@ -104,11 +130,10 @@
                   <p>{{ violation.description }}</p>
                 </div>
               </q-card-section>
-
-              <q-card-section v-if="reportData.bugInstanceCustomDtos.length">
+              <q-card-section v-if="reportData.bugInstanceCustoms.length && (selectReport ===  'all' || selectReport === 'StopBugs')">
                 <div class="text-h6 text-weight-bold q-mb-md">Bug Instances Found</div>
                 <div
-                  v-for="bugInstance in reportData.bugInstanceCustomDtos"
+                  v-for="bugInstance in reportData.bugInstanceCustoms"
                   :key="bugInstance.instanceHash"
                   class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
                 >
@@ -121,23 +146,21 @@
                   <p>First Version: {{ bugInstance.firstVersion }}</p>
                   <p>Last Version: {{ bugInstance.lastVersion }}</p>
                   <p>
-                    Introduced by Change of Existing Class: 
+                    Introduced by Change of Existing Class:
                     <q-badge color="green" v-if="bugInstance.introducedByChangeOfExistingClass">Yes</q-badge>
                     <q-badge color="red" v-else>No</q-badge>
                   </p>
                   <p>
-                    Removed by Change of Persisting Class: 
+                    Removed by Change of Persisting Class:
                     <q-badge color="green" v-if="bugInstance.removedByChangeOfPersistingClass">Yes</q-badge>
                     <q-badge color="red" v-else>No</q-badge>
                   </p>
                 </div>
               </q-card-section>
-
-
-              <q-card-section v-if="reportData.violationCustomDtos.length">
+              <q-card-section v-if="reportData.violationCustoms.length && (selectReport ===  'all' || selectReport === 'CheckStyle')">
                 <div class="text-h6 text-weight-bold q-mb-md">Code Violations Found</div>
                 <div
-                  v-for="violation in reportData.violationCustomDtos"
+                  v-for="violation in reportData.violationCustoms"
                   :key="violation.key"
                   class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
                 >
@@ -155,56 +178,98 @@
             </div>
             <div v-else>
               <q-card class="shadow-2 q-pa-md" bordered style="width: 100%;">
-                <q-btn-dropdown
-                  label="Filter by File"
-                  dense
-                  class="q-mb-md"
-                  no-caps
-                  flat
-                  color="primary"
-                >
-                  <q-list>
-                    <q-item clickable v-ripple @click="filterByFile(null)">
-                      <q-item-section>Clear Filter</q-item-section>
-                    </q-item>
-                    <q-item
-                      v-for="file in fileOptions"
-                      :key="file.value"
-                      clickable
-                      v-ripple
-                      @click="filterByFile(file.value)"
-                    >
-                      <q-item-section>{{ file.label }}</q-item-section>
-                    </q-item>
-                    </q-list>
-                </q-btn-dropdown>
+                <q-card-section v-if="reportData.ruleViolationCustoms.length && (selectReport ===  'all' || selectReport === 'PMD')">
+                  <q-btn-dropdown
+                    label="Filter by File"
+                    dense
+                    class="q-mb-md"
+                    no-caps
+                    flat
+                    color="primary"
+                  >
+                    <q-list>
+                      <q-item clickable v-ripple @click="filterByFile(null)">
+                        <q-item-section>Clear Filter</q-item-section>
+                      </q-item>
+                      <q-item
+                        v-for="file in fileOptions"
+                        :key="file.value"
+                        clickable
+                        v-ripple
+                        @click="filterByFile(file.value)"
+                      >
+                        <q-item-section>{{ file.label }}</q-item-section>
+                      </q-item>
+                      </q-list>
+                  </q-btn-dropdown>
+                  <q-table
+                    :rows="filteredRows"
+                    :columns="columns"
+                    row-key="uniqueKey"
+                    flat
+                    dense
+                    class="full-width"
+                    :rows-per-page-options="[0]"
+                  >
+                    <template v-slot:body-cell-priority="props">
+                      <q-td>{{ props.row.priority }}</q-td>
+                    </template>
+                    <template v-slot:body-cell-name="props">
+                      <q-td>{{ props.row.name }}</q-td>
+                    </template>
+                    <template v-slot:body-cell-message="props">
+                      <q-td>{{ props.row.message }}</q-td>
+                    </template>
+                    <template v-slot:body-cell-fileName="props">
+                      <q-td>{{ props.row.fileName }}</q-td>
+                    </template>
+                    <template v-slot:body-cell-lineRange="props">
+                      <q-td>
+                        {{ props.row.beginLine }} - {{ props.row.endLine }}
+                      </q-td>
+                    </template>
+                  </q-table>
+                </q-card-section>
+                <q-card-section v-if="reportData.dependencyCustoms.length && (selectReport ===  'all' || selectReport === 'OWAPS')">
+                <div class="text-h6 text-weight-bold q-mb-md">OWAPS Vulnerabilities</div>
                 <q-table
-                  :rows="filteredRows"
-                  :columns="columns"
-                  row-key="uniqueKey"
+                  :rows="reportData.dependencyCustoms"
+                  :columns="owapsColumns"
+                  row-key="name"
                   flat
                   dense
                   class="full-width"
                   :rows-per-page-options="[0]"
-                >
-                  <template v-slot:body-cell-priority="props">
-                    <q-td>{{ props.row.priority }}</q-td>
-                  </template>
-                  <template v-slot:body-cell-name="props">
-                    <q-td>{{ props.row.name }}</q-td>
-                  </template>
-                  <template v-slot:body-cell-message="props">
-                    <q-td>{{ props.row.message }}</q-td>
-                  </template>
-                  <template v-slot:body-cell-fileName="props">
-                    <q-td>{{ props.row.fileName }}</q-td>
-                  </template>
-                  <template v-slot:body-cell-lineRange="props">
-                    <q-td>
-                      {{ props.row.beginLine }} - {{ props.row.endLine }}
-                    </q-td>
-                  </template>
-                </q-table>
+                />
+              </q-card-section>
+
+              <!-- Bug Instances Table -->
+              <q-card-section v-if="reportData.bugInstanceCustoms.length && (selectReport ===  'all' || selectReport === 'StopBugs')">
+                <div class="text-h6 text-weight-bold q-mb-md">Bug Instances</div>
+                <q-table
+                  :rows="reportData.bugInstanceCustoms"
+                  :columns="bugColumns"
+                  row-key="instanceHash"
+                  flat
+                  dense
+                  class="full-width"
+                  :rows-per-page-options="[0]"
+                />
+              </q-card-section>
+
+              <!-- Code Violations Table -->
+              <q-card-section v-if="reportData.violationCustoms.length && (selectReport ===  'all' || selectReport === 'CheckStyle')">
+                <div class="text-h6 text-weight-bold q-mb-md">Code Violations</div>
+                <q-table
+                  :rows="reportData.violationCustoms"
+                  :columns="violationColumns"
+                  row-key="key"
+                  flat
+                  dense
+                  class="full-width"
+                  :rows-per-page-options="[0]"
+                />
+              </q-card-section>
               </q-card>
             </div>
           </q-card>
@@ -238,14 +303,37 @@ export default {
       viewMode: 'table_chart',
       selectedFile: null,
       columns: [
-        { name: 'name', label: 'Name', field: 'name', sortable: true },
-        { name: 'priority', label: 'Priority', field: 'priority', sortable: true, sortMethod: (a, b) => this.sortPriority(a, b) },
-        { name: 'message', label: 'Message', field: 'message', sortable: false },
-        { name: 'fileName', label: 'File', field: 'fileName', sortable: true },
-        { name: 'lineRange', label: 'Lines (Begin-End)', field: 'lineRange' }
+        { name: 'name', label: 'Name', field: 'name', sortable: true, align: 'left' },
+        { name: 'priority', label: 'Priority', field: 'priority', sortable: true, sortMethod: (a, b) => this.sortPriority(a, b), align: 'left' },
+        { name: 'message', label: 'Message', field: 'message', sortable: false, align: 'left' },
+        { name: 'fileName', label: 'File', field: 'fileName', sortable: true, align: 'left' },
+        { name: 'lineRange', label: 'Lines (Begin-End)', field: 'lineRange', align: 'left' }
+      ],
+      owapsColumns: [
+        { name: 'name', label: 'Name', field: 'name', align: 'left' },
+        { name: 'version', label: 'Version', field: 'version', align: 'left' },
+        { name: 'license', label: 'License', field: 'license', align: 'left' },
+        { name: 'ecosystem', label: 'Ecosystem', field: 'ecosystem', align: 'left' },
+        { name: 'description', label: 'Description', field: 'description', align: 'left' }
+      ],
+      bugColumns: [
+        { name: 'type', label: 'Type', field: 'type', align: 'left' },
+        { name: 'priority', label: 'Priority', field: 'priority', align: 'left' },
+        { name: 'cachedHashCode', label: 'Hash Code', field: 'cachedHashCode', align: 'left' },
+        { name: 'instanceOccurrenceNum', label: 'Occurrence', field: 'instanceOccurrenceNum', align: 'left' },
+        { name: 'firstVersion', label: 'First Version', field: 'firstVersion', align: 'left' },
+        { name: 'lastVersion', label: 'Last Version', field: 'lastVersion', align: 'left' }
+      ],
+      violationColumns: [
+        { name: 'moduleId', label: 'Module', field: 'moduleId', align: 'left' },
+        { name: 'lineNo', label: 'Line', field: 'lineNo', align: 'left' },
+        { name: 'columnNo', label: 'Column', field: 'columnNo', align: 'left' },
+        { name: 'key', label: 'Key', field: 'key', align: 'left' },
+        { name: 'customMessage', label: 'Custom Message', field: 'customMessage', align: 'left' }
       ],
       fileOptions: [],
-      filteredRows: []
+      filteredRows: [],
+      selectReport: 'all'
     }
   },
   components: {
