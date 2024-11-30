@@ -53,8 +53,6 @@ public class TaskService {
 
     {
         methodMap.put("PMD", new MethodAndTypeAnalysis(this::reportPmd, "Static"));
-        methodMap.put("CheckStyle", new MethodAndTypeAnalysis(this::reportCheckstyle, "Static"));
-        methodMap.put("SpotBugs", new MethodAndTypeAnalysis(this::reportSpotBugs, "Binary"));
         methodMap.put("OWASP", new MethodAndTypeAnalysis(this::reportOwasp, "Binary"));
     }
 

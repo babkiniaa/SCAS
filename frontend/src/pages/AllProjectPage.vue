@@ -348,6 +348,10 @@ export default {
       this.$router.push(`/report/${reportId}`)
     },
     async runProject () {
+      if (this.selectedAnalyzers.length === 0) {
+        this.$q.notify({ message: 'Failed to analyzis', color: 'red' })
+        return
+      }
       try {
         await reportCreate({
           idProject: this.projectId,

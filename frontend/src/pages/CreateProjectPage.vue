@@ -24,35 +24,10 @@
                   </q-list>
                 </q-btn-dropdown>
               </div>
-              <div class="col-6">
-                <q-btn-dropdown
-                  color="primary"
-                  :class="isDarkMode ? 'bg-grey-6' : ''"
-                  :label="selectedSource ? 'Source: ' + selectedSource : 'Select Source'"
-                >
-                  <q-list>
-                    <q-item clickable v-close-popup @click="selectSource('GitHub')">
-                      <q-item-section><q-item-label>GitHub</q-item-label></q-item-section>
-                    </q-item>
-                    <q-item clickable v-close-popup @click="selectSource('Upload')">
-                      <q-item-section><q-item-label>Upload</q-item-label></q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-btn-dropdown>
-              </div>
             </q-card-section>
-
-            <q-card-section v-if="selectedSource === 'GitHub'" class="row q-col-gutter-md q-pt-none">
               <div class="col-12">
                 <q-input v-model="gitHubLink" outlined label="GitHub Link" dense :class="isDarkMode ? 'bg-grey-9 text-white' : ''" />
               </div>
-            </q-card-section>
-
-            <q-card-section v-if="selectedSource === 'Upload'" class="row q-col-gutter-md q-pt-none">
-              <div class="col-12">
-                <q-btn label="Upload File" color="primary" @click="handleFileUpload" />
-              </div>
-            </q-card-section>
             <q-card-section>
               <q-input v-model="projectDescription" outlined label="Description" type="textarea" :class="isDarkMode ? 'bg-grey-9 text-white' : ''" />
             </q-card-section>
@@ -128,10 +103,10 @@ export default {
   data () {
     return {
       isDarkMode: Dark.isActive,
-      projectName: '',
+      projectName: null,
       selectedSource: '',
       selectedVisibility: 'public',
-      gitHubLink: '',
+      gitHubLink: null,
       projectDescription: '',
       isCreating: false,
       projectCreated: false,
@@ -162,6 +137,11 @@ export default {
       this.selectedSource = source
     },
     async submitCreateProject () {
+      console.log(this.projectName)
+      if (this.projectName === null || this.gitHubLink === null) {
+        this.$q.notify({ message: 'Failed to create project', color: 'red' })
+        return
+      }
       this.isCreating = true
       try {
         const response = await createProject({
@@ -182,6 +162,11 @@ export default {
       }
     },
     async startAnalysis () {
+      console.log(this.selectedAnalyzers.length)
+      if (this.selectedAnalyzers.length === 0) {
+        this.$q.notify({ message: 'Failed to analyzis', color: 'red' })
+        return
+      }
       try {
         await reportCreate({
           idProject: this.idProject,
