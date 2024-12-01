@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * The interface Agent client.
  */
-@FeignClient(name = "master-service", url = "http://localhost:8082")
+@FeignClient(name = "master-service", url = "https://master-img-production.up.railway.app")
 public interface AgentClient {
 
     /**

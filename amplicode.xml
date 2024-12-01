@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AmplicodePersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="agent" name="Default">
+        <packages>
+          <package value="org.github.babkiniaa.scas" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="demo (1) (org.springframework.boot)" name="Default">
+        <packages>
+          <package value="org.github.babkiniaa.scas" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="master" name="Default">
+        <packages>
+          <package value="org.github.babkiniaa.scas" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>

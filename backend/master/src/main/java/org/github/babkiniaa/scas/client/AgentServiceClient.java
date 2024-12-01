@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "agent-service", url = "http://localhost:8081")
+@FeignClient(name = "agent-service", url = "https://agent-img-production.up.railway.app")
 public interface AgentServiceClient {
 
     @PostMapping("/analysis/start/queue")

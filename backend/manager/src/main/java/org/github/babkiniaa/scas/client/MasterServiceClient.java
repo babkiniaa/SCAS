@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
-@FeignClient(name = "master-service", url = "http://localhost:8082")
+@FeignClient(name = "master-service", url = "https://master-img-production.up.railway.app")
 public interface MasterServiceClient {
 
     @PostMapping("/report/create")
