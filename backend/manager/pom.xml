@@ -9,6 +9,7 @@
         <!--  lookup parent from repository  -->
     </parent>
     <groupId>org.github.babkiniaa.scas</groupId>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <artifactId>manager</artifactId>
     <!--     <version>0.0.1-SNAPSHOT</version>  -->
@@ -29,6 +30,7 @@
     </scm>
     <properties>
         <java.version>19</java.version>
+        <start-class>org.github.babkiniaa.scas.ManagerStart</start-class>
     </properties>
     <dependencies>
         <dependency>

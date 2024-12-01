@@ -25,6 +25,7 @@
         <version.pmd-plugin>3.25.0</version.pmd-plugin>
         <error-prone.version>2.32.0</error-prone.version>
         <maven-check-style.plugin>3.5.0</maven-check-style.plugin>
+        <start-class>org.github.babkiniaa.scas.AgentRun</start-class>
         <name>dist</name>
         <name>distOWASP</name>
         <name>distPMD</name>
@@ -196,5 +197,13 @@
 
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
