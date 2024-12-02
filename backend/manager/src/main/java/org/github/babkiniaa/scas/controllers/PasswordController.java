@@ -26,7 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/password")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:9000")
+@CrossOrigin(origins = "https://front-img-production.up.railway.app")
 public class PasswordController {
 
     private final EmailService emailService;

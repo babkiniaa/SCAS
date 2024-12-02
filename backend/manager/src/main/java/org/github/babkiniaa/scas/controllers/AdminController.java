@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin(origins = "http://localhost:9000")
+@CrossOrigin(origins = "https://front-img-production.up.railway.app")
 @RequiredArgsConstructor
 public class AdminController {
 

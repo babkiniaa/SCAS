@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/password'
+  baseURL: 'https://manager-img-production.up.railway.app/password'
 })
 
 export const sendVerificationEmail = async (email) => {

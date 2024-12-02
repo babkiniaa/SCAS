@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:9000")
+@CrossOrigin(origins = "https://front-img-production.up.railway.app")
 public class UserController {
 
     private final UserService userService;

@@ -15,7 +15,7 @@
         />
         <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
           <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
-          <q-icon v-else name="person" class="text-black" />
+          <q-icon v-else name="person" class="text-white" />
         </q-avatar>
       </q-toolbar>
     </q-header>
@@ -55,19 +55,6 @@
       <q-page style="margin-top: 15px;">
         <div class="row q-mb-md items-center justify-center">
           <div class="search-sort-container row q-gutter-md col-8 justify-center">
-            <q-input
-              outlined
-              debounce="300"
-              v-model="projectsDto.name"
-              placeholder="Search projects"
-              @input="onSearch"
-              :class="isDarkMode ? 'bg-dark text-white' : 'text-black'"
-              class="col-5"
-            >
-              <template v-slot:append>
-                <q-icon name="search" :class="isDarkMode ? 'text-white' : 'text-black'" />
-              </template>
-            </q-input>
             <q-btn-dropdown
               outlined
               label="Sort by"

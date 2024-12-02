@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-@CrossOrigin(origins = "http://localhost:9000")
+@CrossOrigin(origins = "https://front-img-production.up.railway.app")
 public class GlobalExceptionHandler {
 
     /**
