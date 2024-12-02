@@ -31,3 +31,15 @@ minio:
   accessKey: mycustomaccesskey
   secretKey: s3cur3p@ssw0rd!23
   bucketName: avatars
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus

@@ -3,9 +3,39 @@ services:
     image: minio/minio
     container_name: minio
     ports:
-      - "9002:9002"
-      - "9001:9001"
+      - "6001:9002"
+      - "6002:9001"
     environment:
       MINIO_ROOT_USER: mycustomaccesskey
       MINIO_ROOT_PASSWORD: s3cur3p@ssw0rd!23
     command: server /data --console-address ":9001" --address ":9002"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      monitoring:
+        aliases:
+          - grafana
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus:/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      monitoring:
+        aliases:
+          - prometheus
+networks:
+  monitoring:
+volumes:
+  grafana-storage:
