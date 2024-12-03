@@ -119,6 +119,7 @@ export default {
           localStorage.setItem('role', 'admin')
           this.$router.push('/admin')
         } else {
+          localStorage.setItem('role', 'user')
           this.$router.push('/home')
         }
       } catch (error) {

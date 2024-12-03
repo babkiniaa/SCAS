@@ -90,13 +90,19 @@
                 </q-list>
               </q-btn-dropdown>
             </div>
-            <iframe src="http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&from=1733243541125&to=1733243841125&timezone=browser&var-userId=2&var-projectId=1&var-branch=all&panelId=2&__feature.dashboardSceneSolo" width="450" height="200" frameborder="0"></iframe>
-            <q-list v-if="filteredReports.length" bordered>
+            <div class="grafana-container">
+              <iframe :src="grafanaData.url1" class="grafana-iframe"></iframe>
+              <iframe :src="grafanaData.url2" class="grafana-iframe"></iframe>
+              <iframe :src="grafanaData.url3" class="grafana-iframe"></iframe>
+              <iframe :src="grafanaData.url4" class="grafana-iframe"></iframe>
+            </div>
+            <q-list v-if="filteredReports.length" bordered class="q-my-lg">
               <q-item
                 v-for="report in filteredReports"
                 :key="report.id"
                 clickable
                 v-ripple
+                class="report-item"
                 @click="viewReport(report.id)"
               >
                 <q-item-section>
@@ -118,7 +124,6 @@ import { Dark } from 'quasar'
 import { getAvatar } from 'src/services/userServices'
 import { reportCreate, getReports } from 'src/services/analysisServeces'
 import { getProject } from 'src/services/projectServices'
-import { fetchGrafanaData } from 'src/services/grafanaServices'
 export default {
   data () {
     return {
@@ -130,23 +135,30 @@ export default {
       isDarkMode: Dark.isActive,
       drawer: true,
       miniState: false,
-      grafanaData: null,
+      grafanaData: {
+        url1: null,
+        url2: null,
+        url3: null,
+        url4: null
+      },
       user: {
         avatar: null
       }
     }
   },
   methods: {
+    viewReport (id) {
+      this.$router.push(`/report/${id}`)
+    },
     async fetchGrafanaChart () {
-      try {
-        const response = await fetchGrafanaData({
-          projectId: this.$route.params.id,
-          branch: this.selectedBranch
-        })
-        this.grafanaData = response.data
-      } catch (error) {
-        console.error('Failed to fetch Grafana data:', error)
-      }
+      const userId = localStorage.getItem('currentId')
+      const projectId = this.$route.params.id
+      const branch = this.selectedBranch ? encodeURIComponent(this.selectedBranch) : 'all'
+      const theme = this.isDarkMode ? 'dark' : 'light'
+      this.grafanaData.url1 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=2&__feature.dashboardSceneSolo`
+      this.grafanaData.url2 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=1&__feature.dashboardSceneSolo`
+      this.grafanaData.url3 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=3&__feature.dashboardSceneSolo`
+      this.grafanaData.url4 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=4&__feature.dashboardSceneSolo`
     },
     GoToAdmin () {
       this.$router.push('/admin')
@@ -184,6 +196,7 @@ export default {
       this.filteredReports = branch
         ? this.reports.filter((report) => report.branch === branch)
         : this.reports
+      this.fetchGrafanaChart()
     },
     nextPage () {
       this.projectsDto.page += 1
@@ -210,14 +223,6 @@ export default {
     formatDate (date) {
       return new Date(date).toLocaleString()
     },
-    async viewProject (projectId) {
-      this.$router.push(`/project/${projectId}`)
-      this.listReporst = (await getReports(projectId)).data
-      this.showModalReport = true
-    },
-    showReport (reportId) {
-      this.$router.push(`/report/${reportId}`)
-    },
     async runProject () {
       try {
         await reportCreate({
@@ -238,7 +243,14 @@ export default {
     },
     openUrl (url) {
       window.open(url, '_blank')
+    },
+    goToAllProjects () {
+      this.$router.push(`/projects/${localStorage.getItem('currentId')}`)
     }
+  },
+  toggleDarkMode () {
+    Dark.set(!this.isDarkMode)
+    this.isDarkMode = Dark.isActive
   },
   created () {
     this.fetchUser()
@@ -293,9 +305,25 @@ export default {
 .text-h6 {
   font-size: 18px;
 }
+.grafana-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
 .grafana-iframe {
-  width: 100%;
-  height: 300px;
+  width: 450px;
+  height: 200px;
   border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.report-item {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.report-item:hover {
+  transform: scale(1.02);
+  background-color: #f0f0f0;
 }
 </style>

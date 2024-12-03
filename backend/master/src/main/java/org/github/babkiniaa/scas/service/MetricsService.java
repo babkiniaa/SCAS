@@ -2,10 +2,18 @@ package org.github.babkiniaa.scas.service;
 
 import io.micrometer.core.instrument.MeterRegistry;
 
+import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.protocol.types.Field;
 import org.github.babkiniaa.scas.dto.Response.ReportAndIdProjectDto;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,31 +97,56 @@ public class MetricsService {
      * количество багов общих в report
      **/
     public void bagsInAnalyze(long userId1, ReportAndIdProjectDto reportAndIdProjectDto, long reportId1) {
-        String reportId = String.valueOf(reportId1);
         String userId = String.valueOf(userId1);
         String branch = reportAndIdProjectDto.getBranch();
-
-        if(branch == null){
+        if (branch == null) {
             branch = "all";
         }
-        if ((reportAndIdProjectDto.getBugInstanceCustoms() != null) && reportAndIdProjectDto.getBugInstanceCustoms().size() > 0) {
-            meterRegistry.counter("all_bags_count_report", "reportId", reportId).increment(reportAndIdProjectDto.getBugInstanceCustoms().size());
-            meterRegistry.counter("report_branch_count_user", "userId", userId, "branch", branch, "projectId", String.valueOf(reportAndIdProjectDto.getProjectId())).increment(reportAndIdProjectDto.getBugInstanceCustoms().size());
-        }
-        if ((reportAndIdProjectDto.getDependencyCustoms() != null) && reportAndIdProjectDto.getDependencyCustoms().size() > 0) {
-            meterRegistry.counter("all_bags_count_report", "reportId", reportId).increment(reportAndIdProjectDto.getDependencyCustoms().size());
-            meterRegistry.counter("report_branch_count_user", "userId", userId, "branch", branch, "projectId", String.valueOf(reportAndIdProjectDto.getProjectId())).increment(reportAndIdProjectDto.getDependencyCustoms().size());
-        }
-        if ((reportAndIdProjectDto.getRuleViolationCustoms() != null) && reportAndIdProjectDto.getRuleViolationCustoms().size() > 0) {
-            meterRegistry.counter("all_bags_count_report", "reportId", reportId).increment(reportAndIdProjectDto.getRuleViolationCustoms().size());
-            meterRegistry.counter("report_branch_count_user", "userId", userId, "branch", branch, "projectId", String.valueOf(reportAndIdProjectDto.getProjectId())).increment(reportAndIdProjectDto.getRuleViolationCustoms().size());;
-        }
-        if ((reportAndIdProjectDto.getViolationCustoms() != null) && reportAndIdProjectDto.getViolationCustoms().size() > 0) {
-            meterRegistry.counter("all_bags_count_report", "reportId", reportId).increment(reportAndIdProjectDto.getViolationCustoms().size());
-            meterRegistry.counter("report_branch_count_user", "userId", userId, "branch", branch, "projectId", String.valueOf(reportAndIdProjectDto.getProjectId())).increment(reportAndIdProjectDto.getViolationCustoms().size());;
-        }
-        countBagsInAnalyze(reportAndIdProjectDto, reportId1);
+        String projectId = String.valueOf(reportAndIdProjectDto.getProjectId());
+        meterRegistry.counter("all_bags_count_project", "projectId", projectId).increment(); // создать дашборд когда буду презапускасть
+        updateGaugeWithTags(
+                "report_branch_count_user",
+                Tags.of("userId", userId, "branch", branch, "projectId", projectId),
+                calculateTotalCount(reportAndIdProjectDto)
+        );
     }
+
+    private final Map<String, AtomicInteger> bugCountGauges = new ConcurrentHashMap<>();
+
+    private void updateGaugeWithTags(String gaugeName, Tags tags, int value) {
+        String key = generateGaugeKey(gaugeName, tags);
+        AtomicInteger gaugeValue = bugCountGauges.computeIfAbsent(key, k -> {
+            AtomicInteger newGauge = new AtomicInteger(0);
+            meterRegistry.gauge(gaugeName, tags, newGauge, AtomicInteger::get);
+            return newGauge;
+        });
+        gaugeValue.set(value);
+    }
+
+    private String generateGaugeKey(String gaugeName, Tags tags) {
+        return gaugeName + tags.stream()
+                .map(tag -> tag.getKey() + "=" + tag.getValue())
+                .collect(Collectors.joining(","));
+    }
+
+    private int calculateTotalCount(ReportAndIdProjectDto reportAndIdProjectDto) {
+        int total = 0;
+        if (reportAndIdProjectDto.getBugInstanceCustoms() != null) {
+            total += reportAndIdProjectDto.getBugInstanceCustoms().size();
+        }
+        if (reportAndIdProjectDto.getDependencyCustoms() != null) {
+            total += reportAndIdProjectDto.getDependencyCustoms().size();
+        }
+        if (reportAndIdProjectDto.getRuleViolationCustoms() != null) {
+            total += reportAndIdProjectDto.getRuleViolationCustoms().size();
+        }
+        if (reportAndIdProjectDto.getViolationCustoms() != null) {
+            total += reportAndIdProjectDto.getViolationCustoms().size();
+        }
+
+        return total;
+    }
+
 
     /**
      * количество багов по каждому анализу в report
