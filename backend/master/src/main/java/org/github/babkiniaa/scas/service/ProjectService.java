@@ -46,6 +46,10 @@ public class ProjectService {
         return projectMapper.projectToDto(projectRepository.findById(id).get());
     }
 
+    public Project findByIdProject(long id){
+        return projectRepository.findById(id).get();
+    }
+
     /**
      * Возвращает список проектов, отфильтрованных и отсортированных по параметрам из {@link GetProjecAllDto}.
      * <p>

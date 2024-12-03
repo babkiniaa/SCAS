@@ -131,13 +131,24 @@
                     @click="startAnalysis(project.id)"
                   />
                   <q-btn
-                    label="View Report"
+                    label="Project page"
                     :class="isDarkMode ? 'bg-grey-6' : ''"
                     class="q-ml-md"
-                    @click="viewReport(project.id)"
+                    @click="viewProject(project.id)"
                   />
                 </div>
               </div>
+              <q-card
+              v-else-if="projectStatus[project.id] === 'Ban'"
+              class="column items-end justify-center"
+              style="border: 1px solid red; background-color: #fffde7; max-width: 200px;"
+            >
+              <q-card-section class="text-center">
+                <div class="text-black text-subtitle2 font-weight-bold">
+                  {{ projectStatus[project.id] }}
+                </div>
+              </q-card-section>
+            </q-card>
               <q-card
               v-else
               class="column items-end justify-center"
@@ -201,6 +212,30 @@
                   label="Select Analyzers"
                   dense
                   :class="isDarkMode ? 'bg-grey-9 text-white' : ''"
+                />
+              </div>
+            </q-card-section>
+            <q-card-section class="row q-col-gutter-md items-center" style="padding: 10px;">
+              <div class="col-12">
+                <q-input
+                  v-model="branchName"
+                  label="Branch (e.g., origin/main)"
+                  filled
+                  dense
+                  prefix="origin/"
+                  :class="isDarkMode ? 'bg-grey-7 text-white' : ''"
+                />
+              </div>
+            </q-card-section>
+            <q-card-section class="row q-col-gutter-md items-center" style="padding: 10px;">
+              <div class="col-12">
+                <q-input
+                  v-model="commitHash"
+                  label="Commit Hash"
+                  filled
+                  dense
+                  placeholder="Enter commit hash"
+                  :class="isDarkMode ? 'bg-grey-7 text-white' : ''"
                 />
               </div>
             </q-card-section>
@@ -271,7 +306,9 @@ export default {
       availableAnalyzers: [],
       showModalReport: false,
       listReporst: null,
-      projectId: null
+      projectId: null,
+      branchName: null,
+      commitHash: null
     }
   },
   components: {
@@ -340,7 +377,9 @@ export default {
     formatDate (date) {
       return new Date(date).toLocaleString()
     },
-    async viewReport (projectId) {
+    async viewProject (projectId) {
+      console.log('chto')
+      this.$router.push(`/project/${projectId}`)
       this.listReporst = (await getReports(projectId)).data
       this.showModalReport = true
     },
@@ -351,7 +390,9 @@ export default {
       try {
         await reportCreate({
           idProject: this.projectId,
-          needReports: this.selectedAnalyzers
+          needReports: this.selectedAnalyzers,
+          branch: this.branchName,
+          commit: this.commitHash
         })
         this.showModal = false
         this.$q.notify({ message: 'Project created successfully', color: 'green' })

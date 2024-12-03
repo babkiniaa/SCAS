@@ -3,6 +3,7 @@ package org.github.babkiniaa.scas.service;
 import io.micrometer.core.instrument.MeterRegistry;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.protocol.types.Field;
 import org.github.babkiniaa.scas.dto.Response.ReportAndIdProjectDto;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +13,11 @@ public class MetricsService {
 
     private final MeterRegistry meterRegistry;
 
-
     /**
      * количество проектов у пользователя установить
      **/
     public void userAnalysis(long userId1, int a) {
         String userId = String.valueOf(userId1);
-
         meterRegistry.counter("project_count_user", "userId", userId).increment(a);
         countProject();
     }
@@ -40,7 +39,6 @@ public class MetricsService {
         String userId = String.valueOf(userId1);
 
         meterRegistry.counter("report_count_user", "userId", userId).increment(a);
-
         countAllReport();
         projectAnalyzeOne(reportAndIdProjectDto);
         projectAnalyzeMore(reportAndIdProjectDto);
@@ -90,20 +88,29 @@ public class MetricsService {
     /**
      * количество багов общих в report
      **/
-    public void bagsInAnalyze(ReportAndIdProjectDto reportAndIdProjectDto, long reportId1) {
+    public void bagsInAnalyze(long userId1, ReportAndIdProjectDto reportAndIdProjectDto, long reportId1) {
         String reportId = String.valueOf(reportId1);
+        String userId = String.valueOf(userId1);
+        String branch = reportAndIdProjectDto.getBranch();
 
+        if(branch == null){
+            branch = "all";
+        }
         if ((reportAndIdProjectDto.getBugInstanceCustoms() != null) && reportAndIdProjectDto.getBugInstanceCustoms().size() > 0) {
             meterRegistry.counter("all_bags_count_report", "reportId", reportId).increment(reportAndIdProjectDto.getBugInstanceCustoms().size());
+            meterRegistry.counter("report_branch_count_user", "userId", userId, "branch", branch, "projectId", String.valueOf(reportAndIdProjectDto.getProjectId())).increment(reportAndIdProjectDto.getBugInstanceCustoms().size());
         }
         if ((reportAndIdProjectDto.getDependencyCustoms() != null) && reportAndIdProjectDto.getDependencyCustoms().size() > 0) {
             meterRegistry.counter("all_bags_count_report", "reportId", reportId).increment(reportAndIdProjectDto.getDependencyCustoms().size());
+            meterRegistry.counter("report_branch_count_user", "userId", userId, "branch", branch, "projectId", String.valueOf(reportAndIdProjectDto.getProjectId())).increment(reportAndIdProjectDto.getDependencyCustoms().size());
         }
         if ((reportAndIdProjectDto.getRuleViolationCustoms() != null) && reportAndIdProjectDto.getRuleViolationCustoms().size() > 0) {
             meterRegistry.counter("all_bags_count_report", "reportId", reportId).increment(reportAndIdProjectDto.getRuleViolationCustoms().size());
+            meterRegistry.counter("report_branch_count_user", "userId", userId, "branch", branch, "projectId", String.valueOf(reportAndIdProjectDto.getProjectId())).increment(reportAndIdProjectDto.getRuleViolationCustoms().size());;
         }
         if ((reportAndIdProjectDto.getViolationCustoms() != null) && reportAndIdProjectDto.getViolationCustoms().size() > 0) {
             meterRegistry.counter("all_bags_count_report", "reportId", reportId).increment(reportAndIdProjectDto.getViolationCustoms().size());
+            meterRegistry.counter("report_branch_count_user", "userId", userId, "branch", branch, "projectId", String.valueOf(reportAndIdProjectDto.getProjectId())).increment(reportAndIdProjectDto.getViolationCustoms().size());;
         }
         countBagsInAnalyze(reportAndIdProjectDto, reportId1);
     }
