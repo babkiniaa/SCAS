@@ -103,7 +103,7 @@ public class MetricsService {
             branch = "all";
         }
         String projectId = String.valueOf(reportAndIdProjectDto.getProjectId());
-        meterRegistry.counter("all_bags_count_project", "projectId", projectId).increment(); // создать дашборд когда буду презапускасть
+        meterRegistry.counter("all_bags_count_project", "projectId", projectId).increment();
         updateGaugeWithTags(
                 "report_branch_count_user",
                 Tags.of("userId", userId, "branch", branch, "projectId", projectId),
