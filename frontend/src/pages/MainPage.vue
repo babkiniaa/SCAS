@@ -90,13 +90,14 @@
 <script>
 import { Dark } from 'quasar'
 import { getProjects } from 'src/services/projectServices'
-import { getAvatar } from 'src/services/userServices'
+import { getAvatar, getId } from 'src/services/userServices'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
   data () {
     return {
       drawer: true,
       miniState: true,
+      userId: null,
       user: {
         avatar: null
       },
@@ -106,7 +107,7 @@ export default {
         count: 6,
         page: 0,
         sortingField: 'createdDate',
-        userId: localStorage.getItem('currentId'),
+        userId: null,
         myProject: true,
         name: '',
         sortDirection: 'DESC'
@@ -127,7 +128,8 @@ export default {
       this.$router.push({ name: 'project', params: { id } })
     },
     async fetchGrafanaChart () {
-      const userId = localStorage.getItem('currentId')
+      const userId = (await getId()).data
+      console.log(userId)
       const projectId = '1'
       const branch = 'all'
       const theme = this.isDarkMode ? 'dark' : 'light'
@@ -137,6 +139,7 @@ export default {
     },
     async fetchProjects () {
       try {
+        this.projectsDto.userId = this.userId
         const response = await getProjects(this.projectsDto)
         this.projects = response.data
       } catch (error) {
@@ -148,7 +151,7 @@ export default {
       this.isDarkMode = Dark.isActive
     },
     async fetchUser () {
-      const response = await getAvatar(localStorage.getItem('currentId'))
+      const response = await getAvatar((await getId()).data)
       this.user.avatar = response.data
     },
     goToHome () {
@@ -159,16 +162,20 @@ export default {
       }
     },
     goToAllProjects () {
-      const id = localStorage.getItem('currentId')
+      const id = this.userId
       this.$router.push({ name: 'projects', params: { id } })
     },
     search () {},
     goToProfile () {
-      const userId = localStorage.getItem('currentId')
+      const userId = this.userId
       this.$router.push(`/profile/${userId}`)
+    },
+    async fetchId () {
+      this.userId = (await getId()).data
     }
   },
   mounted () {
+    this.fetchId()
     this.fetchUser()
     this.fetchProjects()
     this.fetchGrafanaChart()

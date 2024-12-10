@@ -115,19 +115,24 @@
           </q-card-section>
         </q-card>
       </q-page>
+      <q-dialog v-model="showCreateProjectModal">
+        <create-project-form :isDarkMode="isDarkMode" />
+      </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import { Dark } from 'quasar'
-import { getAvatar } from 'src/services/userServices'
+import { getAvatar, getId } from 'src/services/userServices'
 import { reportCreate, getReports } from 'src/services/analysisServeces'
 import { getProject } from 'src/services/projectServices'
+import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
   data () {
     return {
       project: {},
+      currentUserId: null,
       reports: [],
       filteredReports: [],
       branches: [],
@@ -146,12 +151,15 @@ export default {
       }
     }
   },
+  components: {
+    CreateProjectForm
+  },
   methods: {
     viewReport (id) {
       this.$router.push(`/report/${id}`)
     },
     async fetchGrafanaChart () {
-      const userId = localStorage.getItem('currentId')
+      const userId = this.currentUserId
       const projectId = this.$route.params.id
       const branch = this.selectedBranch ? encodeURIComponent(this.selectedBranch) : 'all'
       const theme = this.isDarkMode ? 'dark' : 'light'
@@ -217,7 +225,7 @@ export default {
       }
     },
     goToProfile () {
-      const id = localStorage.getItem('currentId')
+      const id = this.currentUserId
       this.$router.push(`/profile/${id}`)
     },
     formatDate (date) {
@@ -234,18 +242,25 @@ export default {
       } catch (error) {
         this.$q.notify({ message: 'Failed to create project', color: 'red' })
       } finally {
-        this.$router.push(`/projects/${localStorage.getItem('currentId')}`)
+        this.$router.push(`/projects/${this.currentUserId}`)
       }
     },
     async fetchUser () {
-      const response = await getAvatar(localStorage.getItem('currentId'))
+      const response = await getAvatar(this.currentUserId)
       this.user.avatar = response.data
     },
     openUrl (url) {
       window.open(url, '_blank')
     },
     goToAllProjects () {
-      this.$router.push(`/projects/${localStorage.getItem('currentId')}`)
+      this.$router.push(`/projects/${this.currentUserId}`)
+    },
+    async fetchId () {
+      this.currentUserId = (await getId()).data
+      this.fetchUser()
+      this.fetchProject()
+      this.fetchReports()
+      this.fetchGrafanaChart()
     }
   },
   toggleDarkMode () {
@@ -253,11 +268,7 @@ export default {
     this.isDarkMode = Dark.isActive
   },
   created () {
-    this.fetchUser()
-    this.currentUserId = localStorage.getItem('currentId')
-    this.fetchProject()
-    this.fetchReports()
-    this.fetchGrafanaChart()
+    this.fetchId()
   }
 }
 </script>

@@ -275,7 +275,6 @@
           </q-card>
         </q-page>
       </div>
-
       <q-dialog v-model="showCreateProjectModal">
         <create-project-form :isDarkMode="isDarkMode" />
       </q-dialog>
@@ -284,10 +283,9 @@
 </template>
 <script>
 import { Dark } from 'quasar'
-import { getAvatar } from 'src/services/userServices'
+import { getAvatar, getId } from 'src/services/userServices'
 import { getReport } from 'src/services/analysisServeces'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
-
 export default {
   data () {
     return {
@@ -301,6 +299,7 @@ export default {
       reportData: null,
       showCreateProjectModal: false,
       viewMode: 'table_chart',
+      userId: null,
       selectedFile: null,
       columns: [
         { name: 'name', label: 'Name', field: 'name', sortable: true, align: 'left' },
@@ -355,16 +354,16 @@ export default {
       }
     },
     goToAllProjects () {
-      const id = localStorage.getItem('currentId')
+      const id = this.userId
       this.$router.push({ name: 'projects', params: { id } })
     },
     search () {},
     goToProfile () {
-      const userId = localStorage.getItem('currentId')
+      const userId = this.userId
       this.$router.push(`/profile/${userId}`)
     },
     async fetchUser () {
-      const response = await getAvatar(localStorage.getItem('currentId'))
+      const response = await getAvatar(this.userId)
       this.user.avatar = response.data
     },
     async fetchProject () {
@@ -411,12 +410,16 @@ export default {
         if (a[column] > b[column]) return order
         return 0
       })
+    },
+    async fetchId () {
+      this.userId = (await getId()).data
+      this.projectId = this.$route.params.id
+      this.fetchUser()
+      this.fetchProject()
     }
   },
   mounted () {
-    this.projectId = this.$route.params.id
-    this.fetchUser()
-    this.fetchProject()
+    this.fetchId()
   }
 }
 </script>

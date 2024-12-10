@@ -124,7 +124,7 @@
   </q-layout>
 </template>
 <script>
-import { getUserProfile, updateUserProfile, uploadUserAvatar, deleteUserAvatar } from 'src/services/userServices'
+import { getUserProfile, updateUserProfile, uploadUserAvatar, deleteUserAvatar, getId } from 'src/services/userServices'
 import { Dark } from 'quasar'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
@@ -132,6 +132,7 @@ export default {
     return {
       drawer: false,
       miniState: true,
+      userId: null,
       user: {
         email: '',
         username: '',
@@ -155,7 +156,8 @@ export default {
     },
     async loadUserProfile () {
       try {
-        const response = await getUserProfile(localStorage.getItem('currentId'))
+        this.userId = (await getId()).data
+        const response = await getUserProfile(this.userId)
         this.user = response.data
         this.avatar = response.data.avatar
       } catch (error) {
@@ -205,11 +207,11 @@ export default {
       }
     },
     goToAllProjects () {
-      const id = localStorage.getItem('currentId')
+      const id = this.userId
       this.$router.push({ name: 'projects', params: { id } })
     },
     goToProfile () {
-      const userId = localStorage.getItem('currentId')
+      const userId = this.userId
       this.$router.push(`/profile/${userId}`)
     }
   }

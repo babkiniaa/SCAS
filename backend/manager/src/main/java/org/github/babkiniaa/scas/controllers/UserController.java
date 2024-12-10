@@ -114,4 +114,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAvatar(id));
     }
 
+    @GetMapping("get-id")
+    public long getId() throws NotFoundUserException {
+
+        return userService.findByUsername(authenticationFacade.getCurrentUserName())
+                .orElseThrow(() -> new NotFoundUserException("User not found")).getId();
+    }
+
 }

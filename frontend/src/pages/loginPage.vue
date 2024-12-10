@@ -111,8 +111,6 @@ export default {
         })
         const token = response.data.accessToken
         localStorage.setItem('jwtToken', token)
-        const currentUserId = response.data.currentId
-        localStorage.setItem('currentId', currentUserId)
         this.$q.notify({ message: 'Welcome', color: 'green' })
         // eslint-disable-next-line eqeqeq
         if (response.data.role == 'ADMIN') {

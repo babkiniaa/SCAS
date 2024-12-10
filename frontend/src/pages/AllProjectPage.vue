@@ -223,8 +223,8 @@
 <script>
 import { getProjects } from 'src/services/projectServices'
 import { Dark } from 'quasar'
-import { getAvatar } from 'src/services/userServices'
-import { getStatus, reportCreate, getReports, getAnalizator } from 'src/services/analysisServeces'
+import { getAvatar, getId } from 'src/services/userServices'
+import { getStatus, reportCreate, getAnalizator } from 'src/services/analysisServeces'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
   data () {
@@ -240,7 +240,7 @@ export default {
         count: 4,
         page: 0,
         sortingField: 'createdDate',
-        userId: localStorage.getItem('currentId'),
+        userId: null,
         myProject: true,
         name: '',
         sortDirection: 'DESC'
@@ -292,9 +292,10 @@ export default {
         if (this.projectsDto.sortingField == 'name') {
           this.projectsDto.sortDirection = 'ASC'
         }
+        console.log(this.projectsDto.userId)
         const response = await getProjects(this.projectsDto)
         this.projects = response.data
-        this.isOwnProject = this.projectsDto.userId === localStorage.getItem('currentId')
+        this.isOwnProject = this.projectsDto.userId === (await getId()).data
 
         // Fetch status for each project
         for (const project of this.projects) {
@@ -326,20 +327,14 @@ export default {
       }
     },
     goToProfile () {
-      const id = localStorage.getItem('currentId')
+      const id = this.userId
       this.$router.push(`/profile/${id}`)
     },
     formatDate (date) {
       return new Date(date).toLocaleString()
     },
     async viewProject (projectId) {
-      console.log('chto')
       this.$router.push(`/project/${projectId}`)
-      this.listReporst = (await getReports(projectId)).data
-      this.showModalReport = true
-    },
-    showReport (reportId) {
-      this.$router.push(`/report/${reportId}`)
     },
     async runProject () {
       try {
@@ -354,7 +349,7 @@ export default {
       } catch (error) {
         this.$q.notify({ message: 'Failed to create project', color: 'red' })
       } finally {
-        this.$router.push(`/projects/${localStorage.getItem('currentId')}`)
+        this.$router.push(`/projects/${this.userId}`)
       }
     },
     onSearch () {
@@ -362,7 +357,7 @@ export default {
       this.loadProjects()
     },
     goToAllProjects () {
-      const id = localStorage.getItem('currentId')
+      const id = this.userId
       this.$router.push({ name: 'projects', params: { id } })
     },
     onSortChange (selectedValue) {
@@ -373,7 +368,7 @@ export default {
       }
     },
     async fetchUser () {
-      const response = await getAvatar(localStorage.getItem('currentId'))
+      const response = await getAvatar((await getId()).data)
       this.user.avatar = response.data
     },
     async fetchAnalyzers () {
@@ -388,13 +383,18 @@ export default {
       this.selectedAnalyzerCategory = category
       this.availableAnalyzers = this.analyzers[category] || []
       this.selectedAnalyzers = []
+    },
+    async fetchId () {
+      this.userId = (await getId()).data
+      this.projectsDto.userId = this.userId
+      console.log(this.projectsDto.userId)
+      this.fetchUser()
+      this.loadProjects()
+      this.fetchAnalyzers()
     }
   },
   created () {
-    this.fetchUser()
-    this.currentUserId = localStorage.getItem('currentId')
-    this.loadProjects()
-    this.fetchAnalyzers()
+    this.fetchId()
   }
 }
 </script>
