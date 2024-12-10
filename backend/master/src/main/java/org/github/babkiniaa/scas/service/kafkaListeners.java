@@ -8,6 +8,7 @@ import org.github.babkiniaa.scas.repository.ReportRepository;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@KafkaListener(topics = "report-create-events-topic")
+@KafkaListener(topics = "report-create-events-topic", groupId = "report-created-events")
 public class kafkaListeners {
 
     private final ReportRepository reportRepository;
@@ -24,6 +25,7 @@ public class kafkaListeners {
     private final ProjectService projectService;
 
     @KafkaHandler
+    @Transactional
     public void save(ReportAndIdProjectDto reportAndIdProjectDto) {
         Optional<Report> previous = reportRepository.findByHashAndProjectId(reportAndIdProjectDto.getHash(), reportAndIdProjectDto.getProjectId());
         long userId = projectService.findByIdProject(reportAndIdProjectDto.getProjectId()).getUserId();
