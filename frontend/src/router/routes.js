@@ -11,6 +11,7 @@ const routes = [
   { path: '/reset-password', component: () => import('pages/EmailPage.vue') },
   { path: '/reset-password-page', component: () => import('pages/ResetPasswordPage.vue') },
   { path: '/report/:id', name: 'report', component: () => import('pages/ReportPage.vue'), props: true },
+  { path: '/project/:id', name: 'project', component: () => import('pages/ProjectPage.vue'), props: true },
   { path: '/admin', name: 'admin', component: () => import('pages/AdminPage.vue'), props: true }
 ]
 

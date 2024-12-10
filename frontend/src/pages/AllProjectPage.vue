@@ -53,51 +53,6 @@
     </q-drawer>
     <q-page-container :class="isDarkMode ? 'bg-dark' : 'bg-grey-3'">
       <q-page style="margin-top: 15px;">
-        <div class="row q-mb-md items-center justify-center">
-          <div class="search-sort-container row q-gutter-md col-8 justify-center">
-            <q-input
-              outlined
-              debounce="300"
-              v-model="projectsDto.name"
-              placeholder="Search projects"
-              @input="onSearch"
-              :class="isDarkMode ? 'bg-dark text-white' : 'text-black'"
-              class="col-5"
-            >
-              <template v-slot:append>
-                <q-icon name="search" :class="isDarkMode ? 'text-white' : 'text-black'" />
-              </template>
-            </q-input>
-            <q-btn-dropdown
-              outlined
-              label="Sort by"
-              :options="sortingOptions"
-              @click="onSortChange($event)"
-              color="dark"
-              :class="isDarkMode ? 'bg-grey-6' : ''" class="col-5"
-            >
-              <q-list>
-                <q-item
-                  v-for="option in sortingOptions"
-                  :key="option.value"
-                  clickable
-                  v-ripple
-                  @click="onSortChange(option.value)"
-                >
-                  <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">{{ option.label }}</q-item-section>
-                </q-item>
-              </q-list>
-            </q-btn-dropdown>
-          </div>
-          <q-btn
-            outlined
-            label="Create Project"
-            icon="add_circle"
-            :class="isDarkMode ? 'bg-grey-6' : ''" class="q-ml-md sticky-create-btn"
-            color="dark"
-            @click="showCreateProjectModal = true"
-          />
-        </div>
         <div v-if="projects.length" class="q-mt-md">
           <q-card
             v-for="(project, index) in projects"
@@ -131,13 +86,24 @@
                     @click="startAnalysis(project.id)"
                   />
                   <q-btn
-                    label="View Report"
+                    label="Project page"
                     :class="isDarkMode ? 'bg-grey-6' : ''"
                     class="q-ml-md"
-                    @click="viewReport(project.id)"
+                    @click="viewProject(project.id)"
                   />
                 </div>
               </div>
+              <q-card
+              v-else-if="projectStatus[project.id] === 'Ban'"
+              class="column items-end justify-center"
+              style="border: 1px solid red; background-color: #fffde7; max-width: 200px;"
+            >
+              <q-card-section class="text-center">
+                <div class="text-black text-subtitle2 font-weight-bold">
+                  {{ projectStatus[project.id] }}
+                </div>
+              </q-card-section>
+            </q-card>
               <q-card
               v-else
               class="column items-end justify-center"
@@ -166,7 +132,7 @@
           <create-project-form :isDarkMode="isDarkMode" />
     </q-dialog>
     <q-dialog v-model="showModal">
-          <q-card style="width: 450px; height: 250px; padding: 16px;">
+          <q-card style="width: 450px; height: 350px; padding: 16px;">
             <q-card-section class="text-center">
               <h6 style="margin: 0;">Select Analizator</h6>
             </q-card-section>
@@ -201,6 +167,30 @@
                   label="Select Analyzers"
                   dense
                   :class="isDarkMode ? 'bg-grey-9 text-white' : ''"
+                />
+              </div>
+            </q-card-section>
+            <q-card-section class="row q-col-gutter-md items-center" style="padding: 10px;">
+              <div class="col-12">
+                <q-input
+                  v-model="branchName"
+                  label="Branch (e.g., origin/main)"
+                  filled
+                  dense
+                  prefix="origin/"
+                  :class="isDarkMode ? 'bg-grey-7 text-white' : ''"
+                />
+              </div>
+            </q-card-section>
+            <q-card-section class="row q-col-gutter-md items-center" style="padding: 10px;">
+              <div class="col-12">
+                <q-input
+                  v-model="commitHash"
+                  label="Commit Hash"
+                  filled
+                  dense
+                  placeholder="Enter commit hash"
+                  :class="isDarkMode ? 'bg-grey-7 text-white' : ''"
                 />
               </div>
             </q-card-section>
@@ -271,7 +261,9 @@ export default {
       availableAnalyzers: [],
       showModalReport: false,
       listReporst: null,
-      projectId: null
+      projectId: null,
+      branchName: null,
+      commitHash: null
     }
   },
   components: {
@@ -340,7 +332,9 @@ export default {
     formatDate (date) {
       return new Date(date).toLocaleString()
     },
-    async viewReport (projectId) {
+    async viewProject (projectId) {
+      console.log('chto')
+      this.$router.push(`/project/${projectId}`)
       this.listReporst = (await getReports(projectId)).data
       this.showModalReport = true
     },
@@ -351,7 +345,9 @@ export default {
       try {
         await reportCreate({
           idProject: this.projectId,
-          needReports: this.selectedAnalyzers
+          needReports: this.selectedAnalyzers,
+          branch: this.branchName,
+          commit: this.commitHash
         })
         this.showModal = false
         this.$q.notify({ message: 'Project created successfully', color: 'green' })

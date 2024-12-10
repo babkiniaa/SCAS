@@ -34,3 +34,7 @@ export function fetchUsers () {
 export function blockUserById (userId) {
   return api.post(`/blockUser?userId=${userId}`)
 }
+
+export function unbanUserById (userId) {
+  return api.post(`/blockUser?userId=${userId}`)
+}

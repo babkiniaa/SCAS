@@ -14,5 +14,7 @@ public class ListReportDto {
 
     private long id;
 
+    private String branch;
+
     private LocalDateTime createdDate;
 }

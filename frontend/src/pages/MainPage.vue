@@ -66,7 +66,7 @@
             </q-card-section>
             <q-card-section v-if="projects.length">
               <q-list bordered>
-                <q-item v-for="project in projects" :key="project.id" clickable>
+                <q-item v-for="project in projects" :key="project.id" clickable @click="pageProject(project.id)">
                   <q-item-section :class="isDarkMode ? 'text-white' : ''">{{ project.name }}</q-item-section>
                 </q-item>
               </q-list>
@@ -75,6 +75,11 @@
               <q-btn label="Create Project" color="dark" @click="showCreateProjectModal = true" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" />
             </q-card-section>
           </q-card>
+          <div class="grafana-container">
+            <iframe :src="grafanaData.url1" class="grafana-iframe"></iframe>
+            <iframe :src="grafanaData.url2" class="grafana-iframe"></iframe>
+            <iframe :src="grafanaData.url3" class="grafana-iframe"></iframe>
+          </div>
         </q-page>
         <q-dialog v-model="showCreateProjectModal">
           <create-project-form :isDarkMode="isDarkMode" />
@@ -98,13 +103,18 @@ export default {
       projects: [],
       isDarkMode: Dark.isActive,
       projectsDto: {
-        count: 3,
+        count: 6,
         page: 0,
         sortingField: 'createdDate',
         userId: localStorage.getItem('currentId'),
         myProject: true,
         name: '',
         sortDirection: 'DESC'
+      },
+      grafanaData: {
+        url1: null,
+        url2: null,
+        url3: null
       },
       showCreateProjectModal: false
     }
@@ -113,6 +123,18 @@ export default {
     CreateProjectForm
   },
   methods: {
+    pageProject (id) {
+      this.$router.push({ name: 'project', params: { id } })
+    },
+    async fetchGrafanaChart () {
+      const userId = localStorage.getItem('currentId')
+      const projectId = '1'
+      const branch = 'all'
+      const theme = this.isDarkMode ? 'dark' : 'light'
+      this.grafanaData.url1 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=5&__feature.dashboardSceneSolo`
+      this.grafanaData.url2 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=6&__feature.dashboardSceneSolo`
+      this.grafanaData.url3 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=7&__feature.dashboardSceneSolo`
+    },
     async fetchProjects () {
       try {
         const response = await getProjects(this.projectsDto)
@@ -149,6 +171,7 @@ export default {
   mounted () {
     this.fetchUser()
     this.fetchProjects()
+    this.fetchGrafanaChart()
   }
 }
 </script>
@@ -178,5 +201,20 @@ export default {
 }
 .dark-bg {
   background-color: #1d1d1d !important;
+}
+.grafana-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 150px;
+}
+.grafana-iframe {
+  width: 450px;
+  height: 200px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 </style>

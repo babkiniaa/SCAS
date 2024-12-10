@@ -21,7 +21,7 @@ public class ReportController {
     @PostMapping("/create")
     public long createReport(@RequestBody AnalyserDto analyserDto) {
         analyserDto.setUrl(projectService.findById(analyserDto.getIdProject()).getUrl());
-        metricsService.userTask(projectService.findById(analyserDto.getIdProject()).getId(), 1);
+        metricsService.userTask(projectService.findByIdProject(analyserDto.getIdProject()).getUserId(), 1);
         long taskId = agentServiceClient.init(analyserDto);
 
         return taskId;
