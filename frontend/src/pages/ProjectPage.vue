@@ -15,7 +15,7 @@
         />
         <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
           <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
-          <q-icon v-else name="person" class="text-black" />
+          <q-icon v-else name="person" class="text-white" />
         </q-avatar>
       </q-toolbar>
     </q-header>
@@ -49,75 +49,78 @@
         </q-item>
       </q-list>
     </q-drawer>
-    <q-page-container :class="isDarkMode ? 'bg-dark' : 'bg-grey-3'">
-      <q-page class="main-container">
-
-        <q-card :class="['project-details-card', isDarkMode ? 'bg-grey-8 text-white' : 'bg-white']">
-          <q-card-section>
-            <div class="text-h6">{{ project.name }}</div>
-            <div :class="isDarkMode ? 'text-grey-5' : 'text-body1'" class="q-my-md">
-              {{ project.description }}
-            </div>
-            <div class="row items-center justify-between">
-              <q-btn flat label="Visit URL" icon="link" color="primary" v-if="project.url" @click="openUrl(project.url)" />
-              <div class="q-mt-md" :class="isDarkMode ? 'text-grey-4' : 'text-caption'">
-                Created: {{ formatDate(project.createdDate) }}
+    <q-page-container :class="isDarkMode ? 'bg-white' : 'bg-white'">
+      <div class="row no-wrap full-height">
+        <div class="col-6 q-pa-md">
+          <q-card :class="['project-details-card', isDarkMode ? 'bg-grey-8 text-white' : 'bg-white']">
+            <q-card-section>
+              <div class="text-h6">{{ project.name }}</div>
+              <div :class="isDarkMode ? 'text-grey-5' : 'text-body1'" class="q-my-md">
+                {{ project.description }}
               </div>
-            </div>
-          </q-card-section>
-          <q-separator spaced />
-          <q-card-section>
-            <div class="row items-center q-mb-md">
-              <q-btn-dropdown
-                :label="selectedBranch || 'All Branches'"
-                :split="false"
-                color="primary"
-                flat
-                dense
-              >
-                <q-list>
-                  <q-item clickable @click="filterReports(null)">
-                    <q-item-section>All Branches</q-item-section>
-                  </q-item>
-                  <q-item
-                    v-for="branch in branches"
-                    :key="branch"
-                    clickable
-                    @click="filterReports(branch)"
-                  >
-                    <q-item-section>{{ branch }}</q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-            </div>
-            <div class="grafana-container">
-              <iframe :src="grafanaData.url1" class="grafana-iframe"></iframe>
+              <div class="row items-center justify-between">
+                <q-btn flat label="Visit URL" icon="link" color="primary" v-if="project.url" @click="openUrl(project.url)" />
+                <div class="q-mt-md" :class="isDarkMode ? 'text-grey-4' : 'text-caption'">
+                  Created: {{ formatDate(project.createdDate) }}
+                </div>
+              </div>
+            </q-card-section>
+            <q-separator spaced />
+            <q-card-section>
+              <div class="row items-center q-mb-md">
+                <q-btn-dropdown
+                  :label="selectedBranch || 'All Branches'"
+                  :split="false"
+                  color="primary"
+                  flat
+                  dense
+                >
+                  <q-list>
+                    <q-item clickable @click="filterReports(null)">
+                      <q-item-section>All Branches</q-item-section>
+                    </q-item>
+                    <q-item
+                      v-for="branch in branches"
+                      :key="branch"
+                      clickable
+                      @click="filterReports(branch)">
+                      <q-item-section>{{ branch }}</q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-btn-dropdown>
+              </div>
+              <q-list v-if="filteredReports.length" bordered class="q-my-lg">
+                <q-item
+                  v-for="report in filteredReports"
+                  :key="report.id"
+                  clickable
+                  v-ripple
+                  class="report-item"
+                  @click="viewReport(report.id)"
+                >
+                  <q-item-section>
+                    <div>{{ formatDate(report.createdDate) }}</div>
+                    <div class="text-caption">{{ report.branch || 'No branch' }}</div>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+              <div v-else class="text-center text-grey-6 q-my-md">No reports available</div>
+            </q-card-section>
+          </q-card>
+        </div>
+        <div class="col-6 q-pa-md">
+          <div class="grafana-container">
+            <iframe :src="grafanaData.url1" class="grafana-iframe1"></iframe>
+            <div class="row q-mt-md">
               <iframe :src="grafanaData.url2" class="grafana-iframe"></iframe>
               <iframe :src="grafanaData.url3" class="grafana-iframe"></iframe>
+            </div>
+            <div class="row q-mt-md">
               <iframe :src="grafanaData.url4" class="grafana-iframe"></iframe>
             </div>
-            <q-list v-if="filteredReports.length" bordered class="q-my-lg">
-              <q-item
-                v-for="report in filteredReports"
-                :key="report.id"
-                clickable
-                v-ripple
-                class="report-item"
-                @click="viewReport(report.id)"
-              >
-                <q-item-section>
-                  <div>{{ formatDate(report.createdDate) }}</div>
-                  <div class="text-caption">{{ report.branch || 'No branch' }}</div>
-                </q-item-section>
-              </q-item>
-            </q-list>
-            <div v-else class="text-center text-grey-6 q-my-md">No reports available</div>
-          </q-card-section>
-        </q-card>
-      </q-page>
-      <q-dialog v-model="showCreateProjectModal">
-        <create-project-form :isDarkMode="isDarkMode" />
-      </q-dialog>
+          </div>
+        </div>
+      </div>
     </q-page-container>
   </q-layout>
 </template>
@@ -127,13 +130,12 @@ import { Dark } from 'quasar'
 import { getAvatar, getId } from 'src/services/userServices'
 import { reportCreate, getReports } from 'src/services/analysisServeces'
 import { getProject } from 'src/services/projectServices'
-import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
   data () {
     return {
       project: {},
-      currentUserId: null,
       reports: [],
+      userId: null,
       filteredReports: [],
       branches: [],
       selectedBranch: null,
@@ -151,22 +153,19 @@ export default {
       }
     }
   },
-  components: {
-    CreateProjectForm
-  },
   methods: {
     viewReport (id) {
       this.$router.push(`/report/${id}`)
     },
     async fetchGrafanaChart () {
-      const userId = this.currentUserId
+      this.userId = (await getId()).data
       const projectId = this.$route.params.id
       const branch = this.selectedBranch ? encodeURIComponent(this.selectedBranch) : 'all'
       const theme = this.isDarkMode ? 'dark' : 'light'
-      this.grafanaData.url1 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=2&__feature.dashboardSceneSolo`
-      this.grafanaData.url2 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=1&__feature.dashboardSceneSolo`
-      this.grafanaData.url3 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=3&__feature.dashboardSceneSolo`
-      this.grafanaData.url4 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=4&__feature.dashboardSceneSolo`
+      this.grafanaData.url1 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${this.userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=2&__feature.dashboardSceneSolo`
+      this.grafanaData.url2 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${this.userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=1&__feature.dashboardSceneSolo`
+      this.grafanaData.url3 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${this.userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=3&__feature.dashboardSceneSolo`
+      this.grafanaData.url4 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${this.userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=4&__feature.dashboardSceneSolo`
     },
     GoToAdmin () {
       this.$router.push('/admin')
@@ -225,7 +224,7 @@ export default {
       }
     },
     goToProfile () {
-      const id = this.currentUserId
+      const id = this.userId
       this.$router.push(`/profile/${id}`)
     },
     formatDate (date) {
@@ -242,33 +241,33 @@ export default {
       } catch (error) {
         this.$q.notify({ message: 'Failed to create project', color: 'red' })
       } finally {
-        this.$router.push(`/projects/${this.currentUserId}`)
+        this.$router.push(`/projects/${this.userId}`)
       }
     },
     async fetchUser () {
-      const response = await getAvatar(this.currentUserId)
+      const response = await getAvatar(this.userId)
       this.user.avatar = response.data
     },
     openUrl (url) {
       window.open(url, '_blank')
     },
     goToAllProjects () {
-      this.$router.push(`/projects/${this.currentUserId}`)
-    },
-    async fetchId () {
-      this.currentUserId = (await getId()).data
-      this.fetchUser()
-      this.fetchProject()
-      this.fetchReports()
-      this.fetchGrafanaChart()
+      this.$router.push(`/projects/${this.userId}`)
     }
   },
   toggleDarkMode () {
     Dark.set(!this.isDarkMode)
     this.isDarkMode = Dark.isActive
   },
+  async fetchId () {
+    this.userId = (await getId()).data
+  },
   created () {
-    this.fetchId()
+    this.fetchUser()
+    this.currentUserId = this.userId
+    this.fetchProject()
+    this.fetchReports()
+    this.fetchGrafanaChart()
   }
 }
 </script>
@@ -290,7 +289,7 @@ export default {
   color: #7f8c8d !important;
 }
 .project-card {
-  max-width: 90%;
+  max-width: 100%;
   margin: 6px auto;
   padding: 8px;
 }
@@ -305,7 +304,7 @@ export default {
 .project-details-card {
   margin: 20px auto;
   padding: 20px;
-  border-radius: 8px;
+  border: none;
 }
 .q-page {
   padding: 24px;
@@ -316,25 +315,34 @@ export default {
 .text-h6 {
   font-size: 18px;
 }
+
 .grafana-container {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
 }
 .grafana-iframe {
-  width: 450px;
-  height: 200px;
+  width: 45%;
+  padding: rehbkmobr5px;
+  margin-right: 40px;
+  height: 240px;
   border: none;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.grafana-iframe1 {
+  width: 95%;
+  height: 400px;
+  border: none;
+  border-radius: 8px;
+}
+.project-details-card {
+  height: 100%;
 }
 .report-item {
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition: background-color 0.3s;
 }
 .report-item:hover {
-  transform: scale(1.02);
-  background-color: #f0f0f0;
+  background-color: var(--q-color-primary-lighten5);
 }
 </style>

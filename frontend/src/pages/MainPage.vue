@@ -140,6 +140,7 @@ export default {
     async fetchProjects () {
       try {
         this.projectsDto.userId = this.userId
+        console.log(this.projectsDto.userId)
         const response = await getProjects(this.projectsDto)
         this.projects = response.data
       } catch (error) {
@@ -172,13 +173,13 @@ export default {
     },
     async fetchId () {
       this.userId = (await getId()).data
+      this.fetchUser()
+      this.fetchProjects()
+      this.fetchGrafanaChart()
     }
   },
   mounted () {
     this.fetchId()
-    this.fetchUser()
-    this.fetchProjects()
-    this.fetchGrafanaChart()
   }
 }
 </script>
