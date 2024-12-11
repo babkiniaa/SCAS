@@ -91,7 +91,7 @@
   </q-layout>
 </template>
 <script>
-import { getUserProfile } from 'src/services/userServices'
+import { getUserProfile, getId } from 'src/services/userServices'
 import { Dark } from 'quasar'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
@@ -116,7 +116,7 @@ export default {
     CreateProjectForm
   },
   async created () {
-    this.currentUserId = localStorage.getItem('currentId')
+    this.currentUserId = (await getId()).data
     const profileId = this.$route.params.id
     await this.loadUserProfile(profileId)
   },
@@ -152,11 +152,11 @@ export default {
       this.$router.push({ name: 'projects', params: { id } })
     },
     goToMyProjects () {
-      const id = localStorage.getItem('currentId')
+      const id = this.currentUserId
       this.$router.push({ name: 'projects', params: { id } })
     },
     goToProfile () {
-      const id = localStorage.getItem('currentId')
+      const id = this.currentUserId
       console.log(id)
       this.$router.push(`/profile/${id}`)
     },
@@ -165,7 +165,6 @@ export default {
     },
     logout () {
       localStorage.removeItem('jwtToken')
-      localStorage.removeItem('currentId')
       this.$router.push('/login')
     }
   }

@@ -35,3 +35,7 @@ export function deleteUserAvatar () {
 export function getAvatar (id) {
   return api.get(`/avatar/${id}`)
 }
+
+export function getId () {
+  return api.get('/get-id')
+}

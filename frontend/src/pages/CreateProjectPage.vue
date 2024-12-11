@@ -147,6 +147,7 @@
 import { Dark } from 'quasar'
 import { createProject } from 'src/services/projectServices'
 import { getAnalizator, reportCreate } from 'src/services/analysisServeces'
+import { getId } from 'src/services/userServices'
 export default {
   data () {
     return {
@@ -158,7 +159,7 @@ export default {
       projectDescription: '',
       isCreating: false,
       projectCreated: false,
-      userId: localStorage.getItem('currentId'),
+      userId: null,
       vis: true,
       idProject: null,
       analyzers: {},
@@ -237,9 +238,13 @@ export default {
       this.selectedAnalyzerCategory = category
       this.availableAnalyzers = this.analyzers[category] || []
       this.selectedAnalyzers = []
+    },
+    async fetchId () {
+      this.userId = (await getId()).data
     }
   },
   created () {
+    this.fetchId()
     this.fetchAnalyzers()
   }
 }
