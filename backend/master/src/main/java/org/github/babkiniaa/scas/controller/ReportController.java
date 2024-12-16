@@ -3,8 +3,11 @@ package org.github.babkiniaa.scas.controller;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.dto.*;
+import org.github.babkiniaa.scas.entity.ProjectIdAndReportId;
+import org.github.babkiniaa.scas.entity.Report;
 import org.github.babkiniaa.scas.service.*;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,6 +20,14 @@ public class ReportController {
     private final ReportService reportService;
     private final AgentServiceClient agentServiceClient;
     private final MetricsService metricsService;
+
+
+    @PostMapping("/create/offline")
+    public long createReportOffline(@RequestBody ProjectIdAndReportId projectIdAndReportId) {
+        long taskId = agentServiceClient.init(reportService.startOffline(projectIdAndReportId));
+
+        return taskId;
+    }
 
     @PostMapping("/create")
     public long createReport(@RequestBody AnalyserDto analyserDto) {
@@ -38,12 +49,12 @@ public class ReportController {
     }
 
     @GetMapping("/get-by-project/{id}")
-    public List<ListReportDto> findReportsByProjectId(@PathVariable("id") long projectId){
+    public List<ListReportDto> findReportsByProjectId(@PathVariable("id") long projectId) {
         return reportService.findAllByProjectId(projectId);
     }
 
     @GetMapping("/get-analyzers")
-    public List<String> getAnalyzers(@RequestParam String hash, @RequestParam long projectId){
+    public List<String> getAnalyzers(@RequestParam String hash, @RequestParam long projectId) {
         return reportService.findAnalyzes(hash, projectId);
     }
 

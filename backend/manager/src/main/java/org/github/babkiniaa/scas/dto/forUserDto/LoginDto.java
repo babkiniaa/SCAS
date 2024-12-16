@@ -1,6 +1,7 @@
 package org.github.babkiniaa.scas.dto.forUserDto;
 
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import org.github.babkiniaa.scas.validatros.Password;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class LoginDto {
     @Password
     @NotEmpty(message = "The field is not filled in")

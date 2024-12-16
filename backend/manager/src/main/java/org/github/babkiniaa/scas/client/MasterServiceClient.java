@@ -2,11 +2,8 @@ package org.github.babkiniaa.scas.client;
 
 import org.github.babkiniaa.scas.dto.ListReportDto;
 import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
-import org.github.babkiniaa.scas.dto.project.ProjectCreateDto;
+import org.github.babkiniaa.scas.dto.project.*;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
-import org.github.babkiniaa.scas.dto.project.AnalyserDto;
-import org.github.babkiniaa.scas.dto.project.GetProjectAllDto;
-import org.github.babkiniaa.scas.dto.project.ProjectDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +13,9 @@ import java.util.List;
 
 @FeignClient(name = "master-service", url = "http://localhost:8082")
 public interface MasterServiceClient {
+
+    @PostMapping("/create/offline")
+    long createReportOffline(@RequestBody ProjectIdAndReportId projectIdAndReportId);
 
     @PostMapping("/report/create")
     long createReport(@RequestBody AnalyserDto analyserDto);

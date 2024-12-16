@@ -8,4 +8,5 @@ public class AuthenticationFacade{
   public String getCurrentUserName(){
     return SecurityContextHolder.getContext().getAuthentication().getName();
   }
+
 }

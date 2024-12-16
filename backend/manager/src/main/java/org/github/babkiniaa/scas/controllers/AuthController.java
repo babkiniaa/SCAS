@@ -9,6 +9,7 @@ import org.github.babkiniaa.scas.dto.forUserDto.RegistrationDto;
 import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.exception.NotFoundUserException;
 import org.github.babkiniaa.scas.mappers.UserMapper;
+import org.github.babkiniaa.scas.security.AuthenticationFacade;
 import org.github.babkiniaa.scas.service.AuthService;
 import org.github.babkiniaa.scas.service.EmailService;
 import org.github.babkiniaa.scas.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Контроллер для обработки запросов регистрации, входа в систему и верификации пользователей.
@@ -33,6 +35,7 @@ public class AuthController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final EmailService emailService;
+    private final AuthenticationFacade authenticationFacade;
 
     /**
      * Регистрирует нового пользователя, проверяет данные на валидность,

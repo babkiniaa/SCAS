@@ -37,6 +37,22 @@ public class AuthService {
         jwtResponse.setRole(user.getRole().toString());
         jwtResponse.setAccessToken(jwtTokenProvider.createAccessToken(user.getId(),  user.getEmail(), user.getRole()));
         jwtResponse.setRefreshToken(jwtTokenProvider.createRefreshToken(user.getId(), user.getEmail()));
+        System.out.println((jwtTokenProvider.createAccessToken(user.getId(),  user.getEmail(), user.getRole())));
+        return jwtResponse;
+    }
+
+    public JwtResponse loginAndReport(LoginDto loginRequest, long reportId, long projectId) throws NotFoundUserException {
+        JwtResponse jwtResponse = new JwtResponse();
+
+        authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        User user = userService
+                .findByEmailOrUsername(loginRequest.getUsername(), loginRequest.getUsername())
+                .orElseThrow(() -> new NotFoundUserException("Не найден пользователь"));
+        jwtResponse.setCurrentId(user.getId());
+        jwtResponse.setRole(user.getRole().toString());
+        jwtResponse.setAccessToken(jwtTokenProvider.createAccessTokenTask(user.getId(),  user.getEmail(), user.getRole(), reportId, projectId));
+        jwtResponse.setRefreshToken(jwtTokenProvider.createRefreshTokenTask(user.getId(), user.getEmail(), reportId, projectId));
 
         return jwtResponse;
     }

@@ -7,8 +7,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.github.babkiniaa.scas.dto.project.AnalyserDto;
 import org.github.babkiniaa.scas.entity.Role;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -25,6 +28,7 @@ public class JwtTokenProvider {
     private static final String KEY_FOR_USER_ROLE = "role";
 
     private static final String START_FOR_USER_ROLE = "ROLE_";
+
 
     @Value("${security.jwt.secret}")
     private String key;
@@ -92,6 +96,45 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String createAccessTokenTask(long userId, String email, Role role, long reportId, long projectId) {
+
+        Claims claims = Jwts
+                .claims()
+                .subject(email)
+                .add(KEY_FOR_USER_ID, userId)
+                .add(KEY_FOR_USER_ROLE, START_FOR_USER_ROLE + role.name())
+                .add("KEY_FOR_REPORT_ID", reportId)
+                .add("KEY_FOR_PROJECT_ID", reportId)
+                .build();
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + getAccess());
+
+        return Jwts
+                .builder()
+                .claims(claims)
+                .expiration(Date.from(validity.toInstant()))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public String createRefreshTokenTask(long userId, String email, long reportId, long projectId) {
+        Claims claims = Jwts
+                .claims()
+                .subject(email)
+                .add(KEY_FOR_USER_ID, userId)
+                .add("KEY_FOR_REPORT_ID", reportId)
+                .add("KEY_FOR_PROJECT_ID", projectId)
+                .build();
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + getAccess());
+
+        return Jwts
+                .builder()
+                .claims(claims)
+                .expiration(Date.from(validity.toInstant()))
+                .signWith(getSigningKey())
+                .compact();
+    }
     /**
      * Проверяет валидность JWT токена.
      * Извлекает данные из токена и проверяет, не истёк ли срок его действия.
