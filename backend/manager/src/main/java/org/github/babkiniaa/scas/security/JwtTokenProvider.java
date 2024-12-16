@@ -135,6 +135,8 @@ public class JwtTokenProvider {
                 .signWith(getSigningKey())
                 .compact();
     }
+
+
     /**
      * Проверяет валидность JWT токена.
      * Извлекает данные из токена и проверяет, не истёк ли срок его действия.

@@ -11,6 +11,7 @@ import org.github.babkiniaa.scas.entity.User;
 import org.github.babkiniaa.scas.exception.NotFoundUserException;
 import org.github.babkiniaa.scas.security.AuthenticationFacade;
 import org.github.babkiniaa.scas.security.JwtTokenFilter;
+import org.github.babkiniaa.scas.security.JwtTokenProvider;
 import org.github.babkiniaa.scas.service.AuthService;
 import org.github.babkiniaa.scas.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -46,11 +47,10 @@ public class MyController {
     }
 
     @PostMapping("/report/start/offline")
-    public ResponseEntity<?> startJWTReport(String token) {
-        ProjectIdAndReportId projectIdAndReportId= new ProjectIdAndReportId(jwtTokenFilter.getReportId(token), jwtTokenFilter.getProjectId(token));
+    public ResponseEntity<?> startJWTReport(@RequestBody StringDto token) {
+        ProjectIdAndReportId projectIdAndReportId = new ProjectIdAndReportId(jwtTokenFilter.getReportId(token.getToken()), jwtTokenFilter.getProjectId(token.getToken()));
 
         masterServiceClient.createReportOffline(projectIdAndReportId);
-
         return ResponseEntity.ok("work");
     }
 

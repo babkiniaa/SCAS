@@ -26,12 +26,11 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
     private final ProjectService projectService;
-    private final ReportService reportService;
     private final MetricsService metricsService;
 
     public AnalyserDto startOffline(ProjectIdAndReportId projectIdAndReportId){
         AnalyserDto analyserDto = new AnalyserDto();
-        ReportDto reportDto = reportService.findById(projectIdAndReportId.getReportId());
+        ReportDto reportDto = findById(projectIdAndReportId.getReportId());
         ProjectDto projectDto = projectService.findById(projectIdAndReportId.getProjectId());
 
         analyserDto.setBranch(reportDto.getBranch());

@@ -1,6 +1,7 @@
 package org.github.babkiniaa.scas.security;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -62,12 +63,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         return Jwts.parser().verifyWith(jwtTokenProvider.getSigningKey()).build().parseSignedClaims(token).getPayload().getSubject();
     }
 
-    public long getReportId(String token){
-        return Long.getLong((String) Jwts.parser().verifyWith(jwtTokenProvider.getSigningKey()).build().parseSignedClaims(token).getPayload().get("KEY_FOR_REPORT_ID"));
+    public long getReportId(String token) {
+        return  Jwts
+                .parser()
+                .verifyWith(jwtTokenProvider.getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("KEY_FOR_REPORT_ID", Long.class);
     }
 
-    public long getProjectId(String token){
-        return Long.getLong((String) Jwts.parser().verifyWith(jwtTokenProvider.getSigningKey()).build().parseSignedClaims(token).getPayload().get("KEY_FOR_PROJECT_ID"));
+
+    public long getProjectId(String token) {
+
+        return Long.getLong(Jwts.parser().verifyWith(jwtTokenProvider.getSigningKey()).build().parseClaimsJws(token).getBody().get("KEY_FOR_PROJECT_ID").toString());
     }
 
     /**
