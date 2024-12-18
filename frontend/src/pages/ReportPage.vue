@@ -140,11 +140,10 @@
                   <div class="text-body1 text-weight-bold">Type: {{ bugInstance.type }}</div>
                   <p>Priority: {{ bugInstance.priority }}</p>
                   <p>Hash Code: {{ bugInstance.cachedHashCode }}</p>
-                  <p>Old Hash: {{ bugInstance.oldInstanceHash }}</p>
                   <p>New Hash: {{ bugInstance.instanceHash }}</p>
-                  <p>Occurrence: {{ bugInstance.instanceOccurrenceNum }} / {{ bugInstance.instanceOccurrenceMax }}</p>
-                  <p>First Version: {{ bugInstance.firstVersion }}</p>
-                  <p>Last Version: {{ bugInstance.lastVersion }}</p>
+                  <p>Category: {{ bugInstance.category }} / {{ bugInstance.category }}</p>
+                  <p>Message: {{ bugInstance.message }}</p>
+                  <p>Source: {{ bugInstance.source }}</p>
                   <p>
                     Introduced by Change of Existing Class:
                     <q-badge color="green" v-if="bugInstance.introducedByChangeOfExistingClass">Yes</q-badge>
@@ -319,9 +318,9 @@ export default {
         { name: 'type', label: 'Type', field: 'type', align: 'left' },
         { name: 'priority', label: 'Priority', field: 'priority', align: 'left' },
         { name: 'cachedHashCode', label: 'Hash Code', field: 'cachedHashCode', align: 'left' },
-        { name: 'instanceOccurrenceNum', label: 'Occurrence', field: 'instanceOccurrenceNum', align: 'left' },
-        { name: 'firstVersion', label: 'First Version', field: 'firstVersion', align: 'left' },
-        { name: 'lastVersion', label: 'Last Version', field: 'lastVersion', align: 'left' }
+        { name: 'category', label: 'Category', field: 'category', align: 'left' },
+        { name: 'message', label: 'Message', field: 'message', align: 'left' },
+        { name: 'source', label: 'Source', field: 'source', align: 'left' }
       ],
       violationColumns: [
         { name: 'moduleId', label: 'Module', field: 'moduleId', align: 'left' },
