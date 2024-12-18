@@ -24,13 +24,6 @@ public class ReportSpotBugsMapper {
         bugInstanceCustomDto.setSource(violation.getPrimarySourceLineAnnotation().toString());
         bugInstanceCustomDto.setMessage(violation.getBugPattern().getShortDescription());
 
-//        bugInstanceCustomDto.setInstanceOccurrenceNum(violation.getInstanceOccurrenceNum());
-//        bugInstanceCustomDto.setInstanceOccurrenceMax(violation.getInstanceOccurrenceMax());
-//        bugInstanceCustomDto.setFirstVersion(violation.getFirstVersion());
-//        bugInstanceCustomDto.setLastVersion(violation.getLastVersion());
-//        bugInstanceCustomDto.setIntroducedByChangeOfExistingClass(violation.isIntroducedByChangeOfExistingClass());
-//        bugInstanceCustomDto.setRemovedByChangeOfPersistingClass(violation.isRemovedByChangeOfPersistingClass());
-
         return bugInstanceCustomDto;
     }
 

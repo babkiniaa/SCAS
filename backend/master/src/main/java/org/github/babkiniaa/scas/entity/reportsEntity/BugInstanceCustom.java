@@ -33,23 +33,4 @@ public class BugInstanceCustom {
     private String source;
 
     private String instanceHash;
-
-//    private int instanceOccurrenceNum;
-//
-//    private int instanceOccurrenceMax;
-//
-//    private long firstVersion;
-//
-//    private long lastVersion;
-//
-//    private boolean introducedByChangeOfExistingClass;
-//
-//    private boolean removedByChangeOfPersistingClass;
-//
-//    private static final int INVALID_HASH_CODE = 0;
-//
-//    private static final String ELEMENT_NAME = "BugInstance";
-//
-//    private static boolean adjustExperimental;
-
 }
