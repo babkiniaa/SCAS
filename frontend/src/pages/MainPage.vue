@@ -5,7 +5,6 @@
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
         <q-space />
-        <q-btn dense round icon="search" @click="search" aria-label="Search" class="text-white" />
         <q-btn
           dense
           round
@@ -56,29 +55,59 @@
       </q-drawer>
       <q-page-container :class="isDarkMode ? 'dark-bg' : 'bg-grey-3'">
         <q-page style="margin-top: 15px;">
-          <q-card :class="['q-pa-md', 'shadow-2', 'my-card', isDarkMode ? 'bg-grey-8' : '']" bordered>
-            <q-card-section class="text-center">
-              <div :class="{ 'text-white': isDarkMode, 'text-grey-9': !isDarkMode, 'text-h5': true, 'text-weight-bold': true }">Your Projects</div>
-              <div :class="isDarkMode ? 'text-grey-4' : 'text-grey-8'">
-                <span v-if="projects.length">Here are your current projects:</span>
-                <span v-else>You have no projects yet</span>
-              </div>
-            </q-card-section>
-            <q-card-section v-if="projects.length">
-              <q-list bordered>
-                <q-item v-for="project in projects" :key="project.id" clickable @click="pageProject(project.id)">
-                  <q-item-section :class="isDarkMode ? 'text-white' : ''">{{ project.name }}</q-item-section>
-                </q-item>
-              </q-list>
-            </q-card-section>
-            <q-card-section v-else>
-              <q-btn label="Create Project" color="dark" @click="showCreateProjectModal = true" :class="isDarkMode ? 'bg-grey-6' : ''" class="q-mt-md full-width" />
-            </q-card-section>
-          </q-card>
-          <div class="grafana-container">
-            <iframe :src="grafanaData.url1" class="grafana-iframe"></iframe>
-            <iframe :src="grafanaData.url2" class="grafana-iframe"></iframe>
-            <iframe :src="grafanaData.url3" class="grafana-iframe"></iframe>
+        <q-card :class="['q-pa-md', 'shadow-2', 'my-card', isDarkMode ? 'bg-grey-8' : '']" bordered>
+          <q-card-section class="text-center">
+            <div :class="{ 'text-white': isDarkMode, 'text-grey-9': !isDarkMode, 'text-h5': true, 'text-weight-bold': true }">
+              Welcome to SCAS - the service for analyzing your Java code! Happy auditing!
+            </div>
+          </q-card-section>
+        </q-card>
+
+        <div class="row q-px-md " style="padding-top: 2%; padding-left: 2%;">
+          <q-input
+            v-model="nameProject"
+            filled
+            dense
+            placeholder="Search projects..."
+            class="col-4"
+          />
+          <q-btn
+            label="Search"
+            color="primary"
+            class="q-ml-sm"
+            @click="fetchProjectOwnUser"
+          />
+        </div>
+          <div class="row q-col-gutter-md q-mt-md" style="padding-left: 2%; padding-right: 2%
+          ;">
+            <div
+              class="col-10 col-md-4"
+              v-for="project in projectsOwnUser"
+              :key="project.id"
+            >
+              <q-card class="q-pa-md shadow-1" bordered @click="pageProject(project.id)">
+                <q-card-section>
+                  <div class="text-h6 text-weight-bold">
+                    {{ project.name }}
+                  </div>
+                  <div class="text-subtitle2">
+                    Bugs: {{ project.countBugs }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </div>
+          </div>
+          <div class="row justify-between q-mt-md">
+            <q-btn
+              v-if="page > 0"
+              icon="arrow_back"
+              @click="previousPage"
+            />
+            <q-btn
+              v-if="projectsOwnUser.length === 40"
+              icon="arrow_forward"
+              @click="nextPage"
+            />
           </div>
         </q-page>
         <q-dialog v-model="showCreateProjectModal">
@@ -89,7 +118,7 @@
 </template>
 <script>
 import { Dark } from 'quasar'
-import { getProjects } from 'src/services/projectServices'
+import { getProjects, allProjects } from 'src/services/projectServices'
 import { getAvatar, getId } from 'src/services/userServices'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
@@ -102,6 +131,7 @@ export default {
         avatar: null
       },
       projects: [],
+      projectsOwnUser: [],
       isDarkMode: Dark.isActive,
       projectsDto: {
         count: 6,
@@ -117,7 +147,9 @@ export default {
         url2: null,
         url3: null
       },
-      showCreateProjectModal: false
+      showCreateProjectModal: false,
+      page: 0,
+      nameProject: ''
     }
   },
   components: {
@@ -139,7 +171,8 @@ export default {
     },
     async fetchProjects () {
       try {
-        this.projectsDto.userId = this.userId
+        this.projectsDto.userId = (await getId()).data
+        console.log(this.projectsDto.userId)
         const response = await getProjects(this.projectsDto)
         this.projects = response.data
       } catch (error) {
@@ -172,10 +205,26 @@ export default {
     },
     async fetchId () {
       this.userId = (await getId()).data
+    },
+    nextPage () {
+      this.page += 1
+      this.fetchProjectOwnUser()
+    },
+    previousPage () {
+      if (this.page > 0) {
+        this.page -= 1
+        this.fetchProjectOwnUser()
+      }
+    },
+    async fetchProjectOwnUser () {
+      console.log(this.nameProject)
+      const response = await allProjects(this.page, this.nameProject)
+      this.projectsOwnUser = response.data
     }
   },
   mounted () {
     this.fetchId()
+    this.fetchProjectOwnUser()
     this.fetchUser()
     this.fetchProjects()
     this.fetchGrafanaChart()

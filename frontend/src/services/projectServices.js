@@ -27,10 +27,6 @@ export function getProject (id) {
   return api.get(`/get-project/${id}`, id)
 }
 
-export function connect (ids) {
-  return api.post('/connecting-report-owasp', ids)
-}
-
-export function connect1 (ids) {
-  return api.post('/connecting-report-pmd', ids)
+export function allProjects (page, name) {
+  return api.get(`/get-all?page=${page}&name=${name}`)
 }
