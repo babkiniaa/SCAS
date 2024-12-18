@@ -21,7 +21,7 @@ public class ReportSpotBugsMapper {
         bugInstanceCustomDto.setInstanceHash(violation.getInstanceHash());
         bugInstanceCustomDto.setCategory(violation.getBugPattern().getCategory());
         bugInstanceCustomDto.setSource(violation.getPrimarySourceLineAnnotation().toString());
-        bugInstanceCustomDto.setMessage(violation.getMessage().replace('\n', ' '));
+        bugInstanceCustomDto.setMessage(violation.getBugPattern().getShortDescription());
 
 
 //        bugInstanceCustomDto.setInstanceOccurrenceNum(violation.getInstanceOccurrenceNum());

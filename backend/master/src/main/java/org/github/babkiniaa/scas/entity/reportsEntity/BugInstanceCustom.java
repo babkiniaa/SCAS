@@ -30,7 +30,7 @@ public class BugInstanceCustom {
 
     private String message;
 
-    private String Source;
+    private String source;
 
     private String instanceHash;
 

@@ -21,7 +21,7 @@ public class BugInstanceCustomDto implements Serializable{
 
     private String message;
 
-    private String Source;
+    private String source;
 
 //    private int cachedHashCode;
 //

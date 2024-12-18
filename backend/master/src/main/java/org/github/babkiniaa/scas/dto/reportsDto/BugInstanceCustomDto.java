@@ -22,7 +22,7 @@ public class BugInstanceCustomDto {
 
     private String message;
 
-    private String Source;
+    private String source;
 
 //    private String oldInstanceHash;
 
