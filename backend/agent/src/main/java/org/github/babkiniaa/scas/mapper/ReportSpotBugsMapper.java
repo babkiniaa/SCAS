@@ -19,12 +19,17 @@ public class ReportSpotBugsMapper {
         bugInstanceCustomDto.setType(violation.getType());
         bugInstanceCustomDto.setPriority(violation.getPriority());
         bugInstanceCustomDto.setInstanceHash(violation.getInstanceHash());
-        bugInstanceCustomDto.setInstanceOccurrenceNum(violation.getInstanceOccurrenceNum());
-        bugInstanceCustomDto.setInstanceOccurrenceMax(violation.getInstanceOccurrenceMax());
-        bugInstanceCustomDto.setFirstVersion(violation.getFirstVersion());
-        bugInstanceCustomDto.setLastVersion(violation.getLastVersion());
-        bugInstanceCustomDto.setIntroducedByChangeOfExistingClass(violation.isIntroducedByChangeOfExistingClass());
-        bugInstanceCustomDto.setRemovedByChangeOfPersistingClass(violation.isRemovedByChangeOfPersistingClass());
+        bugInstanceCustomDto.setCategory(violation.getBugPattern().getCategory());
+        bugInstanceCustomDto.setSource(violation.getPrimarySourceLineAnnotation().toString());
+        bugInstanceCustomDto.setMessage(violation.getMessage().replace('\n', ' '));
+
+
+//        bugInstanceCustomDto.setInstanceOccurrenceNum(violation.getInstanceOccurrenceNum());
+//        bugInstanceCustomDto.setInstanceOccurrenceMax(violation.getInstanceOccurrenceMax());
+//        bugInstanceCustomDto.setFirstVersion(violation.getFirstVersion());
+//        bugInstanceCustomDto.setLastVersion(violation.getLastVersion());
+//        bugInstanceCustomDto.setIntroducedByChangeOfExistingClass(violation.isIntroducedByChangeOfExistingClass());
+//        bugInstanceCustomDto.setRemovedByChangeOfPersistingClass(violation.isRemovedByChangeOfPersistingClass());
 
         return bugInstanceCustomDto;
     }

@@ -26,28 +26,30 @@ public class BugInstanceCustom {
 
     private int priority;
 
-    private int cachedHashCode;
+    private String category;
 
-    private String oldInstanceHash;
+    private String message;
+
+    private String Source;
 
     private String instanceHash;
 
-    private int instanceOccurrenceNum;
-
-    private int instanceOccurrenceMax;
-
-    private long firstVersion;
-
-    private long lastVersion;
-
-    private boolean introducedByChangeOfExistingClass;
-
-    private boolean removedByChangeOfPersistingClass;
-
-    private static final int INVALID_HASH_CODE = 0;
-
-    private static final String ELEMENT_NAME = "BugInstance";
-
-    private static boolean adjustExperimental;
+//    private int instanceOccurrenceNum;
+//
+//    private int instanceOccurrenceMax;
+//
+//    private long firstVersion;
+//
+//    private long lastVersion;
+//
+//    private boolean introducedByChangeOfExistingClass;
+//
+//    private boolean removedByChangeOfPersistingClass;
+//
+//    private static final int INVALID_HASH_CODE = 0;
+//
+//    private static final String ELEMENT_NAME = "BugInstance";
+//
+//    private static boolean adjustExperimental;
 
 }
