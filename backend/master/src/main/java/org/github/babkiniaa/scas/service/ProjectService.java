@@ -5,8 +5,10 @@ import org.github.babkiniaa.scas.Mapper.ProjectMapper;
 import org.github.babkiniaa.scas.dto.project.CreateProjectDto;
 import org.github.babkiniaa.scas.dto.project.GetProjecAllDto;
 import org.github.babkiniaa.scas.dto.project.ProjectDto;
+import org.github.babkiniaa.scas.dto.project.ProjectDtoAll;
 import org.github.babkiniaa.scas.entity.*;
 import org.github.babkiniaa.scas.repository.*;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -71,5 +73,10 @@ public class ProjectService {
                 .findAllByNameContainingAndUserId(projectsDto.getName(), projectsDto.getUserId(), pageable).getContent()
                 : projectRepository
                 .findByNameContainingAndUserIdAndVisibility(projectsDto.getName(), projectsDto.getUserId(), true, pageable).getContent();
+    }
+
+    public List<Project> findByAll(int page, String name) {
+        Pageable pageable = PageRequest.of(page, 40);
+        return projectRepository.findAllByVisibilityAndNameContains(true, name, pageable).getContent();
     }
 }

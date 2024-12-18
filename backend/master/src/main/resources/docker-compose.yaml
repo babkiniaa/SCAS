@@ -41,4 +41,14 @@ services:
       KAFKA_REPLICA_FETCH_MAX_BYTES: 20000000
       KAFKA_LOG_SEGMENT_BYTES: 1073741824
       KAFKA_MAX_REQUEST_SIZE_CONFIG: 134190900
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9001:9001"
+      - "9002:9002"
+    environment:
+      MINIO_ROOT_USER: mycustomaccesskey
+      MINIO_ROOT_PASSWORD: s3cur3p@ssw0rd!23
+    command: server /data --console-address ":9001" --address ":9002"
 

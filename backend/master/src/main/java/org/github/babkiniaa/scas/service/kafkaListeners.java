@@ -36,6 +36,7 @@ public class kafkaListeners {
             reportEntity.setProjectId(reportAndIdProjectDto.getProjectId());
         } else {
             reportEntity = previous.get();
+            metricsService.userReport(userId, 1, reportAndIdProjectDto);
             List<String> analyzers = reportAndIdProjectDto.getAnalyzers();
             analyzers.addAll(reportEntity.getAnalyzers());
             reportAndIdProjectDto.setAnalyzers(analyzers);

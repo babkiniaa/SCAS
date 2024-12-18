@@ -3,9 +3,7 @@
     <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
-        <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
-        <q-space />
-        <q-btn dense round icon="search" @click="search" aria-label="Search" class="text-white" />
+        <q-toolbar-title class="text-white">Profile</q-toolbar-title>
         <q-btn
           dense
           round
@@ -53,36 +51,68 @@
       </q-list>
     </q-drawer>
     <q-page-container :class="isDarkMode ? 'dark-bg' : 'bg-grey-3'">
-      <q-page style="margin-top: 15px;">
-        <div class="profile-container q-py-lg q-px-md row">
-          <div class="col-4 q-pa-md">
-            <q-avatar size="140px" class="q-mb-md avatar">
-              <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
-              <q-icon v-else name="person" />
-            </q-avatar>
-            <div class="q-mt-md">
-              <div class="text-h6">About Me:</div>
-              <div class="text-body1">{{ user.about || 'No description provided' }}</div>
-            </div>
+      <q-page>
+        <div class="row user-and-projects">
+          <div class="col-3 user-info">
+            <q-card class="q-pa-xl full-height text-center">
+              <q-avatar size="150px" class="q-mx-auto">
+                <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
+                <q-icon v-else name="person" class="text-grey" />
+              </q-avatar>
+              <div class="text-h6 text-center q-mt-md">{{ user.username }}</div>
+              <div class="text-caption text-center text-grey">{{ user.email }}</div>
+              <q-btn
+                flat
+                color="primary"
+                class="full-width q-mt-lg"
+                icon="edit"
+                label="Edit"
+                @click="goToEdit"
+              />
+            </q-card>
           </div>
-          <div class="col-8 q-pa-md">
-            <div class="q-mb-md row">
-              <div class="col text-h6">Username:</div>
-              <div class="col text-body1">{{ user.username }}</div>
-            </div>
-            <div class="q-mb-md row">
-              <div class="col text-h6">Email:</div>
-              <div class="col text-body1">{{ user.email }}</div>
-            </div>
-            <div class="row q-mb-md">
-              <q-btn label="View All Projects" color="primary" @click="goToAllProjects" />
-            </div>
-            <div v-if="isOwnProfile" class="bottom-buttons row justify-end q-mt-md">
-              <q-btn label="Edit" color="primary" class="q-mr-md" @click="goToEdit" />
-              <q-btn label="Out" color="red" @click="logout" />
+          <div class="col-9 project-list">
+            <div class="text-h5 text-bold q-mb-md">Projects</div>
+            <div class="row q-col-gutter-lg q-mt-md">
+              <div
+                class="col-12 col-md-6"
+                v-for="project in projects"
+                :key="project.id"
+              >
+                <q-card
+                  clickable
+                  class="q-pa-md project-card"
+                  @click="pageProject(project.id)"
+                >
+                  <q-card-section>
+                    <div class="text-body1 text-bold">{{ project.name }}</div>
+                    <div class="text-caption text-grey">{{ project.description || 'No description' }}</div>
+                  </q-card-section>
+                </q-card>
+              </div>
             </div>
           </div>
         </div>
+          <div class="col-12">
+            <div class="text-h6 q-mb-md" style="padding-left: 2%;">Activity</div>
+            <div class="row q-gutter-md" style="padding-left: 2%;">
+              <iframe
+                v-for="(url, index) in [grafanaData.url1, grafanaData.url2, grafanaData.url3]"
+                :key="index"
+                :src="url"
+                frameborder="0"
+                width="30%"
+                height="200px"
+              ></iframe>
+            </div>
+          </div>
+        <q-btn
+          fab
+          color="red"
+          icon="logout"
+          class="fixed-bottom-right q-mb-lg q-mr-lg"
+          @click="logout"
+        />
       </q-page>
       <q-dialog v-model="showCreateProjectModal">
           <create-project-form :isDarkMode="isDarkMode" />
@@ -91,6 +121,7 @@
   </q-layout>
 </template>
 <script>
+import { getProjects } from 'src/services/projectServices'
 import { getUserProfile, getId } from 'src/services/userServices'
 import { Dark } from 'quasar'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
@@ -109,7 +140,22 @@ export default {
       currentUserId: null,
       isOwnProfile: false,
       isDarkMode: Dark.isActive,
-      showCreateProjectModal: false
+      showCreateProjectModal: false,
+      projectsDto: {
+        count: 6,
+        page: 0,
+        sortingField: 'createdDate',
+        userId: null,
+        myProject: true,
+        name: '',
+        sortDirection: 'DESC'
+      },
+      grafanaData: {
+        url1: null,
+        url2: null,
+        url3: null
+      },
+      projects: []
     }
   },
   components: {
@@ -119,8 +165,33 @@ export default {
     this.currentUserId = (await getId()).data
     const profileId = this.$route.params.id
     await this.loadUserProfile(profileId)
+    this.fetchProjects()
+    this.fetchGrafanaChart()
   },
   methods: {
+    pageProject (id) {
+      this.$router.push({ name: 'project', params: { id } })
+    },
+    async fetchGrafanaChart () {
+      const userId = (await getId()).data
+      console.log(userId)
+      const projectId = '1'
+      const branch = 'all'
+      const theme = this.isDarkMode ? 'dark' : 'light'
+      this.grafanaData.url1 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=5&__feature.dashboardSceneSolo`
+      this.grafanaData.url2 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=6&__feature.dashboardSceneSolo`
+      this.grafanaData.url3 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=7&__feature.dashboardSceneSolo`
+    },
+    async fetchProjects () {
+      try {
+        this.projectsDto.userId = (await getId()).data
+        console.log(this.projectsDto.userId)
+        const response = await getProjects(this.projectsDto)
+        this.projects = response.data
+      } catch (error) {
+        this.$q.notify({ message: 'Error loading projects', color: 'red' })
+      }
+    },
     toggleDarkMode () {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
@@ -157,7 +228,6 @@ export default {
     },
     goToProfile () {
       const id = this.currentUserId
-      console.log(id)
       this.$router.push(`/profile/${id}`)
     },
     goToEdit () {
@@ -198,5 +268,41 @@ export default {
 }
 .dark-bg {
   background-color: #1d1d1d !important;
+}
+.row.no-wrap {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+}
+.user-and-projects {
+  display: flex;
+  flex-direction: row;
+  padding: 2%;
+  gap: 16px;
+}
+
+.user-info {
+  flex: 0 0 30%;
+  max-width: 25%;
+}
+.project-list {
+  flex: 1 1 70%;
+}
+.grafana-charts iframe {
+  border: none;
+}
+.project-card {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.fixed-bottom-right {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+}
+.q-gutter-md {
+  gap: 16px;
 }
 </style>

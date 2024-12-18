@@ -34,4 +34,10 @@ public class ReportService {
         Optional<Report> report = reportRepository.findByHashAndProjectId(hash, projectId);
         return report.map(Report::getAnalyzers).orElse(new ArrayList<>());
     }
+
+    public long countBugsLastReport(long id) {
+        Report report = reportRepository.findReportById(id);
+        return report.getBugInstanceCustoms().size() + report.getDependencyCustoms().size() +
+                report.getRuleViolationCustoms().size() + report.getViolationCustoms().size();
+    }
 }

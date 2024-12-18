@@ -237,7 +237,7 @@ export default {
         avatar: null
       },
       projectsDto: {
-        count: 4,
+        count: 10,
         page: 0,
         sortingField: 'createdDate',
         userId: null,
@@ -292,7 +292,6 @@ export default {
         if (this.projectsDto.sortingField == 'name') {
           this.projectsDto.sortDirection = 'ASC'
         }
-        console.log(this.projectsDto.userId)
         const response = await getProjects(this.projectsDto)
         this.projects = response.data
         this.isOwnProject = this.projectsDto.userId === (await getId()).data
@@ -387,7 +386,6 @@ export default {
     async fetchId () {
       this.userId = (await getId()).data
       this.projectsDto.userId = this.userId
-      console.log(this.projectsDto.userId)
       this.fetchUser()
       this.loadProjects()
       this.fetchAnalyzers()

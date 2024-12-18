@@ -4,7 +4,11 @@ import org.github.babkiniaa.scas.entity.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Репозиторий для работы с сущностью {@link Project}.
@@ -31,6 +35,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
      * @param pageable объект {@link Pageable} для задания параметров пагинации.
      * @return страница публичных проектов, соответствующих критериям поиска.
      */
-    Page<Project> findByNameContainingAndUserIdAndVisibility(String name, long userId, boolean visibility, Pageable pageable);
+    Page<Project> findByNameContainingAndUserIdAndVisibility(String name, long userId, boolean visibility,
+                                                             Pageable pageable);
+
+    Page<Project> findAllByVisibilityAndNameContains(boolean visibility, String name, Pageable page);
 
 }
