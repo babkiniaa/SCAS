@@ -228,7 +228,6 @@ export default {
     this.fetchUser()
     this.fetchProjects()
     this.fetchGrafanaChart()
-
   }
 }
 </script>

@@ -201,6 +201,7 @@ export default {
         this.$q.notify({ message: 'Project created successfully', color: 'green' })
         this.projectCreated = true
         this.idProject = response.data
+        this.showModal = true
       } catch (error) {
         this.$q.notify({ message: 'Failed to create project', color: 'red' })
       } finally {
