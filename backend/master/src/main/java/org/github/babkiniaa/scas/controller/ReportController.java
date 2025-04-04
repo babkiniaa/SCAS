@@ -3,9 +3,13 @@ package org.github.babkiniaa.scas.controller;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.dto.*;
+import org.github.babkiniaa.scas.dto.Response.ReportAndIdProjectDto;
 import org.github.babkiniaa.scas.service.*;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @RequestMapping("/report")
@@ -13,18 +17,22 @@ import java.util.List;
 @RestController
 public class ReportController {
 
+    private final KafkaTemplate<String, AnalyserDto> kafkaTemplate;
     private final ProjectService projectService;
     private final ReportService reportService;
     private final AgentServiceClient agentServiceClient;
     private final MetricsService metricsService;
 
+
     @PostMapping("/create")
-    public long createReport(@RequestBody AnalyserDto analyserDto) {
+    public void createReport(@RequestBody AnalyserDto analyserDto) {
         analyserDto.setUrl(projectService.findById(analyserDto.getIdProject()).getUrl());
         metricsService.userTask(projectService.findByIdProject(analyserDto.getIdProject()).getUserId(), 1);
-        long taskId = agentServiceClient.init(analyserDto);
+        CompletableFuture<SendResult<String, AnalyserDto>> future =
+                kafkaTemplate.send("task-create-events-topic", null, analyserDto);
+//        long taskId = agentServiceClient.init(analyserDto);
 
-        return taskId;
+//        return taskId;
     }
 
     @GetMapping("/status/{id}")

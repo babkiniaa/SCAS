@@ -17,7 +17,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @KafkaListener(topics = "report-create-events-topic", groupId = "report-created-events")
-public class kafkaListeners {
+public class KafkaListeners {
 
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
