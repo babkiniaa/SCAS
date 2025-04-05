@@ -14,7 +14,7 @@ import java.util.List;
 public interface MasterServiceClient {
 
     @PostMapping("/report/create")
-    long createReport(@RequestBody AnalyserDto analyserDto);
+    void createReport(@RequestBody AnalyserDto analyserDto);
 
     @PostMapping("/project/create")
     long createProject(@RequestBody ProjectCreateDto projectCreateDto);

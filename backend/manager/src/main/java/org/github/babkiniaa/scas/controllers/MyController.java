@@ -26,8 +26,8 @@ public class MyController {
     }
 
     @PostMapping("/report/create")
-    public long createReport(@RequestBody AnalyserDto analyserDto) {
-        return masterServiceClient.createReport(analyserDto);
+    public void createReport(@RequestBody AnalyserDto analyserDto) {
+        masterServiceClient.createReport(analyserDto);
     }
 
     @GetMapping("report/get-by-project/{id}")
