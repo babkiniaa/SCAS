@@ -32,4 +32,12 @@ public class KafkaConfiguration {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    NewTopic loadTopicTask() {
+        return TopicBuilder.name("task-load-events-topic")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
 }

@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
+import org.github.babkiniaa.scas.configuration.TaskQueue;
 import org.github.babkiniaa.scas.dto.*;
 import org.github.babkiniaa.scas.dto.Response.ReportAndIdProjectDto;
 import org.github.babkiniaa.scas.service.*;
@@ -18,29 +19,29 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 public class ReportController {
 
-    private final KafkaTemplate<String, AnalyserDto> kafkaTemplate;
     private final ProjectService projectService;
     private final ReportService reportService;
     private final AgentServiceClient agentServiceClient;
     private final MetricsService metricsService;
+    private final TaskQueue taskQueue;
 
 
     @PostMapping("/create")
-    public void createReport(@RequestBody AnalyserDto analyserDto) {
+    public void createReport(@RequestBody AnalyserDto analyserDto) throws InterruptedException {
         analyserDto.setUrl(projectService.findById(analyserDto.getIdProject()).getUrl());
         metricsService.userTask(projectService.findByIdProject(analyserDto.getIdProject()).getUserId(), 1);
-        String prodactId = UUID.randomUUID().toString();
-        CompletableFuture<SendResult<String, AnalyserDto>> future =
-                kafkaTemplate.send("task-create-events-topic", prodactId, analyserDto);
-
-//        long taskId = agentServiceClient.init(analyserDto);
-
-//        return taskId;
+        taskQueue.addTask(analyserDto);
     }
 
     @GetMapping("/status/{id}")
     public String getStatus(@PathVariable("id") long projectId) {
-        return agentServiceClient.getStatus(projectId);
+        String statusTask = agentServiceClient.getStatus(projectId);
+
+        if (statusTask.equals("NotFound")){
+            return taskQueue.getTaskStatus(projectId);
+        }
+
+        return statusTask;
     }
 
     @GetMapping("/find/{id}")
