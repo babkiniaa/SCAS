@@ -9,6 +9,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
@@ -28,8 +29,10 @@ public class ReportController {
     public void createReport(@RequestBody AnalyserDto analyserDto) {
         analyserDto.setUrl(projectService.findById(analyserDto.getIdProject()).getUrl());
         metricsService.userTask(projectService.findByIdProject(analyserDto.getIdProject()).getUserId(), 1);
+        String prodactId = UUID.randomUUID().toString();
         CompletableFuture<SendResult<String, AnalyserDto>> future =
-                kafkaTemplate.send("task-create-events-topic", null, analyserDto);
+                kafkaTemplate.send("task-create-events-topic", prodactId, analyserDto);
+
 //        long taskId = agentServiceClient.init(analyserDto);
 
 //        return taskId;
