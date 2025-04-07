@@ -82,7 +82,7 @@ import { Dark } from 'quasar'
 import { changePassword } from 'src/services/passwordServices'
 
 export default {
-  data () {
+  data() {
     return {
       codeDigits: Array(6).fill(''),
       password: '',
@@ -92,11 +92,11 @@ export default {
     }
   },
   methods: {
-    toggleDarkMode () {
+    toggleDarkMode() {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    async submitResetPassword () {
+    async submitResetPassword() {
       try {
         await changePassword({
           password: this.password,
@@ -123,10 +123,10 @@ export default {
         }
       }
     },
-    goToLogin () {
+    goToLogin() {
       this.$router.push('/login')
     },
-    moveToNextField (index) {
+    moveToNextField(index) {
       if (this.codeDigits[index].length === 1 && index < this.codeDigits.length - 1) {
         this.$refs.codeInput[index + 1].focus()
       }

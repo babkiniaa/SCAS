@@ -15,26 +15,26 @@ api.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-export function getCount () {
+export function getCount() {
   return api.get('/agent/count-queue')
 }
 
-export function getAllTask () {
+export function getAllTask() {
   return api.get('/agent/get-run-task')
 }
 
-export function deleteTask (taskId) {
+export function deleteTask(taskId) {
   return api.post(`/agent/task/ban/${taskId}`)
 }
 
-export function fetchUsers () {
+export function fetchUsers() {
   return api.get('/users')
 }
 
-export function blockUserById (userId) {
+export function blockUserById(userId) {
   return api.post(`/blockUser?userId=${userId}`)
 }
 
-export function unbanUserById (userId) {
+export function unbanUserById(userId) {
   return api.post(`/blockUser?userId=${userId}`)
 }

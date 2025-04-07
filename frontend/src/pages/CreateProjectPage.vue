@@ -149,7 +149,7 @@ import { createProject } from 'src/services/projectServices'
 import { getAnalizator, reportCreate } from 'src/services/analysisServeces'
 import { getId } from 'src/services/userServices'
 export default {
-  data () {
+  data() {
     return {
       isDarkMode: Dark.isActive,
       projectName: '',
@@ -173,21 +173,21 @@ export default {
     }
   },
   methods: {
-    toggleDarkMode () {
+    toggleDarkMode() {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    selectVisibility (visibility) {
+    selectVisibility(visibility) {
       // eslint-disable-next-line eqeqeq
       if (visibility == 'private') {
         this.vis = false
       }
       this.selectedVisibility = visibility
     },
-    selectSource (source) {
+    selectSource(source) {
       this.selectedSource = source
     },
-    async submitCreateProject () {
+    async submitCreateProject() {
       this.isCreating = true
       try {
         const response = await createProject({
@@ -208,7 +208,7 @@ export default {
         this.isCreating = false
       }
     },
-    async startAnalysis () {
+    async startAnalysis() {
       try {
         await reportCreate({
           idProject: this.idProject,
@@ -224,10 +224,10 @@ export default {
         this.$router.push(`/projects/${this.userId}`)
       }
     },
-    handleFileUpload () {
+    handleFileUpload() {
       this.$q.notify({ message: 'File upload clicked', color: 'blue' })
     },
-    async fetchAnalyzers () {
+    async fetchAnalyzers() {
       try {
         const response = await getAnalizator()
         this.analyzers = response.data
@@ -235,16 +235,16 @@ export default {
         this.$q.notify({ message: 'Failed to fetch analyzers', color: 'red' })
       }
     },
-    selectAnalyzerCategory (category) {
+    selectAnalyzerCategory(category) {
       this.selectedAnalyzerCategory = category
       this.availableAnalyzers = this.analyzers[category] || []
       this.selectedAnalyzers = []
     },
-    async fetchId () {
+    async fetchId() {
       this.userId = (await getId()).data
     }
   },
-  created () {
+  created() {
     this.fetchId()
     this.fetchAnalyzers()
   }

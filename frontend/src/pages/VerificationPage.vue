@@ -11,16 +11,16 @@
 <script>
 import axios from 'axios'
 export default {
-  data () {
+  data() {
     return {
       verificationCode: this.$route.query.code
     }
   },
-  mounted () {
+  mounted() {
     this.verifyEmail()
   },
   methods: {
-    async verifyEmail () {
+    async verifyEmail() {
       try {
         const response = await axios.get(`/auth/verify?code=${this.verificationCode}`)
         if (response.status === 200) {

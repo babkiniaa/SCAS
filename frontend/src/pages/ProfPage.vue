@@ -1,6 +1,6 @@
 <template>
     <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
-    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
+    <q-header elevated class="bg-black full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">Profile</q-toolbar-title>
@@ -126,7 +126,7 @@ import { getUserProfile, getId } from 'src/services/userServices'
 import { Dark } from 'quasar'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
-  data () {
+  data() {
     return {
       drawer: false,
       miniState: true,
@@ -161,7 +161,7 @@ export default {
   components: {
     CreateProjectForm
   },
-  async created () {
+  async created() {
     this.currentUserId = (await getId()).data
     const profileId = this.$route.params.id
     await this.loadUserProfile(profileId)
@@ -169,10 +169,10 @@ export default {
     this.fetchGrafanaChart()
   },
   methods: {
-    pageProject (id) {
+    pageProject(id) {
       this.$router.push({ name: 'project', params: { id } })
     },
-    async fetchGrafanaChart () {
+    async fetchGrafanaChart() {
       const userId = (await getId()).data
       console.log(userId)
       const projectId = '1'
@@ -182,7 +182,7 @@ export default {
       this.grafanaData.url2 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=6&__feature.dashboardSceneSolo`
       this.grafanaData.url3 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=7&__feature.dashboardSceneSolo`
     },
-    async fetchProjects () {
+    async fetchProjects() {
       try {
         this.projectsDto.userId = (await getId()).data
         console.log(this.projectsDto.userId)
@@ -192,11 +192,11 @@ export default {
         this.$q.notify({ message: 'Error loading projects', color: 'red' })
       }
     },
-    toggleDarkMode () {
+    toggleDarkMode() {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    async loadUserProfile (profileId) {
+    async loadUserProfile(profileId) {
       try {
         const response = await getUserProfile(profileId)
         this.user = response.data
@@ -211,29 +211,29 @@ export default {
         this.$q.notify({ message: 'Error loading profile', color: 'red' })
       }
     },
-    goToHome () {
+    goToHome() {
       if (localStorage.getItem('role') === 'admin') {
         this.$router.push('/admin')
       } else {
         this.$router.push('/home')
       }
     },
-    goToAllProjects () {
+    goToAllProjects() {
       const id = this.user.id
       this.$router.push({ name: 'projects', params: { id } })
     },
-    goToMyProjects () {
+    goToMyProjects() {
       const id = this.currentUserId
       this.$router.push({ name: 'projects', params: { id } })
     },
-    goToProfile () {
+    goToProfile() {
       const id = this.currentUserId
       this.$router.push(`/profile/${id}`)
     },
-    goToEdit () {
+    goToEdit() {
       this.$router.push('/edit')
     },
-    logout () {
+    logout() {
       localStorage.removeItem('jwtToken')
       this.$router.push('/login')
     }

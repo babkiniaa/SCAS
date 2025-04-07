@@ -15,27 +15,27 @@ api.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-export function getUserProfile (id) {
+export function getUserProfile(id) {
   return api.get(`/profile/${id}`)
 }
-export function updateUserProfile (userData) {
+export function updateUserProfile(userData) {
   return api.put('/profile', userData)
 }
-export function uploadUserAvatar (formData) {
+export function uploadUserAvatar(formData) {
   return api.post('/avatar', formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   })
 }
-export function deleteUserAvatar () {
+export function deleteUserAvatar() {
   return api.delete('/avatar')
 }
 
-export function getAvatar (id) {
+export function getAvatar(id) {
   return api.get(`/avatar/${id}`)
 }
 
-export function getId () {
+export function getId() {
   return api.get('/get-id')
 }

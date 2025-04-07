@@ -1,11 +1,10 @@
 <template href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
   <q-layout>
-    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
+    <q-header elevated class="bg-black full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
         <q-space />
-        <q-btn dense round icon="search" @click="search" aria-label="Search" class="text-white" />
         <q-btn
           dense
           round
@@ -286,7 +285,7 @@ import { getAvatar, getId } from 'src/services/userServices'
 import { getReport } from 'src/services/analysisServeces'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
-  data () {
+  data() {
     return {
       drawer: true,
       miniState: true,
@@ -338,44 +337,44 @@ export default {
     CreateProjectForm
   },
   methods: {
-    toggleDarkMode () {
+    toggleDarkMode() {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    toggleViewMode () {
+    toggleViewMode() {
       this.viewMode = this.viewMode === 'document' ? 'table' : 'document'
     },
-    goToHome () {
+    goToHome() {
       if (localStorage.getItem('role') === 'admin') {
         this.$router.push('/admin')
       } else {
         this.$router.push('/home')
       }
     },
-    goToAllProjects () {
+    goToAllProjects() {
       const id = this.userId
       this.$router.push({ name: 'projects', params: { id } })
     },
-    search () {},
-    goToProfile () {
+    search() {},
+    goToProfile() {
       const userId = this.userId
       this.$router.push(`/profile/${userId}`)
     },
-    async fetchUser () {
+    async fetchUser() {
       const response = await getAvatar(this.userId)
       this.user.avatar = response.data
     },
-    async fetchProject () {
+    async fetchProject() {
       const response = await getReport(this.projectId)
       this.reportData = response.data
       this.initializeFileOptions()
       this.filterByFile()
     },
-    initializeFileOptions () {
+    initializeFileOptions() {
       const files = [...new Set(this.reportData.ruleViolationCustoms.map((item) => item.fileName))]
       this.fileOptions = files.map((file) => ({ label: file, value: file }))
     },
-    filterByFile (fileValue) {
+    filterByFile(fileValue) {
       this.selectedFile = fileValue
       if (this.selectedFile) {
         this.filteredRows = this.reportData.ruleViolationCustoms.filter(
@@ -385,7 +384,7 @@ export default {
         this.filteredRows = this.reportData.ruleViolationCustoms
       }
     },
-    sortPriority (a, b) {
+    sortPriority(a, b) {
       console.log(a)
       const priorityOrder = {
         High: 1,
@@ -396,7 +395,7 @@ export default {
       }
       return (priorityOrder[a] || 999) - (priorityOrder[b] || 999)
     },
-    sortTable (column) {
+    sortTable(column) {
       if (this.sortBy === column) {
         this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
       } else {
@@ -410,14 +409,14 @@ export default {
         return 0
       })
     },
-    async fetchId () {
+    async fetchId() {
       this.userId = (await getId()).data
       this.projectId = this.$route.params.id
       this.fetchUser()
       this.fetchProject()
     }
   },
-  mounted () {
+  mounted() {
     this.fetchId()
   }
 }

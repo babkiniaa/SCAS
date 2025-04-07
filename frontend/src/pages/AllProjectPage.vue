@@ -1,8 +1,9 @@
 <template>
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
-    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
+    <!-- Измененный хедер с черным цветом -->
+    <q-header elevated class="bg-black full-width">
       <q-toolbar>
-        <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
+        <q-btn flat round dense icon="menu" @click="drawer = !drawer" class="text-white" />
         <q-toolbar-title class="text-white">All Projects</q-toolbar-title>
         <q-space />
         <q-btn
@@ -13,12 +14,13 @@
           aria-label="Toggle Dark Mode"
           class="text-white q-ml-sm"
         />
-        <q-avatar size="42px" class="q-ml-md" @click="goToProfile">
+        <q-avatar size="42px" class="q-ml-md cursor-pointer" @click="goToProfile">
           <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
-          <q-icon v-else name="person" class="text-black" />
+          <q-icon v-else name="person" size="28px" color="white" />
         </q-avatar>
       </q-toolbar>
     </q-header>
+    
     <q-drawer
       v-model="drawer"
       show-if-above
@@ -28,97 +30,144 @@
       :width="200"
       :breakpoint="500"
       bordered
-      :content-class="isDarkMode ? 'bg-dark' : 'bg-grey-9'"
+      :class="isDarkMode ? 'bg-dark' : 'bg-grey-2'"
     >
       <q-list padding>
-        <q-item clickable v-ripple @click="goToHome">
+        <q-item clickable v-ripple @click="goToHome" class="rounded-borders" :class="isDarkMode ? 'hover:bg-grey-9' : 'hover:bg-grey-3'">
           <q-item-section avatar>
-            <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
+            <q-icon name="home" :color="isDarkMode ? 'white' : 'black'" />
           </q-item-section>
           <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
         </q-item>
-        <q-item clickable v-ripple  @click="showCreateProjectModal = true">
+        
+        <q-item clickable v-ripple @click="showCreateProjectModal = true" class="rounded-borders" :class="isDarkMode ? 'hover:bg-grey-9' : 'hover:bg-grey-3'">
           <q-item-section avatar>
-            <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
+            <q-icon name="add_circle" :color="isDarkMode ? 'white' : 'black'" />
           </q-item-section>
           <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
         </q-item>
-        <q-item clickable v-ripple @click="goToAllProjects">
+        
+        <q-item clickable v-ripple @click="goToAllProjects" class="rounded-borders" :class="isDarkMode ? 'hover:bg-grey-9' : 'hover:bg-grey-3'">
           <q-item-section avatar>
-            <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
+            <q-icon name="folder_open" :color="isDarkMode ? 'white' : 'black'" />
           </q-item-section>
           <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
-    <q-page-container :class="isDarkMode ? 'bg-dark' : 'bg-grey-3'">
-      <q-page style="margin-top: 15px;">
-        <div v-if="projects.length" class="q-mt-md">
-          <q-card
-            v-for="(project, index) in projects"
-            :key="index"
-            :class="['project-card', isDarkMode ? 'bg-grey-8 text-white' : 'bg-white']"
-            class="q-my-sm q-px-sm q-py-xs"
+    
+    <q-page-container :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-2'">
+      <q-page class="q-pa-md">
+        <div class="row justify-between items-center q-mb-md">
+          <q-input
+            v-model="projectsDto.name"
+            outlined
+            dense
+            placeholder="Search projects..."
+            class="col-grow"
+            :class="isDarkMode ? 'bg-grey-9' : 'bg-white'"
+            @keyup.enter="onSearch"
           >
-            <div class="row items-center justify-between">
-            <q-card-section class="q-pa-sm">
-              <div :class="[isDarkMode ? 'text-white' : 'text-black', 'text-h6']">{{ project.name }}</div>
-              <div :class="isDarkMode ? 'text-grey-4' : 'text-body1'" class="q-mt-xs">{{ project.description }}</div>
-              <div :class="isDarkMode ? 'text-grey-5' : 'text-caption'" class="q-mt-sm">
-                Created: {{ formatDate(project.createdDate) }}
-              </div>
-              <q-badge
-                v-if="isOwnProject"
-                :color="project.visibility ? 'green' : 'yellow'"
-                class="q-ml-md q-mt-sm"
-              >
-                {{ project.visibility ? 'Public' : 'Private' }}
-              </q-badge>
-            </q-card-section>
-            <q-card-actions class="column items-end justify-center">
-              <div v-if="projectStatus[project.id] === 'EndS' || projectStatus[project.id] === 'NotFound'" class="full-width q-mt-md">
-                <div class="row items-center">
-                  <q-btn
-                    label="Run"
-                    :icon="playIcon"
-                    :class="isDarkMode ? 'bg-grey-6' : ''"
-                    class="q-mb-xs text-green"
-                    @click="startAnalysis(project.id)"
-                  />
-                  <q-btn
-                    label="Project page"
-                    :class="isDarkMode ? 'bg-grey-6' : ''"
-                    class="q-ml-md"
-                    @click="viewProject(project.id)"
-                  />
-                </div>
-              </div>
-              <q-card
-              v-else-if="projectStatus[project.id] === 'Ban'"
-              class="column items-end justify-center"
-              style="border: 1px solid red; background-color: #fffde7; max-width: 200px;"
-            >
-              <q-card-section class="text-center">
-                <div class="text-black text-subtitle2 font-weight-bold">
-                  {{ projectStatus[project.id] }}
-                </div>
-              </q-card-section>
-            </q-card>
-              <q-card
-              v-else
-              class="column items-end justify-center"
-              style="border: 1px solid yellow; background-color: #fffde7; max-width: 200px;"
-            >
-              <q-card-section class="text-center">
-                <div class="text-black text-subtitle2 font-weight-bold">
-                  {{ projectStatus[project.id] }}
-                </div>
-              </q-card-section>
-            </q-card>
-            </q-card-actions>
-            </div>
-          </q-card>
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+          
+          <q-select
+            v-model="projectsDto.sortingField"
+            :options="sortingOptions"
+            option-label="label"
+            option-value="value"
+            outlined
+            dense
+            label="Sort by"
+            map-options
+            emit-value
+            class="q-ml-md"
+            style="min-width: 150px;"
+            :class="isDarkMode ? 'bg-grey-9' : 'bg-white'"
+            @update:model-value="onSortChange"
+          />
         </div>
+        
+        <div v-if="projects.length" class="row q-col-gutter-md">
+          <div v-for="(project, index) in projects" :key="index" class="col-12 col-md-6 col-lg-4">
+            <q-card
+              :class="['project-card', isDarkMode ? 'bg-grey-9 text-white' : 'bg-white', 
+                      {'border-left': true, 'border-primary': !isDarkMode, 'border-accent': isDarkMode}]"
+              class="full-height"
+            >
+              <q-card-section>
+                <div class="text-h6 text-weight-bold ellipsis">{{ project.name }}</div>
+                <q-separator class="q-my-sm" />
+                <div class="text-caption text-grey ellipsis-2-lines" style="min-height: 40px;">
+                  {{ project.description || 'No description provided' }}
+                </div>
+                
+                <div class="row justify-between items-center q-mt-sm">
+                  <div :class="isDarkMode ? 'text-grey-5' : 'text-grey-7'" class="text-caption">
+                    {{ formatDate(project.createdDate) }}
+                  </div>
+                  <q-badge
+                    v-if="isOwnProject"
+                    :color="project.visibility ? 'green' : 'yellow'"
+                    :text-color="project.visibility ? 'white' : 'black'"
+                  >
+                    {{ project.visibility ? 'Public' : 'Private' }}
+                  </q-badge>
+                </div>
+              </q-card-section>
+              
+              <q-card-actions class="q-px-md q-pb-md">
+                <div class="full-width">
+                  <div v-if="projectStatus[project.id] === 'EndS' || projectStatus[project.id] === 'NotFound'" class="row justify-between">
+                    <q-btn
+                      label="Run Analysis"
+                      icon="play_arrow"
+                      color="primary"
+                      dense
+                      no-caps
+                      @click="startAnalysis(project.id)"
+                    />
+                    <q-btn
+                      label="View"
+                      color="secondary"
+                      dense
+                      no-caps
+                      @click="viewProject(project.id)"
+                    />
+                  </div>
+                  
+                  <div v-else class="text-center">
+                    <q-chip
+                      :color="projectStatus[project.id] === 'Ban' ? 'red' : 'orange'"
+                      text-color="white"
+                      dense
+                      class="full-width justify-center"
+                    >
+                      Status: {{ projectStatus[project.id] }}
+                    </q-chip>
+                  </div>
+                </div>
+              </q-card-actions>
+            </q-card>
+          </div>
+        </div>
+        
+        <div v-else class="column items-center justify-center" style="height: 60vh;">
+          <q-icon name="folder_off" size="xl" :color="isDarkMode ? 'grey-6' : 'grey-5'" />
+          <div :class="isDarkMode ? 'text-grey-6' : 'text-grey-7'" class="q-mt-md text-h6">
+            No projects found
+          </div>
+          <q-btn
+            label="Create Project"
+            color="primary"
+            icon="add"
+            class="q-mt-md"
+            @click="showCreateProjectModal = true"
+          />
+        </div>
+        
         <div class="row justify-between q-mt-md">
           <q-btn v-if="projectsDto.page > 0" icon="arrow_back" @click="previousPage" />
           <q-btn
@@ -128,9 +177,14 @@
           />
         </div>
       </q-page>
-      <q-dialog v-model="showCreateProjectModal">
-          <create-project-form :isDarkMode="isDarkMode" />
-    </q-dialog>
+      
+      <q-dialog v-model="showCreateProjectModal" @hide="loadProjects">
+        <create-project-form 
+          :isDarkMode="isDarkMode" 
+          @project-created="loadProjects"
+          @close="showCreateProjectModal = false"
+        />
+      </q-dialog>
     <q-dialog v-model="showModal">
           <q-card style="width: 450px; height: 350px; padding: 16px;">
             <q-card-section class="text-center">
@@ -226,8 +280,12 @@ import { Dark } from 'quasar'
 import { getAvatar, getId } from 'src/services/userServices'
 import { getStatus, reportCreate, getAnalizator } from 'src/services/analysisServeces'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
+
 export default {
-  data () {
+  components: {
+    CreateProjectForm
+  },
+  data() {
     return {
       drawer: false,
       miniState: true,
@@ -252,90 +310,93 @@ export default {
       isOwnProject: false,
       currentUserId: null,
       isDarkMode: Dark.isActive,
-      playIcon: 'play_arrow',
       showModal: false,
       showCreateProjectModal: false,
       analyzers: {},
       selectedAnalyzerCategory: null,
       selectedAnalyzers: [],
       availableAnalyzers: [],
-      showModalReport: false,
-      listReporst: null,
       projectId: null,
-      branchName: null,
+      branchName: 'main',
       commitHash: null
     }
   },
-  components: {
-    CreateProjectForm
+  watch: {
+    selectedAnalyzerCategory(newVal) {
+      this.availableAnalyzers = this.analyzers[newVal] || []
+      this.selectedAnalyzers = []
+    }
   },
   methods: {
-    GoToAdmin () {
-      this.$router.push('/admin')
-    },
-    startAnalysis (id) {
-      this.showModal = true
-      this.projectId = id
-    },
-    toggleDarkMode () {
-      Dark.set(!this.isDarkMode)
-      this.isDarkMode = Dark.isActive
-    },
-    async loadProjects () {
-      try {
-        // eslint-disable-next-line eqeqeq
-        if (this.projectsDto.userId != this.$route.params.id) {
-          this.projectsDto.myProject = false
-          this.projectsDto.userId = this.$route.params.id
-        }
-        // eslint-disable-next-line eqeqeq
-        if (this.projectsDto.sortingField == 'name') {
-          this.projectsDto.sortDirection = 'ASC'
-        }
-        const response = await getProjects(this.projectsDto)
-        this.projects = response.data
-        this.isOwnProject = this.projectsDto.userId === (await getId()).data
-
-        // Fetch status for each project
-        for (const project of this.projects) {
-          console.log(project.id)
-          console.log(this.projects)
-          const statusResponse = await getStatus(project.id)
-          this.projectStatus[project.id] = statusResponse.data || null
-        }
-      } catch (error) {
-        this.$q.notify({ message: 'Error loading projects', color: 'red' })
-      }
-    },
-    nextPage () {
+    nextPage() {
       this.projectsDto.page += 1
       this.loadProjects()
     },
-    previousPage () {
+    previousPage() {
       if (this.projectsDto.page > 0) {
         this.projectsDto.page -= 1
         this.loadProjects()
       }
     },
-    goToHome () {
-      console.log(localStorage.getItem('role'))
-      if (localStorage.getItem('role') === 'admin') {
-        this.$router.push('/admin')
-      } else {
-        this.$router.push('/home')
+    async loadProjects() {
+      try {
+        if (this.projectsDto.userId != this.$route.params.id) {
+          this.projectsDto.myProject = false
+          this.projectsDto.userId = this.$route.params.id
+        }
+        
+        if (this.projectsDto.sortingField == 'name') {
+          this.projectsDto.sortDirection = 'ASC'
+        } else {
+          this.projectsDto.sortDirection = 'DESC'
+        }
+        
+        const response = await getProjects(this.projectsDto)
+        this.projects = response.data
+        this.isOwnProject = this.projectsDto.userId === (await getId()).data
+
+        for (const project of this.projects) {
+          const statusResponse = await getStatus(project.id)
+          this.projectStatus[project.id] = statusResponse.data || 'Unknown'
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: 'Error loading projects',
+          color: 'negative',
+          icon: 'error'
+        })
       }
     },
-    goToProfile () {
-      const id = this.userId
-      this.$router.push(`/profile/${id}`)
+    toggleDarkMode() {
+      Dark.set(!this.isDarkMode)
+      this.isDarkMode = Dark.isActive
+      localStorage.setItem('darkMode', this.isDarkMode)
     },
-    formatDate (date) {
-      return new Date(date).toLocaleString()
+    goToHome() {
+      const route = localStorage.getItem('role') === 'admin' ? '/admin' : '/home'
+      this.$router.push(route)
     },
-    async viewProject (projectId) {
-      this.$router.push(`/project/${projectId}`)
+    goToProfile() {
+      this.$router.push(`/profile/${this.userId}`)
     },
-    async runProject () {
+    goToAllProjects() {
+      this.$router.push(`/projects/${this.userId}`)
+    },
+    formatDate(date) {
+      return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    },
+    onDialogHide() {
+      this.showModal = false
+    },
+    startAnalysis(id) {
+      this.projectId = id
+      this.showModal = true
+    },
+    async runProject() {
       try {
         await reportCreate({
           idProject: this.projectId,
@@ -343,82 +404,118 @@ export default {
           branch: this.branchName,
           commit: this.commitHash
         })
+        
+        this.$q.notify({
+          message: 'Analysis started successfully',
+          color: 'positive',
+          icon: 'check_circle'
+        })
+        
         this.showModal = false
-        this.$q.notify({ message: 'Project created successfully', color: 'green' })
+        this.loadProjects()
       } catch (error) {
-        this.$q.notify({ message: 'Failed to create project', color: 'red' })
-      } finally {
-        this.$router.push(`/projects/${this.userId}`)
+        this.$q.notify({
+          message: 'Failed to start analysis',
+          color: 'negative',
+          icon: 'error'
+        })
       }
     },
-    onSearch () {
+    viewProject(projectId) {
+      this.$router.push(`/project/${projectId}`)
+    },
+    onSearch() {
       this.projectsDto.page = 0
       this.loadProjects()
     },
-    goToAllProjects () {
-      const id = this.userId
-      this.$router.push({ name: 'projects', params: { id } })
+    onSortChange() {
+      this.projectsDto.page = 0
+      this.loadProjects()
     },
-    onSortChange (selectedValue) {
-      if (typeof selectedValue === 'string') {
-        this.projectsDto.sortingField = selectedValue
-        this.projectsDto.page = 0
-        this.loadProjects()
+    async fetchUser() {
+      try {
+        const response = await getAvatar(this.userId)
+        this.user.avatar = response.data
+      } catch (error) {
+        console.error('Error fetching user avatar:', error)
       }
     },
-    async fetchUser () {
-      const response = await getAvatar((await getId()).data)
-      this.user.avatar = response.data
-    },
-    async fetchAnalyzers () {
+    async fetchAnalyzers() {
       try {
         const response = await getAnalizator()
         this.analyzers = response.data
       } catch (error) {
-        this.$q.notify({ message: 'Failed to fetch analyzers', color: 'red' })
+        this.$q.notify({
+          message: 'Failed to fetch analyzers',
+          color: 'negative',
+          icon: 'error'
+        })
       }
     },
-    selectAnalyzerCategory (category) {
-      this.selectedAnalyzerCategory = category
-      this.availableAnalyzers = this.analyzers[category] || []
-      this.selectedAnalyzers = []
-    },
-    async fetchId () {
-      this.userId = (await getId()).data
-      this.projectsDto.userId = this.userId
-      this.fetchUser()
-      this.loadProjects()
-      this.fetchAnalyzers()
+    async fetchId() {
+      try {
+        const response = await getId()
+        this.userId = response.data
+        this.projectsDto.userId = this.userId
+        await this.fetchUser()
+        await this.fetchAnalyzers()
+        this.loadProjects()
+      } catch (error) {
+        console.error('Error fetching user ID:', error)
+      }
     }
   },
-  created () {
+  created() {
+    this.isDarkMode = localStorage.getItem('darkMode') === 'true' || Dark.isActive
+    Dark.set(this.isDarkMode)
     this.fetchId()
   }
 }
 </script>
 
-<style>
+<style scoped>
+.project-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.border-left {
+  border-left: 4px solid;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ellipsis-2-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.q-pagination {
+  border-radius: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .bg-dark {
   background-color: #121212;
 }
+
+.bg-grey-9 {
+  background-color: #1e1e1e;
+}
+
 .bg-grey-8 {
-  background-color: #3a3a3a;
-}
-.bg-grey-6 {
-  background-color: #4a4a4a;
-}
-.text-white {
-  color: #ffffff !important;
-}
-.text-grey-5 {
-  color: #7f8c8d !important;
-}
-.project-card {
-  max-width: 90%;
-  margin: 6px auto;
-  padding: 8px;
-}
-.dark-bg {
-  background-color: #1d1d1d !important;
+  background-color: #2d2d2d;
 }
 </style>

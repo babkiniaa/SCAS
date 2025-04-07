@@ -27,3 +27,4 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
 server:
   port: 8081
+

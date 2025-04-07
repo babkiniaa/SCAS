@@ -15,22 +15,22 @@ api.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-export function reportCreate (projectData) {
+export function reportCreate(projectData) {
   return api.post('/report/create', projectData)
 }
 
-export function getAnalizator () {
+export function getAnalizator() {
   return api.get('/analysis/get-hashmap')
 }
 
-export function getStatus (id) {
+export function getStatus(id) {
   return api.get(`/report/status/${id}`)
 }
 
-export function getReports (id) {
+export function getReports(id) {
   return api.get(`/report/get-by-project/${id}`)
 }
 
-export function getReport (id) {
+export function getReport(id) {
   return api.get(`/report/find/${id}`)
 }

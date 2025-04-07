@@ -116,7 +116,7 @@ import { Dark } from 'quasar'
 import { getAllTask, deleteTask, fetchUsers, blockUserById, unbanUserById } from 'src/services/AdminService'
 
 export default {
-  data () {
+  data() {
     return {
       isDarkMode: Dark.isActive,
       queueTasks: [],
@@ -125,7 +125,7 @@ export default {
     }
   },
   computed: {
-    filteredUsers () {
+    filteredUsers() {
       if (!this.searchTerm) return this.users
       return this.users.filter(user =>
         user.username.toLowerCase().includes(this.searchTerm.toLowerCase())
@@ -133,11 +133,11 @@ export default {
     }
   },
   methods: {
-    toggleDarkMode () {
+    toggleDarkMode() {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    async fetchUsers () {
+    async fetchUsers() {
       try {
         const response = await fetchUsers()
         this.users = response.data
@@ -145,9 +145,9 @@ export default {
         this.$q.notify({ message: 'Failed to fetch users', color: 'red' })
       }
     },
-    searchUsers () {
+    searchUsers() {
     },
-    async toggleUserStatus (user) {
+    async toggleUserStatus(user) {
       try {
         if (user.enable) {
           await blockUserById(user.id)
@@ -161,7 +161,7 @@ export default {
         this.$q.notify({ message: 'Failed to update user status', color: 'red' })
       }
     },
-    async fetchQueueTasks () {
+    async fetchQueueTasks() {
       try {
         const response = await getAllTask()
         this.queueTasks = response.data
@@ -169,7 +169,7 @@ export default {
         this.$q.notify({ message: 'Failed to fetch queue tasks', color: 'red' })
       }
     },
-    async banTask (taskId) {
+    async banTask(taskId) {
       try {
         await deleteTask(taskId)
         this.queueTasks = this.queueTasks.filter(task => task.id !== taskId)
@@ -179,7 +179,7 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.fetchUsers()
     this.fetchQueueTasks()
   }
