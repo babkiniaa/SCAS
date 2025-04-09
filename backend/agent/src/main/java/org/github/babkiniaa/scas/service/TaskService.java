@@ -97,6 +97,9 @@ public class TaskService {
             try {
                 startAnalysis(startAnalyseDto);
             } catch (Exception e) {
+                task.setStatusTask(StatusTask.Err);
+                task.setMessage(e.getMessage());
+                taskRepository.save(task);
                 throw new RuntimeException(e);
             }
         });
@@ -190,6 +193,9 @@ public class TaskService {
                 reportAndDirDto.setHash(gitDto.getHash());
                 reportAndDirDto.setBranch(gitDto.getBranch());
             } catch (GitAPIException | IOException e) {
+                task.setStatusTask(StatusTask.Err);
+                task.setMessage(e.getMessage());
+                taskRepository.save(task);
                 throw new RuntimeException(e);
             }
             try {
@@ -210,8 +216,8 @@ public class TaskService {
                 saveReportInMaster(task, reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto), startAnalyseDto.getIdProject(), startAnalyseDto.getNeedReports());
             } catch (Exception e) {
                 task.setStatusTask(StatusTask.Err);
-                task.setIdProject(0);
-                taskRepository.save(task).getId();
+                task.setMessage(e.getMessage());
+                taskRepository.save(task);
                 throw new RuntimeException(e);
             } finally {
                 DeleteFileUtil.deleteDir(new File(dir));
@@ -225,8 +231,8 @@ public class TaskService {
      * @param projectId the project id
      * @return the status by project id
      */
-    public StatusTask getStatusByProjectId(long projectId) {
-        return taskRepository.findTaskByIdProject(projectId).get().getStatusTask();
+    public Task getStatusByProjectId(long projectId) {
+        return taskRepository.findTaskByIdProject(projectId).get();
     }
 
     /**
@@ -238,7 +244,7 @@ public class TaskService {
      */
     @Async
     public void saveReportInMaster(Task task, ReportDto reportDto, long projectId, List<String> needReports) {
-        if (getStatusByProjectId(projectId) == StatusTask.EndS) {
+        if (getStatusByProjectId(projectId).getStatusTask() == StatusTask.EndS) {
             reportDto.setAnalyzers(needReports);
             ReportAndIdProjectDto reportAndIdProjectDto = reportMapper.ReportDtoToReportAndIdProjectDto(reportDto);
             reportAndIdProjectDto.setProjectId(projectId);

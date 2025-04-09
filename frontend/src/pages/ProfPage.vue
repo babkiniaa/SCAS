@@ -61,6 +61,7 @@
               </q-avatar>
               <div class="text-h6 text-center q-mt-md">{{ user.username }}</div>
               <div class="text-caption text-center text-grey">{{ user.email }}</div>
+              <div class="text-h6 text-center q-mt-md">{{ user.about }}</div>
               <q-btn
                 flat
                 color="primary"

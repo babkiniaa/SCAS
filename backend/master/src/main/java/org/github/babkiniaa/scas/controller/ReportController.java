@@ -34,11 +34,11 @@ public class ReportController {
     }
 
     @GetMapping("/status/{id}")
-    public String getStatus(@PathVariable("id") long projectId) {
-        String statusTask = agentServiceClient.getStatus(projectId);
+    public StatusDto getStatus(@PathVariable("id") long projectId) {
+        StatusDto statusTask = agentServiceClient.getStatus(projectId);
 
-        if (statusTask.equals("NotFound")){
-            return taskQueue.getTaskStatus(projectId);
+        if (statusTask.getStat().equals("NotFound")){
+            return new StatusDto(taskQueue.getTaskStatus(projectId));
         }
 
         return statusTask;

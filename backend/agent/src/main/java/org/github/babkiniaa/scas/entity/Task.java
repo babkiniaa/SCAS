@@ -39,4 +39,6 @@ public class Task {
 
     private long idProject;
 
+    private String message;
+
 }

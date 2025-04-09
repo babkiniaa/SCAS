@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.client.AgentServiceClient;
 import org.github.babkiniaa.scas.client.MasterServiceClient;
 import org.github.babkiniaa.scas.dto.ListReportDto;
+import org.github.babkiniaa.scas.dto.StatusDto;
 import org.github.babkiniaa.scas.dto.project.*;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.springframework.data.domain.Page;
@@ -36,7 +37,7 @@ public class MyController {
     }
 
     @GetMapping("report/status/{id}")
-    public String getStatus(@PathVariable("id") long idTask) {
+    public StatusDto getStatus(@PathVariable("id") long idTask) {
         return masterServiceClient.getStatus(idTask);
     }
 

@@ -119,37 +119,43 @@
               </q-card-section>
               
               <q-card-actions class="q-px-md q-pb-md">
-                <div class="full-width">
-                  <div v-if="projectStatus[project.id] === 'EndS' || projectStatus[project.id] === 'NotFound'" class="row justify-between">
-                    <q-btn
-                      label="Run Analysis"
-                      icon="play_arrow"
-                      color="primary"
-                      dense
-                      no-caps
-                      @click="startAnalysis(project.id)"
-                    />
-                    <q-btn
-                      label="View"
-                      color="secondary"
-                      dense
-                      no-caps
-                      @click="viewProject(project.id)"
-                    />
-                  </div>
-                  
-                  <div v-else class="text-center">
-                    <q-chip
-                      :color="projectStatus[project.id] === 'Ban' ? 'red' : 'orange'"
-                      text-color="white"
-                      dense
-                      class="full-width justify-center"
-                    >
-                      Status: {{ projectStatus[project.id] }}
-                    </q-chip>
-                  </div>
-                </div>
-              </q-card-actions>
+  <div class="full-width">
+    <div v-if="projectStatus[project.id]?.stat === 'EndS' || projectStatus[project.id]?.stat === 'NotFound'" class="row justify-between">
+      <q-btn
+        label="Run Analysis"
+        icon="play_arrow"
+        color="primary"
+        dense
+        no-caps
+        @click="startAnalysis(project.id)"
+      />
+      <q-btn
+        label="View"
+        color="secondary"
+        dense
+        no-caps
+        @click="viewProject(project.id)"
+      />
+    </div>
+    
+    <div v-else class="text-center">
+      <q-chip
+        :color="getStatusColor(projectStatus[project.id]?.stat)"
+        text-color="white"
+        dense
+        class="full-width justify-center"
+        style="white-space: normal; height: auto; min-height: 42px; padding: 4px 8px;"
+      >
+        <div class="text-center full-width">
+          <div>Status: {{ getStatusText(projectStatus[project.id]?.stat) }}</div>
+          <div v-if="projectStatus[project.id]?.message" style="font-size: 0.8em;">
+            {{ projectStatus[project.id]?.message }}
+          </div>
+        </div>
+      </q-chip>
+    </div>
+  </div>
+</q-card-actions>
             </q-card>
           </div>
         </div>
@@ -185,80 +191,74 @@
           @close="showCreateProjectModal = false"
         />
       </q-dialog>
-    <q-dialog v-model="showModal">
-          <q-card style="width: 450px; height: 350px; padding: 16px;">
-            <q-card-section class="text-center">
-              <h6 style="margin: 0;">Select Analizator</h6>
-            </q-card-section>
+      <q-dialog v-model="showModal" persistent>
+        <q-card :class="isDarkMode ? 'bg-grey-8' : ''" style="width: 450px; max-width: 90vw;">
+          <q-card-section class="row items-center q-pb-none">
+            <q-icon name="play_circle_outline" size="sm" color="primary" class="q-mr-sm" />
+            <span class="text-h6" :class="isDarkMode ? 'text-white' : ''">Start Analysis</span>
+            <q-space />
+            <q-btn icon="close" flat round dense v-close-popup />
+          </q-card-section>
 
-            <q-card-section class="row q-col-gutter-md q-pt-none items-start" style="padding: 0 10px;">
-              <div class="col-6">
-                <q-btn-dropdown
-                  color="primary"
-                  :label="selectedAnalyzerCategory ? 'Category: ' + selectedAnalyzerCategory : 'Select Analyzer Category'"
-                  :class="isDarkMode ? 'bg-grey-6 text-white' : ''"
-                >
-                  <q-list>
-                    <q-item
-                      v-for="(category, index) in Object.keys(analyzers)"
-                      :key="index"
-                      clickable
-                      v-ripple
-                      @click="selectAnalyzerCategory(category)"
-                    >
-                      <q-item-section>
-                        <q-item-label>{{ category }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-btn-dropdown>
-              </div>
-              <div class="col-6" v-if="availableAnalyzers.length">
-                <q-option-group
-                  v-model="selectedAnalyzers"
-                  :options="availableAnalyzers.map(analyzer => ({ label: analyzer, value: analyzer }))"
-                  type="checkbox"
-                  label="Select Analyzers"
+          <q-card-section class="q-pt-md">
+            <div class="row q-col-gutter-sm">
+              <div class="col-12">
+                <q-select
+                  v-model="selectedAnalyzerCategory"
+                  :options="Object.keys(analyzers)"
+                  outlined
                   dense
-                  :class="isDarkMode ? 'bg-grey-9 text-white' : ''"
+                  label="Analyzer Category"
+                  :class="isDarkMode ? 'bg-grey-9 text-white' : 'bg-white'"
                 />
               </div>
-            </q-card-section>
-            <q-card-section class="row q-col-gutter-md items-center" style="padding: 10px;">
+              
+              <div class="col-12" v-if="availableAnalyzers.length">
+                <q-select
+                  v-model="selectedAnalyzers"
+                  :options="availableAnalyzers"
+                  outlined
+                  dense
+                  multiple
+                  label="Select Analyzers"
+                  :class="isDarkMode ? 'bg-grey-9 text-white' : 'bg-white'"
+                  use-chips
+                />
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-sm q-mt-sm">
               <div class="col-12">
                 <q-input
                   v-model="branchName"
-                  label="Branch (e.g., origin/main)"
-                  filled
+                  outlined
                   dense
+                  label="Branch"
                   prefix="origin/"
-                  :class="isDarkMode ? 'bg-grey-7 text-white' : ''"
+                  :class="isDarkMode ? 'bg-grey-9 text-white' : 'bg-white'"
                 />
               </div>
-            </q-card-section>
-            <q-card-section class="row q-col-gutter-md items-center" style="padding: 10px;">
+              
               <div class="col-12">
                 <q-input
                   v-model="commitHash"
-                  label="Commit Hash"
-                  filled
+                  outlined
                   dense
-                  placeholder="Enter commit hash"
-                  :class="isDarkMode ? 'bg-grey-7 text-white' : ''"
+                  label="Commit Hash"
+                  placeholder="Optional"
+                  :class="isDarkMode ? 'bg-grey-9 text-white' : 'bg-white'"
                 />
               </div>
-            </q-card-section>
-            <q-card-section class="text-center" style="padding: 30px; margin-top: auto;">
-              <q-btn
-                  label="Run"
-                  :icon="playIcon"
-                  :class="isDarkMode ? 'bg-grey-6' : ''"
-                  class="q-mb-xs text-green"
-                  @click="runProject"
-                />
-            </q-card-section>
-          </q-card>
-        </q-dialog>
+            </div>
+          </q-card-section>
+
+          <q-card-actions align="right" class="q-pa-md">
+            <q-btn label="Cancel" flat color="grey" v-close-popup class="q-mr-sm" />
+            <q-btn label="Run Analysis" color="primary" @click="runProject" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+
         <q-dialog v-model="showModalReport">
           <q-card>
             <q-card-section>
@@ -295,7 +295,7 @@ export default {
         avatar: null
       },
       projectsDto: {
-        count: 10,
+        count: 12,
         page: 0,
         sortingField: 'createdDate',
         userId: null,
@@ -317,14 +317,13 @@ export default {
       selectedAnalyzers: [],
       availableAnalyzers: [],
       projectId: null,
-      branchName: 'main',
+      branchName: null,
       commitHash: null
     }
   },
   watch: {
     selectedAnalyzerCategory(newVal) {
       this.availableAnalyzers = this.analyzers[newVal] || []
-      this.selectedAnalyzers = []
     }
   },
   methods: {
@@ -337,6 +336,44 @@ export default {
         this.projectsDto.page -= 1
         this.loadProjects()
       }
+    },
+    getStatusColor(status) {
+      switch (status) {
+        case 'Run':
+          return 'green'
+        case 'TODO':
+          return 'yellow'
+        case 'Err':
+        case 'Ban':
+          return 'red'
+        default:
+          return 'grey'
+      }
+    },
+
+    getStatusText(status) {
+      switch (status) {
+        case 'Run':
+          return 'Running'
+        case 'TODO':
+          return 'In Queue'
+        case 'Err':
+          return 'Error'
+        case 'Ban':
+          return 'Banned'
+        case 'EndS':
+          return 'Completed'
+        case 'NotFound':
+          return 'Not Started'
+        default:
+          return status || 'Unknown'
+      }
+    },
+    truncateMessage(message, maxLength = 50) {
+      if (!message) return ''
+      return message.length > maxLength 
+        ? `${message.substring(0, maxLength)}...` 
+        : message
     },
     async loadProjects() {
       try {
@@ -356,8 +393,12 @@ export default {
         this.isOwnProject = this.projectsDto.userId === (await getId()).data
 
         for (const project of this.projects) {
-          const statusResponse = await getStatus(project.id)
-          this.projectStatus[project.id] = statusResponse.data || 'Unknown'
+          try {
+            const statusResponse = await getStatus(project.id)
+            this.projectStatus[project.id] = statusResponse.data || { stat: 'Unknown' }
+          } catch (error) {
+            this.projectStatus[project.id] = { stat: 'Error', message: 'Failed to fetch status' }
+          }
         }
       } catch (error) {
         this.$q.notify({
@@ -517,5 +558,32 @@ export default {
 
 .bg-grey-8 {
   background-color: #2d2d2d;
+}
+
+.status-message {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.project-card .q-chip {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.q-chip--dense.multiline {
+  white-space: normal;
+  height: auto;
+  min-height: 42px;
+  padding: 4px 8px;
+  line-height: 1.3;
+}
+
+.q-chip--dense.multiline .chip-content {
+  width: 100%;
+  text-align: center;
 }
 </style>
