@@ -85,15 +85,19 @@
               v-for="project in projectsOwnUser"
               :key="project.id"
             >
-              <q-card class="q-pa-md shadow-1" bordered @click="pageProject(project.id)">
-                <q-card-section>
-                  <div class="text-h6 text-weight-bold">
-                    {{ project.name }}
-                  </div>
-                  <div class="text-subtitle2">
-                    Bugs: {{ project.countBugs }}
-                  </div>
-                </q-card-section>
+            <q-card
+              :class="['project-card', isDarkMode ? 'bg-grey-9 text-white' : 'bg-white', 
+                      {'border-left': true, 'border-primary': !isDarkMode, 'border-accent': isDarkMode}]"
+              class="full-height" @click="pageProject(project.id)"
+            >
+              <q-card-section>
+                <div class="text-h6 text-weight-bold ellipsis">{{ project.name }}</div>
+                <q-separator class="q-my-sm" />
+                <div class="text-caption text-grey ellipsis-2-lines" style="min-height: 40px;">
+                  {{ project.description || 'No description provided' }}
+                </div>
+                Bugs: {{ project.countBugs }}
+              </q-card-section>
               </q-card>
             </div>
           </div>
@@ -273,4 +277,31 @@ export default {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
+.project-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.border-left {
+  border-left: 4px solid;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ellipsis-2-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 </style>
