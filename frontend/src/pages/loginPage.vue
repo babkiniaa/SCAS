@@ -115,7 +115,7 @@ export default {
         // eslint-disable-next-line eqeqeq
         if (response.data.role == 'ADMIN') {
           localStorage.setItem('role', 'admin')
-          this.$router.push('/admin')
+          this.$router.push('/admin/dashboard')
         } else {
           localStorage.setItem('role', 'user')
           this.$router.push('/home')

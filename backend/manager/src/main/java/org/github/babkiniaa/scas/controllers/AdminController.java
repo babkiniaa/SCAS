@@ -55,6 +55,12 @@ public class AdminController {
         return ResponseEntity.ok("User with ID " + userId + " has been blocked.");
     }
 
+    @PostMapping("/unBlockUser")
+    public ResponseEntity<String> unBlockUser(@RequestParam("userId") Long userId) {
+        userService.unBlockUser(userId);
+        return ResponseEntity.ok("User with ID " + userId + " has been unblocked.");
+    }
+
     /**
      * Возвращает количество активных задач с агента
      *

@@ -128,6 +128,14 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void unBlockUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        user.setEnable(true);
+        userRepository.save(user);
+    }
+
     /**
      * Удаляет пользователей, у которых время на подтверждение почты истекло.
      * <p>Запланированное выполнение каждый час. Удаляет пользователей,
