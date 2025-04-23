@@ -30,13 +30,13 @@ public class KafkaConfiguration {
 
     @Bean
     NewTopic createTopicReport() {
-        return TopicBuilder.name("report-create-events-topic").partitions(1).replicas(1).build();
+        return TopicBuilder.name("report-create-events-topic").partitions(3).replicas(1).build();
     }
 
     @Bean
     NewTopic createTopicTask() {
         return TopicBuilder.name("task-create-events-topic")
-                .partitions(1)
+                .partitions(3)
                 .replicas(1)
                 .build();
     }
@@ -44,7 +44,7 @@ public class KafkaConfiguration {
     @Bean
     NewTopic loadTopicTask() {
         return TopicBuilder.name("task-load-events-topic")
-                .partitions(1)
+                .partitions(3)
                 .replicas(1)
                 .build();
     }
