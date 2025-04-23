@@ -3,7 +3,9 @@ package org.github.babkiniaa.scas.Controller;
 import lombok.RequiredArgsConstructor;
 import org.github.babkiniaa.scas.dto.Request.RegisterTaskDto;
 import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
+import org.github.babkiniaa.scas.dto.StatusDto;
 import org.github.babkiniaa.scas.entity.StatusTask;
+import org.github.babkiniaa.scas.entity.Task;
 import org.github.babkiniaa.scas.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -50,11 +52,12 @@ public class ChallengeController {
      * @return the status
      */
     @GetMapping("/task/{id}/status")
-    public String getStatus(@PathVariable("id") long projectId) {
+    public StatusDto getStatus(@PathVariable("id") long projectId) {
         try {
-            return taskService.getStatusByProjectId(projectId).toString();
+            Task task = taskService.getStatusByProjectId(projectId);
+            return new StatusDto(task.getStatusTask().toString(), task.getMessage());
         } catch (Exception e) {
-            return StatusTask.NotFound.toString();
+            return new StatusDto(StatusTask.NotFound.toString());
         }
 
     }

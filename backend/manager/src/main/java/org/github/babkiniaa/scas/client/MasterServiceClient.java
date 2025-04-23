@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.client;
 
 import org.github.babkiniaa.scas.dto.ListReportDto;
 import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
+import org.github.babkiniaa.scas.dto.StatusDto;
 import org.github.babkiniaa.scas.dto.project.*;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,13 +15,13 @@ import java.util.List;
 public interface MasterServiceClient {
 
     @PostMapping("/report/create")
-    long createReport(@RequestBody AnalyserDto analyserDto);
+    void createReport(@RequestBody AnalyserDto analyserDto);
 
     @PostMapping("/project/create")
     long createProject(@RequestBody ProjectCreateDto projectCreateDto);
 
     @GetMapping("report/status/{id}")
-    String getStatus(@PathVariable("id") Long id);
+    StatusDto getStatus(@PathVariable("id") Long id);
 
     @GetMapping("report/get-reports/{id}")
     ReportDto getRep(@PathVariable("id") long projectId);

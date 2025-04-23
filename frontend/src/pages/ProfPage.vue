@@ -1,9 +1,10 @@
 <template>
     <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
-    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
+    <q-header elevated class="bg-black full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">Profile</q-toolbar-title>
+        <q-space />
         <q-btn
           dense
           round
@@ -18,115 +19,177 @@
         </q-avatar>
       </q-toolbar>
     </q-header>
-    <q-drawer
-      v-model="drawer"
-      show-if-above
-      :mini="miniState"
-      @mouseenter="miniState = false"
-      @mouseleave="miniState = true"
-      :width="200"
-      :breakpoint="500"
-      bordered
-      :content-class="isDarkMode ? 'bg-dark' : 'bg-grey-9'"
-    >
-      <q-list padding>
-        <q-item clickable v-ripple @click="goToHome">
-          <q-item-section avatar>
-            <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
-          </q-item-section>
-          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
-        </q-item>
-        <q-item clickable v-ripple  @click="showCreateProjectModal = true">
-          <q-item-section avatar>
-            <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
-          </q-item-section>
-          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
-        </q-item>
-        <q-item clickable v-ripple @click="goToAllProjects">
-          <q-item-section avatar>
-            <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
-          </q-item-section>
-          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
-        </q-item>
-      </q-list>
-    </q-drawer>
-    <q-page-container :class="isDarkMode ? 'dark-bg' : 'bg-grey-3'">
-      <q-page>
-        <div class="row user-and-projects">
-          <div class="col-3 user-info">
-            <q-card class="q-pa-xl full-height text-center">
-              <q-avatar size="150px" class="q-mx-auto">
-                <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
-                <q-icon v-else name="person" class="text-grey" />
+      <q-drawer
+        v-model="drawer"
+        show-if-above
+        :mini="miniState"
+        @mouseenter="miniState = false"
+        @mouseleave="miniState = true"
+        :width="200"
+        :breakpoint="500"
+        bordered
+        :content-class="isDarkMode ? 'bg-black' : 'bg-grey-8'"
+      >
+        <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+          <q-list padding>
+            <q-item clickable v-ripple @click="goToHome">
+              <q-item-section avatar>
+                <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
+              </q-item-section>
+              <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple  @click="showCreateProjectModal = true">
+              <q-item-section avatar>
+                <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
+              </q-item-section>
+              <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="goToAllProjects">
+              <q-item-section avatar>
+                <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
+              </q-item-section>
+              <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
+            </q-item>
+          </q-list>
+        </q-scroll-area>
+      </q-drawer>
+
+    <q-page-container :class="isDarkMode ? 'bg-grey-9' : 'bg-grey-1'">
+      <q-page class="q-pa-lg">
+        <div class="row q-col-gutter-lg">
+          <div class="col-md-3 col-sm-12">
+            <q-card class="text-center" flat :class="isDarkMode ? 'bg-grey-8' : 'bg-white'">
+              <q-card-section>
+                <q-avatar size="350px" class="q-mx-auto">
+                  <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
+                  <q-icon v-else name="person" class="text-grey" />
               </q-avatar>
-              <div class="text-h6 text-center q-mt-md">{{ user.username }}</div>
-              <div class="text-caption text-center text-grey">{{ user.email }}</div>
-              <q-btn
-                flat
-                color="primary"
-                class="full-width q-mt-lg"
-                icon="edit"
-                label="Edit"
-                @click="goToEdit"
-              />
+
+                <div class="text-h5 q-mt-md text-weight-bold">{{ user.username }}</div>
+                <div class="text-subtitle1 text-grey">{{ user.email }}</div>
+
+                <q-chip v-if="user.about" outline color="primary" class="q-mt-sm">
+                  {{ user.about }}
+                </q-chip>
+
+                <q-btn
+                  unelevated
+                  color="black"
+                  class="full-width q-mt-lg"
+                  icon="edit"
+                  label="Edit Profile"
+                  @click="goToEdit"
+                />
+              </q-card-section>
             </q-card>
           </div>
-          <div class="col-9 project-list">
-            <div class="text-h5 text-bold q-mb-md">Projects</div>
-            <div class="row q-col-gutter-lg q-mt-md">
-              <div
-                class="col-12 col-md-6"
-                v-for="project in projects"
-                :key="project.id"
-              >
-                <q-card
-                  clickable
-                  class="q-pa-md project-card"
-                  @click="pageProject(project.id)"
-                >
-                  <q-card-section>
-                    <div class="text-body1 text-bold">{{ project.name }}</div>
-                    <div class="text-caption text-grey">{{ project.description || 'No description' }}</div>
-                  </q-card-section>
-                </q-card>
-              </div>
-            </div>
+
+          <!-- Projects Section -->
+          <div class="col-md-9 col-sm-12">
+            <q-card flat :class="isDarkMode ? 'bg-grey-8' : 'bg-white'">
+              <q-card-section>
+                <div class="row items-center">
+                  <div class="text-h5 text-weight-bold">My Projects</div>
+                </div>
+
+                <q-separator class="q-my-md" />
+
+                <div class="row q-col-gutter-md">
+                  <div
+                    class="col-md-6 col-sm-12"
+                    v-for="project in projects"
+                    :key="project.id"
+                  >
+
+                  <q-card
+              :class="['project-card', isDarkMode ? 'bg-grey-9 text-white' : 'bg-white',
+                      {'border-left': true, 'border-primary': !isDarkMode, 'border-accent': isDarkMode}]"
+              class="full-height" @click="pageProject(project.id)"
+            >
+              <q-card-section>
+                <div class="text-h6 text-weight-bold ellipsis">{{ project.name }}</div>
+                <q-separator class="q-my-sm" />
+                <div class="text-caption text-grey ellipsis-2-lines" style="min-height: 40px;">
+                  {{ project.description || 'No description provided' }}
+                </div>
+              </q-card-section>
+              </q-card>
+                    <!-- <q-card
+                      bordered
+                      class="cursor-pointer project-card"
+                      :class="isDarkMode ? 'bg-grey-9' : 'bg-grey-1'"
+                      @click="pageProject(project.id)"
+                    >
+                      <q-card-section>
+                        <div class="row items-center no-wrap">
+                          <div class="col">
+                            <div class="text-h6 text-weight-bold">{{ project.name }}</div>
+                            <div class="text-caption text-grey q-mt-xs">
+                              {{ project.description || 'No description provided' }}
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            <q-icon name="chevron_right" color="grey" />
+                          </div>
+                        </div>
+                      </q-card-section>
+                    </q-card> -->
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
+
+            <!-- Activity Section -->
+            <q-card class="q-mt-lg" flat :class="isDarkMode ? 'bg-grey-8' : 'bg-white'">
+              <q-card-section>
+                <div class="text-h5 text-weight-bold q-mb-md">Activity</div>
+                <div class="row q-col-gutter-md">
+                  <div class="col-md-4 col-sm-12" v-for="(url, index) in [grafanaData.url1, grafanaData.url2, grafanaData.url3]" :key="index">
+                    <div class="grafana-chart-container">
+                      <iframe
+                        :src="url"
+                        frameborder="0"
+                        class="full-width"
+                      ></iframe>
+                    </div>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
           </div>
         </div>
-          <div class="col-12">
-            <div class="text-h6 q-mb-md" style="padding-left: 2%;">Activity</div>
-            <div class="row q-gutter-md" style="padding-left: 2%;">
-              <iframe
-                v-for="(url, index) in [grafanaData.url1, grafanaData.url2, grafanaData.url3]"
-                :key="index"
-                :src="url"
-                frameborder="0"
-                width="30%"
-                height="200px"
-              ></iframe>
-            </div>
-          </div>
+      </q-page>
+
+      <!-- Logout Button -->
+      <q-page-sticky position="bottom-right" :offset="[18, 18]">
         <q-btn
           fab
-          color="red"
+          color="negative"
           icon="logout"
-          class="fixed-bottom-right q-mb-lg q-mr-lg"
           @click="logout"
+          title="Logout"
         />
-      </q-page>
+      </q-page-sticky>
+
+      <!-- Create Project Modal -->
       <q-dialog v-model="showCreateProjectModal">
-          <create-project-form :isDarkMode="isDarkMode" />
-    </q-dialog>
+        <create-project-form :isDarkMode="isDarkMode" @close="showCreateProjectModal = false" />
+      </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
+
 <script>
 import { getProjects } from 'src/services/projectServices'
 import { getUserProfile, getId } from 'src/services/userServices'
 import { Dark } from 'quasar'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
+
 export default {
-  data () {
+  components: {
+    CreateProjectForm
+  },
+  data() {
     return {
       drawer: false,
       miniState: true,
@@ -158,10 +221,7 @@ export default {
       projects: []
     }
   },
-  components: {
-    CreateProjectForm
-  },
-  async created () {
+  async created() {
     this.currentUserId = (await getId()).data
     const profileId = this.$route.params.id
     await this.loadUserProfile(profileId)
@@ -169,12 +229,11 @@ export default {
     this.fetchGrafanaChart()
   },
   methods: {
-    pageProject (id) {
+    pageProject(id) {
       this.$router.push({ name: 'project', params: { id } })
     },
-    async fetchGrafanaChart () {
+    async fetchGrafanaChart() {
       const userId = (await getId()).data
-      console.log(userId)
       const projectId = '1'
       const branch = 'all'
       const theme = this.isDarkMode ? 'dark' : 'light'
@@ -182,127 +241,138 @@ export default {
       this.grafanaData.url2 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=6&__feature.dashboardSceneSolo`
       this.grafanaData.url3 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=7&__feature.dashboardSceneSolo`
     },
-    async fetchProjects () {
+    async fetchProjects() {
       try {
         this.projectsDto.userId = (await getId()).data
-        console.log(this.projectsDto.userId)
         const response = await getProjects(this.projectsDto)
         this.projects = response.data
       } catch (error) {
-        this.$q.notify({ message: 'Error loading projects', color: 'red' })
+        this.$q.notify({
+          message: 'Error loading projects',
+          color: 'negative',
+          icon: 'error'
+        })
       }
     },
-    toggleDarkMode () {
-      Dark.set(!this.isDarkMode)
+    toggleDarkMode() {
+      Dark.toggle()
       this.isDarkMode = Dark.isActive
+      this.fetchGrafanaChart()
     },
-    async loadUserProfile (profileId) {
+    async loadUserProfile(profileId) {
       try {
         const response = await getUserProfile(profileId)
         this.user = response.data
-        console.log(this.currentUserId)
-        console.log(this.user.id)
-        // eslint-disable-next-line eqeqeq
-        if (this.currentUserId == this.user.id) {
-          this.isOwnProfile = true
-        }
-        console.log(this.isOwnProfile)
+        this.isOwnProfile = this.currentUserId == this.user.id
       } catch (error) {
-        this.$q.notify({ message: 'Error loading profile', color: 'red' })
+        this.$q.notify({
+          message: 'Error loading profile',
+          color: 'negative',
+          icon: 'error'
+        })
       }
     },
-    goToHome () {
-      if (localStorage.getItem('role') === 'admin') {
-        this.$router.push('/admin')
-      } else {
-        this.$router.push('/home')
-      }
+    goToHome() {
+      const route = localStorage.getItem('role') === 'admin' ? '/admin' : '/home'
+      this.$router.push(route)
     },
-    goToAllProjects () {
-      const id = this.user.id
-      this.$router.push({ name: 'projects', params: { id } })
+    goToAllProjects() {
+      this.$router.push({ name: 'projects', params: { id: this.user.id } })
     },
-    goToMyProjects () {
-      const id = this.currentUserId
-      this.$router.push({ name: 'projects', params: { id } })
+    goToProfile() {
+      this.$router.push(`/profile/${this.currentUserId}`)
     },
-    goToProfile () {
-      const id = this.currentUserId
-      this.$router.push(`/profile/${id}`)
-    },
-    goToEdit () {
+    goToEdit() {
       this.$router.push('/edit')
     },
-    logout () {
-      localStorage.removeItem('jwtToken')
-      this.$router.push('/login')
+    logout() {
+      this.$q.dialog({
+        title: 'Confirm Logout',
+        message: 'Are you sure you want to logout?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        localStorage.removeItem('jwtToken')
+        this.$router.push('/login')
+      })
     }
   }
 }
 </script>
+
 <style scoped>
-.profile-container {
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-.q-toolbar-title {
-  font-size: 20px;
-}
-.bg-dark {
-  background-color: #121212;
-}
-.bg-grey-8 {
-  background-color: #3a3a3a;
-}
-.bg-grey-6 {
-  background-color: #4a4a4a;
-}
-.text-white {
-  color: white !important;
-}
-.bg-grey-11 {
-  background-color: #1d1d1d;
-}
-.dark-bg {
-  background-color: #1d1d1d !important;
-}
-.row.no-wrap {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 16px;
-}
-.user-and-projects {
-  display: flex;
-  flex-direction: row;
-  padding: 2%;
-  gap: 16px;
+.project-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
 }
 
-.user-info {
-  flex: 0 0 30%;
-  max-width: 25%;
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
-.project-list {
-  flex: 1 1 70%;
+
+.grafana-chart-container {
+  position: relative;
+  padding-bottom: 75%; /* Aspect ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.05);
 }
-.grafana-charts iframe {
-  border: none;
+
+.grafana-chart-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
 }
+
+.text-subtitle1 {
+  font-size: 1rem;
+}
+
+.q-chip {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.q-card {
+  border-radius: 12px;
+}
+
+.q-page-container {
+  transition: background-color 0.3s ease;
+}
+
 .project-card {
-  min-height: 120px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
 }
-.fixed-bottom-right {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
+
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-.q-gutter-md {
-  gap: 16px;
+
+.border-left {
+  border-left: 4px solid;
+  border-radius: 30px;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ellipsis-2-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>

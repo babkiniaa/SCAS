@@ -1,6 +1,6 @@
 <template>
     <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
-    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
+    <q-header elevated class="bg-black full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
@@ -85,15 +85,19 @@
               v-for="project in projectsOwnUser"
               :key="project.id"
             >
-              <q-card class="q-pa-md shadow-1" bordered @click="pageProject(project.id)">
-                <q-card-section>
-                  <div class="text-h6 text-weight-bold">
-                    {{ project.name }}
-                  </div>
-                  <div class="text-subtitle2">
-                    Bugs: {{ project.countBugs }}
-                  </div>
-                </q-card-section>
+            <q-card
+              :class="['project-card', isDarkMode ? 'bg-grey-9 text-white' : 'bg-white', 
+                      {'border-left': true, 'border-primary': !isDarkMode, 'border-accent': isDarkMode}]"
+              class="full-height" @click="pageProject(project.id)"
+            >
+              <q-card-section>
+                <div class="text-h6 text-weight-bold ellipsis">{{ project.name }}</div>
+                <q-separator class="q-my-sm" />
+                <div class="text-caption text-grey ellipsis-2-lines" style="min-height: 40px;">
+                  {{ project.description || 'No description provided' }}
+                </div>
+                Bugs: {{ project.countBugs }}
+              </q-card-section>
               </q-card>
             </div>
           </div>
@@ -122,7 +126,7 @@ import { getProjects, allProjects } from 'src/services/projectServices'
 import { getAvatar, getId } from 'src/services/userServices'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
-  data () {
+  data() {
     return {
       drawer: true,
       miniState: true,
@@ -156,10 +160,10 @@ export default {
     CreateProjectForm
   },
   methods: {
-    pageProject (id) {
+    pageProject(id) {
       this.$router.push({ name: 'project', params: { id } })
     },
-    async fetchGrafanaChart () {
+    async fetchGrafanaChart() {
       const userId = (await getId()).data
       console.log(userId)
       const projectId = '1'
@@ -169,7 +173,7 @@ export default {
       this.grafanaData.url2 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=6&__feature.dashboardSceneSolo`
       this.grafanaData.url3 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=7&__feature.dashboardSceneSolo`
     },
-    async fetchProjects () {
+    async fetchProjects() {
       try {
         this.projectsDto.userId = (await getId()).data
         console.log(this.projectsDto.userId)
@@ -179,50 +183,50 @@ export default {
         this.$q.notify({ message: 'Error loading projects', color: 'red' })
       }
     },
-    toggleDarkMode () {
+    toggleDarkMode() {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    async fetchUser () {
+    async fetchUser() {
       const response = await getAvatar((await getId()).data)
       this.user.avatar = response.data
     },
-    goToHome () {
+    goToHome() {
       if (localStorage.getItem('role') === 'admin') {
         this.$router.push('/admin')
       } else {
         this.$router.push('/home')
       }
     },
-    goToAllProjects () {
+    goToAllProjects() {
       const id = this.userId
       this.$router.push({ name: 'projects', params: { id } })
     },
-    search () {},
-    goToProfile () {
+    search() {},
+    goToProfile() {
       const userId = this.userId
       this.$router.push(`/profile/${userId}`)
     },
-    async fetchId () {
+    async fetchId() {
       this.userId = (await getId()).data
     },
-    nextPage () {
+    nextPage() {
       this.page += 1
       this.fetchProjectOwnUser()
     },
-    previousPage () {
+    previousPage() {
       if (this.page > 0) {
         this.page -= 1
         this.fetchProjectOwnUser()
       }
     },
-    async fetchProjectOwnUser () {
+    async fetchProjectOwnUser() {
       console.log(this.nameProject)
       const response = await allProjects(this.page, this.nameProject)
       this.projectsOwnUser = response.data
     }
   },
-  mounted () {
+  mounted() {
     this.fetchId()
     this.fetchProjectOwnUser()
     this.fetchUser()
@@ -273,4 +277,31 @@ export default {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
+.project-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.border-left {
+  border-left: 4px solid;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ellipsis-2-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 </style>

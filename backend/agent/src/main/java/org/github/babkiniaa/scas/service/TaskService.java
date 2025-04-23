@@ -28,6 +28,7 @@ import org.owasp.dependencycheck.dependency.Dependency;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -47,12 +48,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class TaskService {
 
     private final KafkaTemplate<String, ReportAndIdProjectDto> kafkaTemplate;
-
+    private final KafkaTemplate<String, Double> kafkaTemplateLoad;
     private final AgentClient agentClient;
     private final TaskMapper taskMapper;
     private final ReportPMDMapper reportPMDMapper;
     private final ReportOWASPMapper reportOWASPMapper;
-    private final ReportSpotBugsMapper reportSpotBugsMapper;
     private final ReportMapper reportMapper;
     private final ReportService reportService;
     private final TaskRepository taskRepository;
@@ -97,11 +97,23 @@ public class TaskService {
             try {
                 startAnalysis(startAnalyseDto);
             } catch (Exception e) {
+                task.setStatusTask(StatusTask.Err);
+                task.setMessage(e.getMessage());
+                taskRepository.save(task);
                 throw new RuntimeException(e);
             }
         });
 
         return idTask;
+    }
+
+    @Scheduled(fixedRate = 1000)
+    public void agentLoad() {
+        int totalThreads = threadPoolExecutor.getMaximumPoolSize();
+        int busyThreads = threadPoolExecutor.getActiveCount();
+        double loadFactor = (double) busyThreads / totalThreads;
+
+        kafkaTemplateLoad.send("task-load-events-topic", null, loadFactor);
     }
 
     private ReportAndDirDto reportOwasp(ReportAndDirDto reportAndDir) {
@@ -176,12 +188,14 @@ public class TaskService {
             ReportAndDirDto reportAndDirDto = new ReportAndDirDto();
             reportAndDirDto.setDir(dir);
             GitDto gitDto = new GitDto();
-
             try {
                 gitDto = GitUtil.cloneRepository(startAnalyseDto.getUrl(), dir, startAnalyseDto.getBranch(), startAnalyseDto.getCommit());
                 reportAndDirDto.setHash(gitDto.getHash());
                 reportAndDirDto.setBranch(gitDto.getBranch());
             } catch (GitAPIException | IOException e) {
+                task.setStatusTask(StatusTask.Err);
+                task.setMessage(e.getMessage());
+                taskRepository.save(task);
                 throw new RuntimeException(e);
             }
             try {
@@ -202,8 +216,8 @@ public class TaskService {
                 saveReportInMaster(task, reportMapper.ReportAndDirDtoToReportDto(reportAndDirDto), startAnalyseDto.getIdProject(), startAnalyseDto.getNeedReports());
             } catch (Exception e) {
                 task.setStatusTask(StatusTask.Err);
-                task.setIdProject(0);
-                taskRepository.save(task).getId();
+                task.setMessage(e.getMessage());
+                taskRepository.save(task);
                 throw new RuntimeException(e);
             } finally {
                 DeleteFileUtil.deleteDir(new File(dir));
@@ -217,8 +231,8 @@ public class TaskService {
      * @param projectId the project id
      * @return the status by project id
      */
-    public StatusTask getStatusByProjectId(long projectId) {
-        return taskRepository.findTaskByIdProject(projectId).get().getStatusTask();
+    public Task getStatusByProjectId(long projectId) {
+        return taskRepository.findTaskByIdProject(projectId).get();
     }
 
     /**
@@ -230,14 +244,12 @@ public class TaskService {
      */
     @Async
     public void saveReportInMaster(Task task, ReportDto reportDto, long projectId, List<String> needReports) {
-        if (getStatusByProjectId(projectId) == StatusTask.EndS) {
+        if (getStatusByProjectId(projectId).getStatusTask() == StatusTask.EndS) {
             reportDto.setAnalyzers(needReports);
             ReportAndIdProjectDto reportAndIdProjectDto = reportMapper.ReportDtoToReportAndIdProjectDto(reportDto);
             reportAndIdProjectDto.setProjectId(projectId);
-            String prodactId = UUID.randomUUID().toString();
-
             CompletableFuture<SendResult<String, ReportAndIdProjectDto>> future =
-                    kafkaTemplate.send("report-create-events-topic", prodactId, reportAndIdProjectDto);
+                    kafkaTemplate.send("report-create-events-topic", null, reportAndIdProjectDto);
 
             taskRepository.delete(task);
         }

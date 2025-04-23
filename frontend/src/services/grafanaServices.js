@@ -1,4 +1,4 @@
-export async function fetchGrafanaData ({ projectId, branch }) {
+export async function fetchGrafanaData({ projectId, branch }) {
   try {
     // await axios.get('http:///localhost:3000/api/dashboards/data', {
     //   headers: {
@@ -15,6 +15,6 @@ export async function fetchGrafanaData ({ projectId, branch }) {
   }
 }
 
-function generateGraphUrl (projectId, branch) {
+function generateGraphUrl(projectId, branch) {
   return 'http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&from=1733212440189&to=1733234040189&timezone=browser&panelId=1&__feature.dashboardSceneSolo'
 }

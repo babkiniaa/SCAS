@@ -1,11 +1,10 @@
-<template href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-  <q-layout>
-    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
+<template>
+  <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
+    <q-header elevated class="bg-black full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
-        <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
+        <q-toolbar-title class="text-white">All Projects</q-toolbar-title>
         <q-space />
-        <q-btn dense round icon="search" @click="search" aria-label="Search" class="text-white" />
         <q-btn
           dense
           round
@@ -20,273 +19,600 @@
         </q-avatar>
       </q-toolbar>
     </q-header>
-
     <q-drawer
       v-model="drawer"
       show-if-above
       :mini="miniState"
-      @mouseenter="miniState = false"
-      @mouseleave="miniState = true"
       :width="200"
       :breakpoint="500"
       bordered
-      :content-class="isDarkMode ? 'bg-black' : 'bg-grey-8'"
+      :content-class="isDarkMode ? 'bg-dark' : 'bg-grey-9'"
     >
-      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
-        <q-list padding>
-          <q-item clickable v-ripple @click="goToHome">
-            <q-item-section avatar>
-              <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
-            </q-item-section>
-            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="showCreateProjectModal = true">
-            <q-item-section avatar>
-              <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
-            </q-item-section>
-            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="goToAllProjects">
-            <q-item-section avatar>
-              <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
-            </q-item-section>
-            <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
-          </q-item>
-        </q-list>
-      </q-scroll-area>
+      <q-list padding>
+        <q-item clickable v-ripple @click="goToHome">
+          <q-item-section avatar>
+            <q-icon name="home" :class="isDarkMode ? 'text-white' : 'text-black'" />
+          </q-item-section>
+          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Home</q-item-section>
+        </q-item>
+        <q-item clickable v-ripple @click="showCreateProjectModal = true">
+          <q-item-section avatar>
+            <q-icon name="add_circle" :class="isDarkMode ? 'text-white' : 'text-black'" />
+          </q-item-section>
+          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">Create Project</q-item-section>
+        </q-item>
+        <q-item clickable v-ripple @click="goToAllProjects">
+          <q-item-section avatar>
+            <q-icon name="folder_open" :class="isDarkMode ? 'text-white' : 'text-black'" />
+          </q-item-section>
+          <q-item-section :class="isDarkMode ? 'text-white' : 'text-black'">All Projects</q-item-section>
+        </q-item>
+      </q-list>
     </q-drawer>
-    <q-page-container :class="isDarkMode ? 'bg-dark' : 'bg-grey-2'">
-      <div v-if="reportData != null" class="q-mt-md">
-        <q-page style="margin-top: 15px;">
-          <q-card :class="['q-pa-md', 'shadow-2', 'my-card', isDarkMode ? 'bg-grey-8' : '']" bordered>
-            <q-btn-dropdown
-              label="Select Report"
-              dense
-              class="q-mr-sm"
-              no-caps
-              flat
-              color="primary"
-            >
-              <q-list>
-                <q-item clickable v-ripple @click="selectReport = 'all'">
-                  <q-item-section>All</q-item-section>
-                </q-item>
-                <q-item clickable v-ripple @click="selectReport = 'PMD'">
-                  <q-item-section>PMD</q-item-section>
-                </q-item>
-                <q-item clickable v-ripple @click="selectReport = 'OWAPS'">
-                  <q-item-section>OWAPS</q-item-section>
-                </q-item>
-                <q-item clickable v-ripple @click="selectReport = 'StopBugs'">
-                  <q-item-section>StopBugs</q-item-section>
-                </q-item>
-                <q-item clickable v-ripple @click="selectReport = 'CheckStyle'">
-                  <q-item-section>CheckStyle</q-item-section>
-                </q-item>
-              </q-list>
-            </q-btn-dropdown>
-            <div class="q-mb-md text-right">
-              <q-btn
-                outline
-                color="primary"
-                :icon="viewMode === 'document' ? 'description' : 'table_chart'"
-                label="Toggle View"
-                @click="toggleViewMode"
+
+    <q-page-container :class="isDarkMode ? 'bg-grey-9' : 'bg-grey-1'">
+      
+      <div v-if="reportData != null">
+        <q-page class="q-pa-lg">
+          <q-card flat :class="isDarkMode ? 'bg-grey-8' : 'bg-white'">
+            <q-card-section class="row items-center justify-between q-pb-none">
+              <div class="text-h5 text-weight-bold">
+                <q-icon name="assignment" class="q-mr-sm" />
+                Analysis Results
+              </div>
+              <q-btn-toggle
+                v-model="viewMode"
+                toggle-color="secondary"
+                :options="[
+                  {label: 'Table View', value: 'table', icon: 'table_chart'},
+                  {label: 'Document View', value: 'document', icon: 'description'}
+                ]"
+                dense
+                class="q-mr-sm"
               />
-            </div>
+              <q-btn-group rounded>
+                <q-btn 
+                  v-for="report in reportTypes" 
+                  :key="report.value"
+                  :label="report.label"
+                  :color="selectReport === report.value ? 'primary' : (isDarkMode ? 'grey-7' : 'grey-4')"
+                  :text-color="selectReport === report.value ? 'white' : (isDarkMode ? 'white' : 'dark')"
+                  @click="selectReport = report.value"
+                  dense
+                  no-caps
+                />
+              </q-btn-group>
+            </q-card-section>
+            
+            <q-separator class="q-mt-sm" />
 
-            <div v-if="viewMode === 'document'">
-              <q-card-section v-if="reportData.dependencyCustoms.length && (selectReport ===  'all' || selectReport === 'OWAPS')">
-                <div class="text-h6 text-weight-bold q-mb-md">OWASP Vulnerabilities Found</div>
-                <div
-                  v-for="dep in reportData.dependencyCustoms"
-                  :key="dep.name"
-                  class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
+            <q-card-section>
+              <div v-if="viewMode === 'document'" class="q-gutter-y-lg">
+                <!-- OWASP Section -->
+                <q-card 
+                  v-if="reportData.dependencyCustoms.length && (selectReport === 'all' || selectReport === 'OWASP')"
+                  flat
+                  :class="isDarkMode ? 'bg-grey-10' : 'bg-blue-1'"
                 >
-                  <div class="text-body1 text-weight-bold">{{ dep.name }} - {{ dep.version }}</div>
-                  <p>License: {{ dep.license }}</p>
-                  <p>Ecosystem: {{ dep.ecosystem }}</p>
-                  <p>Description: {{ dep.description }}</p>
-                  <p v-if="dep.isVirtual">This is a virtual package.</p>
-                  <ul>
-                    <li v-for="vulnerability in dep.owaspVulnerabilities" :key="vulnerability.name">
-                      <strong>{{ vulnerability.name }}</strong>: {{ vulnerability.description }}
-                      <p><em>Notes:</em> {{ vulnerability.notes }}</p>
-                    </li>
-                  </ul>
-                </div>
-              </q-card-section>
-              <q-card-section v-if="reportData.ruleViolationCustoms.length && (selectReport ===  'all' || selectReport === 'PMD')">
-                <div class="text-h6 text-weight-bold q-mb-md">PMD Violations Found</div>
-                <div
-                  v-for="violation in reportData.ruleViolationCustoms"
-                  :key="violation.name"
-                  class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
-                >
-                  <div class="text-body1 text-weight-bold">{{ violation.name }}</div>
-                  <p>Priority: {{ violation.priority }}</p>
-                  <p>Message: {{ violation.message }}</p>
-                  <p>File: {{ violation.fileName }} (Line: {{ violation.beginLine }}-{{ violation.endLine }}, Col: {{ violation.beginColumn }}-{{ violation.endColumn }})</p>
-                  <p>{{ violation.description }}</p>
-                </div>
-              </q-card-section>
-              <q-card-section v-if="reportData.bugInstanceCustoms.length && (selectReport ===  'all' || selectReport === 'StopBugs')">
-                <div class="text-h6 text-weight-bold q-mb-md">Bug Instances Found</div>
-                <div
-                  v-for="bugInstance in reportData.bugInstanceCustoms"
-                  :key="bugInstance.instanceHash"
-                  class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
-                >
-                  <div class="text-body1 text-weight-bold">Type: {{ bugInstance.type }}</div>
-                  <p>Priority: {{ bugInstance.priority }}</p>
-                  <p>Hash Code: {{ bugInstance.cachedHashCode }}</p>
-                  <p>New Hash: {{ bugInstance.instanceHash }}</p>
-                  <p>Category: {{ bugInstance.category }} / {{ bugInstance.category }}</p>
-                  <p>Message: {{ bugInstance.message }}</p>
-                  <p>Source: {{ bugInstance.source }}</p>
-                  <p>
-                    Introduced by Change of Existing Class:
-                    <q-badge color="green" v-if="bugInstance.introducedByChangeOfExistingClass">Yes</q-badge>
-                    <q-badge color="red" v-else>No</q-badge>
-                  </p>
-                  <p>
-                    Removed by Change of Persisting Class:
-                    <q-badge color="green" v-if="bugInstance.removedByChangeOfPersistingClass">Yes</q-badge>
-                    <q-badge color="red" v-else>No</q-badge>
-                  </p>
-                </div>
-              </q-card-section>
-              <q-card-section v-if="reportData.violationCustoms.length && (selectReport ===  'all' || selectReport === 'CheckStyle')">
-                <div class="text-h6 text-weight-bold q-mb-md">Code Violations Found</div>
-                <div
-                  v-for="violation in reportData.violationCustoms"
-                  :key="violation.key"
-                  class="q-my-md q-pa-sm border-box shadow-1 rounded-borders"
-                >
-                  <div class="text-body1 text-weight-bold">Module: {{ violation.moduleId }}</div>
-                  <p>Line: {{ violation.lineNo }}</p>
-                  <p>Column: {{ violation.columnNo }}</p>
-                  <p>Char Index: {{ violation.columnCharIndex }}</p>
-                  <p>Token Type: {{ violation.tokenType }}</p>
-                  <p>Key: {{ violation.key }}</p>
-                  <p>Bundle: {{ violation.bundle }}</p>
-                  <p>Source: {{ violation.source }}</p>
-                  <p>Custom Message: {{ violation.customMessage }}</p>
-                </div>
-              </q-card-section>
-            </div>
-            <div v-else>
-              <q-card class="shadow-2 q-pa-md" bordered style="width: 100%;">
-                <q-card-section v-if="reportData.ruleViolationCustoms.length && (selectReport ===  'all' || selectReport === 'PMD')">
-                  <q-btn-dropdown
-                    label="Filter by File"
-                    dense
-                    class="q-mb-md"
-                    no-caps
-                    flat
-                    color="primary"
-                  >
-                    <q-list>
-                      <q-item clickable v-ripple @click="filterByFile(null)">
-                        <q-item-section>Clear Filter</q-item-section>
-                      </q-item>
-                      <q-item
-                        v-for="file in fileOptions"
-                        :key="file.value"
-                        clickable
-                        v-ripple
-                        @click="filterByFile(file.value)"
+                  <q-card-section>
+                    <div class="row items-center">
+                      <q-icon name="security" color="negative" size="md" class="q-mr-sm" />
+                      <div class="text-h6 text-weight-bold">OWASP Vulnerabilities</div>
+                      <q-chip color="red" text-color="white" class="q-ml-sm">
+                        {{ reportData.dependencyCustoms.length }} issues
+                      </q-chip>
+                    </div>
+                  </q-card-section>
+                  
+                  <q-card-section class="q-pt-none">
+                    <q-list separator>
+                      <q-item 
+                        v-for="dep in reportData.dependencyCustoms" 
+                        :key="dep.name"
+                        class="q-my-sm rounded-borders"
+                        :class="isDarkMode ? 'bg-grey-9' : 'bg-white'"
                       >
-                        <q-item-section>{{ file.label }}</q-item-section>
+                        <q-item-section>
+                          <q-item-label class="text-weight-bold">
+                            {{ dep.name }} @{{ dep.version }}
+                          </q-item-label>
+                          <q-item-label caption>
+                            <q-icon name="copyright" size="xs" class="q-mr-xs" />
+                            {{ dep.license || 'Unknown license' }}
+                          </q-item-label>
+                          
+                          <q-expansion-item
+                            v-if="dep.owaspVulnerabilities && dep.owaspVulnerabilities.length"
+                            label="Vulnerabilities"
+                            icon="warning"
+                            switch-toggle-side
+                            class="q-mt-sm"
+                            :header-class="isDarkMode ? 'text-red-4' : 'text-red'"
+                          >
+                            <q-card :class="isDarkMode ? 'bg-grey-9' : 'bg-white'">
+                              <q-card-section>
+                                <div 
+                                  v-for="vuln in dep.owaspVulnerabilities" 
+                                  :key="vuln.name"
+                                  class="q-pa-sm q-mb-sm rounded-borders"
+                                  :class="isDarkMode ? 'bg-red-10' : 'bg-red-1'"
+                                >
+                                  <div class="row items-center">
+                                    <q-icon name="warning" color="red" class="q-mr-sm" />
+                                    <div class="text-weight-bold">{{ vuln.name }}</div>
+                                  </div>
+                                  <div class="q-ml-xl q-mt-xs">
+                                    {{ vuln.description }}
+                                    <div v-if="vuln.notes" class="text-caption q-mt-xs">
+                                      <q-icon name="info" size="xs" />
+                                      {{ vuln.notes }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </q-card-section>
+                            </q-card>
+                          </q-expansion-item>
+                        </q-item-section>
                       </q-item>
-                      </q-list>
-                  </q-btn-dropdown>
-                  <q-table
-                    :rows="filteredRows"
-                    :columns="columns"
-                    row-key="uniqueKey"
-                    flat
-                    dense
-                    class="full-width"
-                    :rows-per-page-options="[0]"
-                  >
-                    <template v-slot:body-cell-priority="props">
-                      <q-td>{{ props.row.priority }}</q-td>
-                    </template>
-                    <template v-slot:body-cell-name="props">
-                      <q-td>{{ props.row.name }}</q-td>
-                    </template>
-                    <template v-slot:body-cell-message="props">
-                      <q-td>{{ props.row.message }}</q-td>
-                    </template>
-                    <template v-slot:body-cell-fileName="props">
-                      <q-td>{{ props.row.fileName }}</q-td>
-                    </template>
-                    <template v-slot:body-cell-lineRange="props">
-                      <q-td>
-                        {{ props.row.beginLine }} - {{ props.row.endLine }}
-                      </q-td>
-                    </template>
-                  </q-table>
+                    </q-list>
+                  </q-card-section>
+                </q-card>
+
+                <!-- PMD Section -->
+                <q-card 
+                v-if="reportData.ruleViolationCustoms.length && (selectReport === 'all' || selectReport === 'PMD')"
+                flat
+                :class="isDarkMode ? 'bg-grey-10' : 'bg-purple-1'"
+              >
+                <q-card-section>
+                  <div class="row items-center">
+                    <q-icon name="code" color="purple" size="md" class="q-mr-sm" />
+                    <div class="text-h6 text-weight-bold">Code Quality Issues</div>
+                    <q-chip color="purple" text-color="white" class="q-ml-sm">
+                      {{ reportData.ruleViolationCustoms.length }} violations
+                    </q-chip>
+                  </div>
                 </q-card-section>
-                <q-card-section v-if="reportData.dependencyCustoms.length && (selectReport ===  'all' || selectReport === 'OWAPS')">
-                <div class="text-h6 text-weight-bold q-mb-md">OWAPS Vulnerabilities</div>
-                <q-table
-                  :rows="reportData.dependencyCustoms"
-                  :columns="owapsColumns"
-                  row-key="name"
-                  flat
-                  dense
-                  class="full-width"
-                  :rows-per-page-options="[0]"
-                />
-              </q-card-section>
-
-              <!-- Bug Instances Table -->
-              <q-card-section v-if="reportData.bugInstanceCustoms.length && (selectReport ===  'all' || selectReport === 'StopBugs')">
-                <div class="text-h6 text-weight-bold q-mb-md">Bug Instances</div>
-                <q-table
-                  :rows="reportData.bugInstanceCustoms"
-                  :columns="bugColumns"
-                  row-key="instanceHash"
-                  flat
-                  dense
-                  class="full-width"
-                  :rows-per-page-options="[0]"
-                />
-              </q-card-section>
-
-              <!-- Code Violations Table -->
-              <q-card-section v-if="reportData.violationCustoms.length && (selectReport ===  'all' || selectReport === 'CheckStyle')">
-                <div class="text-h6 text-weight-bold q-mb-md">Code Violations</div>
-                <q-table
-                  :rows="reportData.violationCustoms"
-                  :columns="violationColumns"
-                  row-key="key"
-                  flat
-                  dense
-                  class="full-width"
-                  :rows-per-page-options="[0]"
-                />
-              </q-card-section>
+                
+                <q-card-section class="q-pt-none">
+                  <q-list separator>
+                    <q-item 
+                      v-for="violation in reportData.ruleViolationCustoms" 
+                      :key="violation.name + violation.fileName + violation.beginLine"
+                      class="q-my-sm rounded-borders"
+                      :class="isDarkMode ? 'bg-grey-9' : 'bg-white'"
+                    >
+                      <q-item-section>
+                        <q-item-label class="text-weight-bold">
+                          <q-icon 
+                            :name="priorityIcons[violation.priority] || 'priority_high'" 
+                            :color="priorityColors[violation.priority] || 'grey'"
+                            class="q-mr-sm"
+                          />
+                          {{ violation.name }}
+                        </q-item-label>
+                        <q-item-label caption>
+                          <q-icon name="insert_drive_file" size="xs" class="q-mr-xs" />
+                          {{ violation.fileName }} (Lines {{ violation.beginLine }}-{{ violation.endLine }})
+                        </q-item-label>
+                        
+                        <q-item-label class="q-mt-sm">
+                          {{ violation.message }}
+                        </q-item-label>
+                        
+                        <q-item-label v-if="violation.description" class="q-mt-sm text-caption">
+                          {{ violation.description }}
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-card-section>
               </q-card>
-            </div>
+
+                <!-- Bug Instances Section -->
+                <q-card 
+                  v-if="reportData.bugInstanceCustoms.length && (selectReport === 'all' || selectReport === 'StopBugs')"
+                  flat
+                  :class="isDarkMode ? 'bg-grey-10' : 'bg-orange-1'"
+                >
+                  <q-card-section>
+                    <div class="row items-center">
+                      <q-icon name="bug_report" color="orange" size="md" class="q-mr-sm" />
+                      <div class="text-h6 text-weight-bold">Potential Bugs</div>
+                      <q-chip color="orange" text-color="white" class="q-ml-sm">
+                        {{ reportData.bugInstanceCustoms.length }} instances
+                      </q-chip>
+                    </div>
+                  </q-card-section>
+                  
+                  <q-card-section class="q-pt-none">
+                    <q-list separator>
+                      <q-item 
+                        v-for="bug in reportData.bugInstanceCustoms" 
+                        :key="bug.instanceHash"
+                        class="q-my-sm rounded-borders"
+                        :class="isDarkMode ? 'bg-grey-9' : 'bg-white'"
+                      >
+                        <q-item-section>
+                          <div class="row items-center">
+                            <q-icon 
+                              name="warning" 
+                              :color="bug.priority === 'High' ? 'red' : 'orange'" 
+                              class="q-mr-sm"
+                            />
+                            <div class="text-weight-bold">{{ bug.type }}</div>
+                            <q-chip 
+                              dense
+                              :color="bug.priority === 'High' ? 'red' : 'orange'"
+                              text-color="white"
+                              class="q-ml-sm"
+                            >
+                              {{ bug.priority }}
+                            </q-chip>
+                          </div>
+                          
+                          <q-item-label caption class="q-mt-xs">
+                            {{ bug.message }}
+                          </q-item-label>
+                          
+                          <div class="row q-mt-xs">
+                            <q-chip 
+                              v-if="bug.introducedByChangeOfExistingClass"
+                              dense
+                              icon="add_circle"
+                              color="green"
+                              text-color="white"
+                            >
+                              Introduced by change
+                            </q-chip>
+                            
+                            <q-chip 
+                              v-if="bug.removedByChangeOfPersistingClass"
+                              dense
+                              icon="remove_circle"
+                              color="red"
+                              text-color="white"
+                              class="q-ml-xs"
+                            >
+                              Removed by change
+                            </q-chip>
+                          </div>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-card-section>
+                </q-card>
+
+                <!-- CheckStyle Section -->
+                <q-card 
+                  v-if="reportData.violationCustoms.length && (selectReport === 'all' || selectReport === 'CheckStyle')"
+                  flat
+                  :class="isDarkMode ? 'bg-grey-10' : 'bg-cyan-1'"
+                >
+                  <q-card-section>
+                    <div class="row items-center">
+                      <q-icon name="format_indent_increase" color="teal" size="md" class="q-mr-sm" />
+                      <div class="text-h6 text-weight-bold">Style Violations</div>
+                      <q-chip color="teal" text-color="white" class="q-ml-sm">
+                        {{ reportData.violationCustoms.length }} issues
+                      </q-chip>
+                    </div>
+                  </q-card-section>
+                  
+                  <q-card-section class="q-pt-none">
+                    <q-list separator>
+                      <q-item 
+                        v-for="violation in reportData.violationCustoms" 
+                        :key="violation.key"
+                        class="q-my-sm rounded-borders"
+                        :class="isDarkMode ? 'bg-grey-9' : 'bg-white'"
+                      >
+                        <q-item-section>
+                          <q-item-label class="text-weight-bold">
+                            {{ violation.moduleId }} (Line {{ violation.lineNo }})
+                          </q-item-label>
+                          <q-item-label caption>
+                            {{ violation.key }}
+                          </q-item-label>
+                          
+                          <q-item-label class="q-mt-sm">
+                            {{ violation.customMessage || 'No specific message provided' }}
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-card-section>
+                </q-card>
+              </div>
+
+              <!-- Table View -->
+              <div v-else>
+                <!-- PMD Table -->
+                <q-card 
+                  v-if="reportData.ruleViolationCustoms.length && (selectReport === 'all' || selectReport === 'PMD')"
+                  flat
+                  class="q-mb-md"
+                >
+                  <q-card-section>
+                    <div class="row items-center q-mb-md">
+                      <q-icon name="code" color="purple" size="md" class="q-mr-sm" />
+                      <div class="text-h6 text-weight-bold">Code Quality Issues</div>
+                      <q-chip color="purple" text-color="white" class="q-ml-sm">
+                        {{ reportData.ruleViolationCustoms.length }} violations
+                      </q-chip>
+                    </div>
+                    
+                    <div class="row q-mb-md">
+                      <q-select
+                        v-model="selectedFile"
+                        :options="fileOptions"
+                        label="Filter by file"
+                        dense
+                        outlined
+                        clearable
+                        style="min-width: 250px"
+                        class="q-mr-sm"
+                      />
+                      
+                      <q-select
+                        v-model="selectedPriority"
+                        :options="priorityOptions"
+                        label="Filter by priority"
+                        dense
+                        outlined
+                        clearable
+                        style="min-width: 200px"
+                      />
+                    </div>
+                    
+                    <q-table
+                      :rows="filteredRows"
+                      :columns="pmdColumns"
+                      row-key="uniqueKey"
+                      flat
+                      bordered
+                      :loading="loading"
+                      :filter="filter"
+                      v-model:pagination="pagination"
+                      class="sticky-header-table"
+                      :class="isDarkMode ? 'bg-grey-9' : ''"
+                    >
+                      <template v-slot:body-cell-priority="props">
+                        <q-td :props="props">
+                          <q-chip 
+                            dense
+                            :color="priorityColors[props.row.priority] || 'grey'"
+                            text-color="white"
+                            :icon="priorityIcons[props.row.priority] || 'priority_high'"
+                          >
+                            {{ props.row.priority }}
+                          </q-chip>
+                        </q-td>
+                      </template>
+                      
+                      <template v-slot:body-cell-fileName="props">
+                        <q-td :props="props">
+                          <div class="text-weight-medium">{{ props.row.fileName }}</div>
+                          <div class="text-caption">
+                            Lines {{ props.row.beginLine }}-{{ props.row.endLine }}
+                          </div>
+                        </q-td>
+                      </template>
+                      
+                      <template v-slot:body-cell-actions="props">
+                        <q-td :props="props">
+                          <q-btn 
+                            flat 
+                            round 
+                            dense 
+                            icon="info" 
+                            color="primary"
+                            @click="showViolationDetails(props.row)"
+                          />
+                        </q-td>
+                      </template>
+                    </q-table>
+                  </q-card-section>
+                </q-card>
+
+                <!-- OWASP Table -->
+                <q-card 
+                  v-if="reportData.dependencyCustoms.length && (selectReport === 'all' || selectReport === 'OWASP')"
+                  flat
+                  class="q-mb-md"
+                >
+                  <q-card-section>
+                    <div class="row items-center q-mb-md">
+                      <q-icon name="security" color="red" size="md" class="q-mr-sm" />
+                      <div class="text-h6 text-weight-bold">OWASP Vulnerabilities</div>
+                      <q-chip color="red" text-color="white" class="q-ml-sm">
+                        {{ reportData.dependencyCustoms.length }} dependencies
+                      </q-chip>
+                    </div>
+                    
+                    <q-table
+                        :rows="reportData.dependencyCustoms"
+                        :columns="owaspColumns"
+                        row-key="name"
+                        flat
+                        bordered
+                        :loading="loading"
+                        v-model:pagination="pagination"
+                        class="sticky-header-table"
+                        :class="isDarkMode ? 'bg-grey-9' : ''"
+                      >
+                      <template v-slot:body-cell-vulnerabilities="props">
+                        <q-td :props="props">
+                          <q-badge 
+                            v-if="props.row.owaspVulnerabilities && props.row.owaspVulnerabilities.length"
+                            color="red"
+                            class="q-px-sm q-py-xs"
+                          >
+                            {{ props.row.owaspVulnerabilities.length }} vulns
+                          </q-badge>
+                          <q-badge v-else color="green" class="q-px-sm q-py-xs">
+                            Secure
+                          </q-badge>
+                        </q-td>
+                      </template>
+                      
+                      <template v-slot:body-cell-actions="props">
+                        <q-td :props="props">
+                          <q-btn 
+                            v-if="props.row.owaspVulnerabilities && props.row.owaspVulnerabilities.length"
+                            flat 
+                            round 
+                            dense 
+                            icon="warning" 
+                            color="red"
+                            @click="showVulnerabilityDetails(props.row)"
+                          />
+                        </q-td>
+                      </template>
+                    </q-table>
+                  </q-card-section>
+                </q-card>
+
+                <!-- Bug Instances Table -->
+                <q-card 
+                  v-if="reportData.bugInstanceCustoms.length && (selectReport === 'all' || selectReport === 'StopBugs')"
+                  flat
+                  class="q-mb-md"
+                >
+                  <q-card-section>
+                    <div class="row items-center q-mb-md">
+                      <q-icon name="bug_report" color="orange" size="md" class="q-mr-sm" />
+                      <div class="text-h6 text-weight-bold">Potential Bugs</div>
+                      <q-chip color="orange" text-color="white" class="q-ml-sm">
+                        {{ reportData.bugInstanceCustoms.length }} instances
+                      </q-chip>
+                    </div>
+                    
+                    <q-table
+                      :rows="reportData.bugInstanceCustoms"
+                      :columns="bugColumns"
+                      row-key="instanceHash"
+                      flat
+                      bordered
+                      :loading="loading"
+                      v-model:pagination="pagination"
+                      class="sticky-header-table"
+                      :class="isDarkMode ? 'bg-grey-9' : ''"
+                    >
+                      <template v-slot:body-cell-priority="props">
+                        <q-td :props="props">
+                          <q-chip 
+                            dense
+                            :color="props.row.priority === 'High' ? 'red' : 'orange'"
+                            text-color="white"
+                            icon="warning"
+                          >
+                            {{ props.row.priority }}
+                          </q-chip>
+                        </q-td>
+                      </template>
+                      
+                      <template v-slot:body-cell-actions="props">
+                        <q-td :props="props">
+                          <q-btn 
+                            flat 
+                            round 
+                            dense 
+                            icon="info" 
+                            color="primary"
+                            @click="showBugDetails(props.row)"
+                          />
+                        </q-td>
+                      </template>
+                    </q-table>
+                  </q-card-section>
+                </q-card>
+
+                <!-- CheckStyle Table -->
+                <q-card 
+                  v-if="reportData.violationCustoms.length && (selectReport === 'all' || selectReport === 'CheckStyle')"
+                  flat
+                >
+                  <q-card-section>
+                    <div class="row items-center q-mb-md">
+                      <q-icon name="format_indent_increase" color="teal" size="md" class="q-mr-sm" />
+                      <div class="text-h6 text-weight-bold">Style Violations</div>
+                      <q-chip color="teal" text-color="white" class="q-ml-sm">
+                        {{ reportData.violationCustoms.length }} issues
+                      </q-chip>
+                    </div>
+                    
+                    <q-table
+                      :rows="reportData.violationCustoms"
+                      :columns="styleColumns"
+                      row-key="key"
+                      flat
+                      bordered
+                      :loading="loading"
+                      v-model:pagination="pagination"
+                      class="sticky-header-table"
+                      :class="isDarkMode ? 'bg-grey-9' : ''"
+                    >
+                      <template v-slot:body-cell-location="props">
+                        <q-td :props="props">
+                          <div class="text-weight-medium">{{ props.row.moduleId }}</div>
+                          <div class="text-caption">
+                            Line {{ props.row.lineNo }}, Col {{ props.row.columnNo }}
+                          </div>
+                        </q-td>
+                      </template>
+                    </q-table>
+                  </q-card-section>
+                </q-card>
+              </div>
+            </q-card-section>
           </q-card>
         </q-page>
       </div>
+      
+      <div v-else class="flex flex-center" style="height: 80vh">
+        <q-spinner-cube color="primary" size="3em" />
+      </div>
+
       <q-dialog v-model="showCreateProjectModal">
         <create-project-form :isDarkMode="isDarkMode" />
+      </q-dialog>
+      
+      <q-dialog v-model="showDetailsDialog" maximized>
+        <q-card :class="isDarkMode ? 'bg-grey-9' : ''">
+          <q-toolbar class="bg-primary text-white">
+            <q-toolbar-title>
+              <q-icon :name="detailsIcon" class="q-mr-sm" />
+              {{ detailsTitle }}
+            </q-toolbar-title>
+            <q-btn flat round dense icon="close" v-close-popup />
+          </q-toolbar>
+          
+          <q-card-section class="q-pt-none">
+            <pre class="code-block">{{ detailsContent }}</pre>
+          </q-card-section>
+          
+          <q-card-actions align="right">
+            <q-btn flat label="Close" color="primary" v-close-popup />
+          </q-card-actions>
+        </q-card>
       </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
+
 <script>
 import { Dark } from 'quasar'
 import { getAvatar, getId } from 'src/services/userServices'
 import { getReport } from 'src/services/analysisServeces'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
+
 export default {
-  data () {
+  components: {
+    CreateProjectForm
+  },
+  
+  data() {
     return {
       drawer: true,
       miniState: true,
@@ -297,162 +623,398 @@ export default {
       projectId: null,
       reportData: null,
       showCreateProjectModal: false,
-      viewMode: 'table_chart',
+      viewMode: 'table',
       userId: null,
       selectedFile: null,
-      columns: [
-        { name: 'name', label: 'Name', field: 'name', sortable: true, align: 'left' },
-        { name: 'priority', label: 'Priority', field: 'priority', sortable: true, sortMethod: (a, b) => this.sortPriority(a, b), align: 'left' },
-        { name: 'message', label: 'Message', field: 'message', sortable: false, align: 'left' },
-        { name: 'fileName', label: 'File', field: 'fileName', sortable: true, align: 'left' },
-        { name: 'lineRange', label: 'Lines (Begin-End)', field: 'lineRange', align: 'left' }
+      selectedPriority: null,
+      loading: false,
+      filter: '',
+      selectReport: 'all',
+      showDetailsDialog: false,
+      detailsTitle: '',
+      detailsContent: '',
+      detailsIcon: 'info',
+      
+      // Report type options
+      reportTypes: [
+        { label: 'All Reports', value: 'all' },
+        { label: 'OWASP', value: 'OWASP' },
+        { label: 'PMD', value: 'PMD' },
+        { label: 'Bugs', value: 'StopBugs' },
+        { label: 'Style', value: 'CheckStyle' }
       ],
-      owapsColumns: [
-        { name: 'name', label: 'Name', field: 'name', align: 'left' },
-        { name: 'version', label: 'Version', field: 'version', align: 'left' },
-        { name: 'license', label: 'License', field: 'license', align: 'left' },
-        { name: 'ecosystem', label: 'Ecosystem', field: 'ecosystem', align: 'left' },
-        { name: 'description', label: 'Description', field: 'description', align: 'left' }
+      
+      // Priority mapping for visual cues
+      priorityColors: {
+        High: 'red',
+        'Medium High': 'orange',
+        Medium: 'yellow',
+        'Medium Low': 'blue',
+        Low: 'green'
+      },
+      
+      priorityIcons: {
+        High: 'priority_high',
+        'Medium High': 'keyboard_arrow_up',
+        Medium: 'remove',
+        'Medium Low': 'keyboard_arrow_down',
+        Low: 'low_priority'
+      },
+      
+      // Table columns
+      pmdColumns: [
+        { 
+          name: 'priority', 
+          label: 'Priority', 
+          field: 'priority', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'name', 
+          label: 'Rule', 
+          field: 'name', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'fileName', 
+          label: 'Location', 
+          field: 'fileName', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'message', 
+          label: 'Message', 
+          field: 'message', 
+          sortable: false,
+          align: 'left'
+        },
+        { 
+          name: 'actions', 
+          label: '', 
+          field: '', 
+          sortable: false,
+          align: 'right'
+        }
       ],
+      
+      owaspColumns: [
+        { 
+          name: 'name', 
+          label: 'Dependency', 
+          field: 'name', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'version', 
+          label: 'Version', 
+          field: 'version', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'license', 
+          label: 'License', 
+          field: 'license', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'vulnerabilities', 
+          label: 'Status', 
+          field: row => row.owaspVulnerabilities ? row.owaspVulnerabilities.length : 0,
+          sortable: true,
+          align: 'center'
+        },
+        { 
+          name: 'actions', 
+          label: '', 
+          field: '', 
+          sortable: false,
+          align: 'right'
+        }
+      ],
+      
       bugColumns: [
-        { name: 'type', label: 'Type', field: 'type', align: 'left' },
-        { name: 'priority', label: 'Priority', field: 'priority', align: 'left' },
-        { name: 'cachedHashCode', label: 'Hash Code', field: 'cachedHashCode', align: 'left' },
-        { name: 'category', label: 'Category', field: 'category', align: 'left' },
-        { name: 'message', label: 'Message', field: 'message', align: 'left' },
-        { name: 'source', label: 'Source', field: 'source', align: 'left' }
+        { 
+          name: 'type', 
+          label: 'Type', 
+          field: 'type', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'priority', 
+          label: 'Priority', 
+          field: 'priority', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'category', 
+          label: 'Category', 
+          field: 'category', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'message', 
+          label: 'Message', 
+          field: 'message', 
+          sortable: false,
+          align: 'left'
+        },
+        { 
+          name: 'actions', 
+          label: '', 
+          field: '', 
+          sortable: false,
+          align: 'right'
+        }
       ],
-      violationColumns: [
-        { name: 'moduleId', label: 'Module', field: 'moduleId', align: 'left' },
-        { name: 'lineNo', label: 'Line', field: 'lineNo', align: 'left' },
-        { name: 'columnNo', label: 'Column', field: 'columnNo', align: 'left' },
-        { name: 'key', label: 'Key', field: 'key', align: 'left' },
-        { name: 'customMessage', label: 'Custom Message', field: 'customMessage', align: 'left' }
+      
+      styleColumns: [
+        { 
+          name: 'location', 
+          label: 'Location', 
+          field: 'moduleId', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'key', 
+          label: 'Rule', 
+          field: 'key', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'customMessage', 
+          label: 'Message', 
+          field: 'customMessage', 
+          sortable: false,
+          align: 'left'
+        }
       ],
-      fileOptions: [],
-      filteredRows: [],
-      selectReport: 'all'
+      
+      // Pagination
+      pagination: {
+        sortBy: 'priority',
+        descending: false,
+        page: 1,
+        rowsPerPage: 10
+      }
     }
   },
-  components: {
-    CreateProjectForm
+  
+  computed: {
+    fileOptions() {
+      const files = [...new Set(this.reportData.ruleViolationCustoms.map(item => item.fileName))]
+      return files.map(file => ({ label: file, value: file }))
+    },
+    
+    priorityOptions() {
+      const priorities = [...new Set(this.reportData.ruleViolationCustoms.map(item => item.priority))]
+      return priorities.map(p => ({ label: p, value: p }))
+    },
+    
+    filteredRows() {
+      let rows = this.reportData.ruleViolationCustoms
+      
+      if (this.selectedFile) {
+        rows = rows.filter(item => item.fileName === this.selectedFile)
+      }
+      
+      if (this.selectedPriority) {
+        rows = rows.filter(item => item.priority === this.selectedPriority)
+      }
+      
+      return rows
+    }
   },
+  
   methods: {
-    toggleDarkMode () {
-      Dark.set(!this.isDarkMode)
+    toggleDarkMode() {
+      Dark.toggle()
       this.isDarkMode = Dark.isActive
     },
-    toggleViewMode () {
-      this.viewMode = this.viewMode === 'document' ? 'table' : 'document'
+    
+    goToHome() {
+      const route = localStorage.getItem('role') === 'admin' ? '/admin' : '/home'
+      this.$router.push(route)
     },
-    goToHome () {
-      if (localStorage.getItem('role') === 'admin') {
-        this.$router.push('/admin')
-      } else {
-        this.$router.push('/home')
+    
+    goToAllProjects() {
+      this.$router.push({ name: 'projects', params: { id: this.userId } })
+    },
+    
+    goToProfile() {
+      this.$router.push(`/profile/${this.userId}`)
+    },
+    
+    async fetchUser() {
+      try {
+        const response = await getAvatar(this.userId)
+        this.user.avatar = response.data
+      } catch (error) {
+        console.error('Error fetching user avatar:', error)
       }
     },
-    goToAllProjects () {
-      const id = this.userId
-      this.$router.push({ name: 'projects', params: { id } })
-    },
-    search () {},
-    goToProfile () {
-      const userId = this.userId
-      this.$router.push(`/profile/${userId}`)
-    },
-    async fetchUser () {
-      const response = await getAvatar(this.userId)
-      this.user.avatar = response.data
-    },
-    async fetchProject () {
-      const response = await getReport(this.projectId)
-      this.reportData = response.data
-      this.initializeFileOptions()
-      this.filterByFile()
-    },
-    initializeFileOptions () {
-      const files = [...new Set(this.reportData.ruleViolationCustoms.map((item) => item.fileName))]
-      this.fileOptions = files.map((file) => ({ label: file, value: file }))
-    },
-    filterByFile (fileValue) {
-      this.selectedFile = fileValue
-      if (this.selectedFile) {
-        this.filteredRows = this.reportData.ruleViolationCustoms.filter(
-          (item) => item.fileName === this.selectedFile
-        )
-      } else {
-        this.filteredRows = this.reportData.ruleViolationCustoms
+    
+    async fetchProject() {
+      this.loading = true
+      try {
+        const response = await getReport(this.projectId)
+        this.reportData = response.data
+      } catch (error) {
+        console.error('Error fetching report:', error)
+        this.$q.notify({
+          type: 'negative',
+          message: 'Failed to load analysis report'
+        })
+      } finally {
+        this.loading = false
       }
     },
-    sortPriority (a, b) {
-      console.log(a)
-      const priorityOrder = {
-        High: 1,
-        'Medium High': 2,
-        Medium: 3,
-        'Medium Low': 4,
-        Low: 5
-      }
-      return (priorityOrder[a] || 999) - (priorityOrder[b] || 999)
+    
+    showViolationDetails(violation) {
+      this.detailsTitle = `Code Quality Issue: ${violation.name}`
+      this.detailsIcon = 'code'
+      this.detailsContent = JSON.stringify({
+        Description: violation.description,
+        File: violation.fileName,
+        Location: `Lines ${violation.beginLine}-${violation.endLine}`,
+        Priority: violation.priority,
+        Message: violation.message,
+        Rule: violation.name
+      }, null, 2)
+      this.showDetailsDialog = true
     },
-    sortTable (column) {
-      if (this.sortBy === column) {
-        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
-      } else {
-        this.sortBy = column
-        this.sortOrder = 'asc'
-      }
-      this.reportData.ruleViolationCustoms.sort((a, b) => {
-        const order = this.sortOrder === 'asc' ? 1 : -1
-        if (a[column] < b[column]) return -order
-        if (a[column] > b[column]) return order
-        return 0
-      })
+    
+    showVulnerabilityDetails(dependency) {
+      this.detailsTitle = `Security Vulnerability: ${dependency.name}@${dependency.version}`
+      this.detailsIcon = 'security'
+      this.detailsContent = JSON.stringify({
+        Package: `${dependency.name}@${dependency.version}`,
+        License: dependency.license,
+        Ecosystem: dependency.ecosystem,
+        Description: dependency.description,
+        Vulnerabilities: dependency.owaspVulnerabilities || []
+      }, null, 2)
+      this.showDetailsDialog = true
     },
-    async fetchId () {
-      this.userId = (await getId()).data
-      this.projectId = this.$route.params.id
-      this.fetchUser()
-      this.fetchProject()
+    
+    showBugDetails(bug) {
+      this.detailsTitle = `Potential Bug: ${bug.type}`
+      this.detailsIcon = 'bug_report'
+      this.detailsContent = JSON.stringify({
+        Type: bug.type,
+        Priority: bug.priority,
+        Category: bug.category,
+        Message: bug.message,
+        Source: bug.source,
+        IntroducedByChange: bug.introducedByChangeOfExistingClass,
+        RemovedByChange: bug.removedByChangeOfPersistingClass
+      }, null, 2)
+      this.showDetailsDialog = true
+    },
+    
+    async fetchId() {
+      try {
+        this.userId = (await getId()).data
+        this.projectId = this.$route.params.id
+        await this.fetchUser()
+        await this.fetchProject()
+      } catch (error) {
+        console.error('Error initializing data:', error)
+      }
     }
   },
-  mounted () {
+  
+  mounted() {
     this.fetchId()
   }
 }
 </script>
 
-<style scoped>
-.my-card {
-  max-width: 1000px;
-  margin: 0 auto;
+<style lang="scss" scoped>
+.sticky-header-table {
+  /* height or max-height is important */
+  height: calc(100vh - 300px);
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th {
+    background-color: inherit;
+  }
+
+  thead tr th {
+    position: sticky;
+    z-index: 1;
+  }
+  
+  thead tr:first-child th {
+    top: 0;
+  }
+  
+  &.q-table--loading thead tr:last-child th {
+    top: 48px;
+  }
 }
+
+.code-block {
+  white-space: pre-wrap;
+  font-family: monospace;
+  background: rgba(0,0,0,0.05);
+  padding: 16px;
+  border-radius: 4px;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+body.body--dark {
+  .code-block {
+    background: rgba(255,255,255,0.05);
+  }
+}
+
+.q-item {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateX(2px);
+  }
+}
+
+.q-card {
+  transition: box-shadow 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  }
+}
+
 .q-table {
-  font-size: 1.2rem;
+  th {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+  }
+  
+  tr:hover {
+    background-color: rgba(0,0,0,0.02) !important;
+  }
 }
-.wide-card {
-  max-width: 100%;
-}
-.q-toolbar-title {
-  font-size: 20px;
-}
-.bg-dark {
-  background-color: #121212;
-}
-.bg-grey-8 {
-  background-color: #3a3a3a;
-}
-.bg-grey-6 {
-  background-color: #4a4a4a;
-}
-.text-white {
-  color: white !important;
-}
-.bg-grey-11 {
-  background-color: #1d1d1d;
-}
-.dark-bg {
-  background-color: #1d1d1d !important;
+
+body.body--dark {
+  .q-table {
+    tr:hover {
+      background-color: rgba(255,255,255,0.02) !important;
+    }
+  }
 }
 </style>

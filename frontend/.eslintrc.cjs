@@ -70,6 +70,10 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     
     'prefer-promise-reject-errors': 'off',
+    'no-trailing-spaces': 'off', // Отключает проверку на пробелы в конце строк
+    'space-before-function-paren': ['error', 'never'], // Разрешает отсутствие пробела перед скобками функций
+    'eqeqeq': 'off', // Отключает требование использовать === вместо ==
+    'eol-last': 'off',
 
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'

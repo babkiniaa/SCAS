@@ -15,18 +15,18 @@ api.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-export function createProject (projectData) {
+export function createProject(projectData) {
   return api.post('/create', projectData)
 }
 
-export function getProjects (projectData) {
+export function getProjects(projectData) {
   return api.post('/get-projects', projectData)
 }
 
-export function getProject (id) {
+export function getProject(id) {
   return api.get(`/get-project/${id}`, id)
 }
 
-export function allProjects (page, name) {
+export function allProjects(page, name) {
   return api.get(`/get-all?page=${page}&name=${name}`)
 }

@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
-    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">
+    <q-header elevated class="bg-black full-width">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">All Projects</q-toolbar-title>
@@ -131,7 +131,7 @@ import { getAvatar, getId } from 'src/services/userServices'
 import { reportCreate, getReports } from 'src/services/analysisServeces'
 import { getProject } from 'src/services/projectServices'
 export default {
-  data () {
+  data() {
     return {
       project: {},
       reports: [],
@@ -154,10 +154,10 @@ export default {
     }
   },
   methods: {
-    viewReport (id) {
+    viewReport(id) {
       this.$router.push(`/report/${id}`)
     },
-    async fetchGrafanaChart () {
+    async fetchGrafanaChart() {
       this.userId = (await getId()).data
       const projectId = this.$route.params.id
       const branch = this.selectedBranch ? encodeURIComponent(this.selectedBranch) : 'all'
@@ -167,18 +167,18 @@ export default {
       this.grafanaData.url3 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${this.userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=3&__feature.dashboardSceneSolo`
       this.grafanaData.url4 = `http://localhost:3000/d-solo/ee5t4ycbipwqoa/new-dashboard?orgId=1&timezone=browser&var-userId=${this.userId}&var-projectId=${projectId}&var-branch=${branch}&refresh=5s&theme=${theme}&panelId=4&__feature.dashboardSceneSolo`
     },
-    GoToAdmin () {
+    GoToAdmin() {
       this.$router.push('/admin')
     },
-    startAnalysis (id) {
+    startAnalysis(id) {
       this.showModal = true
       this.projectId = id
     },
-    toggleDarkMode () {
+    toggleDarkMode() {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    async fetchProject () {
+    async fetchProject() {
       try {
         const projectId = this.$route.params.id
         const response = await getProject(projectId)
@@ -187,7 +187,7 @@ export default {
         this.$q.notify({ message: 'Failed to load project details', color: 'red' })
       }
     },
-    async fetchReports () {
+    async fetchReports() {
       try {
         const projectId = this.$route.params.id
         const response = await getReports(projectId)
@@ -198,24 +198,24 @@ export default {
         this.$q.notify({ message: 'Failed to load reports', color: 'red' })
       }
     },
-    filterReports (branch) {
+    filterReports(branch) {
       this.selectedBranch = branch
       this.filteredReports = branch
         ? this.reports.filter((report) => report.branch === branch)
         : this.reports
       this.fetchGrafanaChart()
     },
-    nextPage () {
+    nextPage() {
       this.projectsDto.page += 1
       this.loadProjects()
     },
-    previousPage () {
+    previousPage() {
       if (this.projectsDto.page > 0) {
         this.projectsDto.page -= 1
         this.loadProjects()
       }
     },
-    goToHome () {
+    goToHome() {
       console.log(localStorage.getItem('role'))
       if (localStorage.getItem('role') === 'admin') {
         this.$router.push('/admin')
@@ -223,14 +223,14 @@ export default {
         this.$router.push('/home')
       }
     },
-    goToProfile () {
+    goToProfile() {
       const id = this.userId
       this.$router.push(`/profile/${id}`)
     },
-    formatDate (date) {
+    formatDate(date) {
       return new Date(date).toLocaleString()
     },
-    async runProject () {
+    async runProject() {
       try {
         await reportCreate({
           idProject: this.projectId,
@@ -244,25 +244,25 @@ export default {
         this.$router.push(`/projects/${this.userId}`)
       }
     },
-    async fetchUser () {
+    async fetchUser() {
       const response = await getAvatar(this.userId)
       this.user.avatar = response.data
     },
-    openUrl (url) {
+    openUrl(url) {
       window.open(url, '_blank')
     },
-    goToAllProjects () {
+    goToAllProjects() {
       this.$router.push(`/projects/${this.userId}`)
     }
   },
-  toggleDarkMode () {
+  toggleDarkMode() {
     Dark.set(!this.isDarkMode)
     this.isDarkMode = Dark.isActive
   },
-  async fetchId () {
+  async fetchId() {
     this.userId = (await getId()).data
   },
-  created () {
+  created() {
     this.fetchUser()
     this.currentUserId = this.userId
     this.fetchProject()

@@ -1,6 +1,6 @@
 <template>
    <q-layout view="hHh Lpr lff"  class="shadow-2 rounded-borders">
-    <q-header elevated :class="isDarkMode ? 'bg-grey-10' : 'bg-grey-9'" class="full-width">      <q-toolbar>
+    <q-header levated class="bg-black full-width">      <q-toolbar>
         <q-btn flat round dense icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title class="text-white">Homepage</q-toolbar-title>
         <q-space />
@@ -128,7 +128,7 @@ import { getUserProfile, updateUserProfile, uploadUserAvatar, deleteUserAvatar, 
 import { Dark } from 'quasar'
 import CreateProjectForm from 'src/pages/CreateProjectPage.vue'
 export default {
-  data () {
+  data() {
     return {
       drawer: false,
       miniState: true,
@@ -146,15 +146,15 @@ export default {
   components: {
     CreateProjectForm
   },
-  async created () {
+  async created() {
     await this.loadUserProfile()
   },
   methods: {
-    toggleDarkMode () {
+    toggleDarkMode() {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    async loadUserProfile () {
+    async loadUserProfile() {
       try {
         this.userId = (await getId()).data
         const response = await getUserProfile(this.userId)
@@ -164,7 +164,7 @@ export default {
         this.$q.notify({ message: 'Error loading profile', color: 'red' })
       }
     },
-    async updateUser () {
+    async updateUser() {
       try {
         await updateUserProfile(this.user)
         this.$q.notify({ message: 'Profile updated successfully', color: 'green' })
@@ -173,10 +173,10 @@ export default {
         this.$q.notify({ message: 'Error updating profile', color: 'red' })
       }
     },
-    async uploadAvatar () {
+    async uploadAvatar() {
       const fileInput = document.createElement('input')
       fileInput.type = 'file'
-      fileInput.onchange = async () => {
+      fileInput.onchange = async() => {
         const file = fileInput.files[0]
         const formData = new FormData()
         formData.append('file', file)
@@ -190,7 +190,7 @@ export default {
       }
       fileInput.click()
     },
-    async deleteAvatar () {
+    async deleteAvatar() {
       try {
         await deleteUserAvatar()
         this.$q.notify({ message: 'Avatar deleted successfully', color: 'green' })
@@ -199,18 +199,18 @@ export default {
         this.$q.notify({ message: 'Error deleting avatar', color: 'red' })
       }
     },
-    goToHome () {
+    goToHome() {
       if (localStorage.getItem('role') === 'admin') {
         this.$router.push('/admin')
       } else {
         this.$router.push('/home')
       }
     },
-    goToAllProjects () {
+    goToAllProjects() {
       const id = this.userId
       this.$router.push({ name: 'projects', params: { id } })
     },
-    goToProfile () {
+    goToProfile() {
       const userId = this.userId
       this.$router.push(`/profile/${userId}`)
     }

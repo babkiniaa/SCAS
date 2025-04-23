@@ -2,6 +2,7 @@ package org.github.babkiniaa.scas.client;
 
 import org.github.babkiniaa.scas.dto.AnalyserDto;
 import org.github.babkiniaa.scas.dto.ReportDto;
+import org.github.babkiniaa.scas.dto.StatusDto;
 import org.github.babkiniaa.scas.dto.TaskInQueueDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,7 @@ public interface AgentServiceClient {
     long init(@RequestBody AnalyserDto startAnalyseDto);
 
     @GetMapping("/analysis/task/{id}/status")
-    String getStatus(@PathVariable("id") long id);
+    StatusDto getStatus(@PathVariable("id") long id);
 
     @GetMapping("/analysis/task/{id}/report")
     ReportDto getReport(@PathVariable("id") long id);

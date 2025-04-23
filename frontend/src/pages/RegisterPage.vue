@@ -119,7 +119,7 @@ import { Dark } from 'quasar'
 import { registerUser } from 'src/services/authServices'
 
 export default {
-  data () {
+  data() {
     return {
       email: '',
       username: '',
@@ -131,11 +131,11 @@ export default {
     }
   },
   methods: {
-    toggleDarkMode () {
+    toggleDarkMode() {
       Dark.set(!this.isDarkMode)
       this.isDarkMode = Dark.isActive
     },
-    async submitRegister () {
+    async submitRegister() {
       this.isLoading = true
       this.errors = {}
       try {
@@ -159,10 +159,10 @@ export default {
         this.isLoading = false
       }
     },
-    goToLogin () {
+    goToLogin() {
       this.$router.push('/login')
     },
-    goToResetPassword () {
+    goToResetPassword() {
       this.$router.push('/reset-password')
     }
   }
