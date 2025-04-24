@@ -11,10 +11,7 @@ import org.github.babkiniaa.scas.dto.Response.ReportAndIdProjectDto;
 import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.github.babkiniaa.scas.dto.Response.ReportAndDirDto;
 import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
-import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
-import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
-import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
-import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
+import org.github.babkiniaa.scas.dto.reportsDto.*;
 import org.github.babkiniaa.scas.dto.typeForMap.MethodAndTypeAnalysis;
 import org.github.babkiniaa.scas.entity.StatusTask;
 import org.github.babkiniaa.scas.entity.Task;
@@ -23,7 +20,10 @@ import org.github.babkiniaa.scas.repository.TaskRepository;
 import org.github.babkiniaa.scas.utils.DeleteFileUtil;
 import org.github.babkiniaa.scas.utils.GitUtil;
 import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
+import org.github.babkiniaa.scas.utils.analysis.DiplomAnalysis;
 import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
+import org.jara.core.Attentions;
+import org.jara.mode.Mode;
 import org.owasp.dependencycheck.dependency.Dependency;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -51,6 +51,7 @@ public class TaskService {
     private final KafkaTemplate<String, Double> kafkaTemplateLoad;
     private final AgentClient agentClient;
     private final TaskMapper taskMapper;
+    private final AttentionsMapper attentionsMapper;
     private final ReportPMDMapper reportPMDMapper;
     private final ReportOWASPMapper reportOWASPMapper;
     private final ReportMapper reportMapper;
@@ -61,6 +62,7 @@ public class TaskService {
 
     {
         methodMap.put("PMD", new MethodAndTypeAnalysis(this::reportPmd, "Static"));
+        methodMap.put("CopyCheck", new MethodAndTypeAnalysis(this::reportCopyCheck, "Static"));
         methodMap.put("CheckStyle", new MethodAndTypeAnalysis(this::reportCheckstyle, "Static"));
         methodMap.put("SpotBugs", new MethodAndTypeAnalysis(this::reportSpotBugs, "Binary"));
         methodMap.put("OWASP", new MethodAndTypeAnalysis(this::reportOwasp, "Binary"));
@@ -127,6 +129,20 @@ public class TaskService {
         reportAndDir.setDependencyCustoms(dependencyCustomDtos);
 
         return reportAndDir;
+    }
+
+    //Если захотите что бы был выбор пните меня
+    private ReportAndDirDto reportCopyCheck(ReportAndDirDto reportAndDirDto){
+        List<AttentionsCustomDto> attentionsCustomDtos;
+        List<Attentions> attentions;
+        String dir = reportAndDirDto.getDir();
+        attentions = DiplomAnalysis.startCopy(dir, Mode.ReturnListAST);
+        attentionsCustomDtos = attentionsMapper.attentionsAttentionsCustomLists(attentions);
+
+
+        reportAndDirDto.setAttentionsCustomDtos(attentionsCustomDtos);
+
+        return reportAndDirDto;
     }
 
     private ReportAndDirDto reportSpotBugs(ReportAndDirDto reportAndDir) {

@@ -11,6 +11,7 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
 import org.github.babkiniaa.scas.reporters.MyList;
+import org.jara.core.Attentions;
 import org.owasp.dependencycheck.Engine;
 import org.owasp.dependencycheck.dependency.Dependency;
 import org.owasp.dependencycheck.exception.ExceptionCollection;
@@ -47,6 +48,7 @@ public class StaticAnalysis {
 
         return result;
     }
+
 
     public static List<RuleViolation> startPmd(String path) throws Exception {
         PMDConfiguration config = new PMDConfiguration();

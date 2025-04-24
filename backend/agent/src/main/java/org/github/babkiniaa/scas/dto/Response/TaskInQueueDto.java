@@ -7,6 +7,7 @@ import org.github.babkiniaa.scas.entity.StatusTask;
 @Getter
 @Setter
 public class TaskInQueueDto {
+
     private long id;
 
     private String statusTask;

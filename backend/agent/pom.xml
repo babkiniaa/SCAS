@@ -15,6 +15,12 @@
     <name>agent</name>
     <url>http://maven.apache.org</url>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <properties>
         <java.version>19</java.version>
@@ -32,6 +38,12 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.github.babkiniaa</groupId>
+            <artifactId>ModuleForProject</artifactId>
+            <version>v1.0.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.mapstruct</groupId>

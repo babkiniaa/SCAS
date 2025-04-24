@@ -31,5 +31,4 @@ public class ViolationCustomDto  implements Serializable {
 
     private String source;
 
-
 }
