@@ -38,6 +38,7 @@ public class ReportService {
     public long countBugsLastReport(long id) {
         Report report = reportRepository.findReportById(id);
         return report.getBugInstanceCustoms().size() + report.getDependencyCustoms().size() +
-                report.getRuleViolationCustoms().size() + report.getViolationCustoms().size();
+                report.getRuleViolationCustoms().size() + report.getViolationCustoms().size() +
+                report.getAttentionsCustom().size();
     }
 }

@@ -18,7 +18,7 @@ public class ReportAndDirDto {
 
     private String branch;
 
-    private List<AttentionsCustomDto> attentionsCustomDtos;
+    private List<AttentionsCustomDto> attentionsCustom;
 
     private List<BugInstanceCustomDto> bugInstanceCustoms;
 

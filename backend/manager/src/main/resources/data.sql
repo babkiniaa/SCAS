@@ -16,4 +16,4 @@ values  ('scasproject66@gmail.com','admin', '$2a$12$cC6WLP9f8GXCVPDw3yFq8ODf9pnW
 
 insert into users (email, username, password, role, is_enable)
 values  ('sca@mail.ru', 'sca', '$2a$12$zdRAbmYZ0ttwVGDRkTBRBuRDOg9vg5P6SziW3S3FLN6PkEzKF6jou', 'USER', 'true')
---Qw123456
+    --Qw123456

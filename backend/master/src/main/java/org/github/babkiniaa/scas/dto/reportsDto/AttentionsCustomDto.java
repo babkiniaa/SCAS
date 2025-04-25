@@ -1,6 +1,5 @@
-package org.github.babkiniaa.scas.entity.reportsEntity;
+package org.github.babkiniaa.scas.dto.reportsDto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,17 +9,12 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Attentions")
-@Table
-public class AttentionsCustom {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class AttentionsCustomDto {
 
     private String nameFile;
 
     private int line;
-    @Lob
+
     private String code;
 
     private String description;

@@ -323,6 +323,58 @@
                     </q-list>
                   </q-card-section>
                 </q-card>
+
+                <!-- Duplicates Section -->
+                <q-card 
+                  v-if="reportData.attentionsCustom && reportData.attentionsCustom.length && (selectReport === 'all' || selectReport === 'Duplicates')"
+                  flat
+                  :class="isDarkMode ? 'bg-grey-10' : 'bg-deep-purple-1'"
+                >
+                  <q-card-section>
+                    <div class="row items-center">
+                      <q-icon name="content_copy" color="deep-purple" size="md" class="q-mr-sm" />
+                      <div class="text-h6 text-weight-bold">Code Duplicates</div>
+                      <q-chip color="deep-purple" text-color="white" class="q-ml-sm">
+                        {{ reportData.attentionsCustom.length }} instances
+                      </q-chip>
+                    </div>
+                  </q-card-section>
+                  
+                  <q-card-section class="q-pt-none">
+                    <q-list separator>
+                      <q-item 
+                        v-for="dup in reportData.attentionsCustom" 
+                        :key="dup.nameFile + dup.line"
+                        class="q-my-sm rounded-borders"
+                        :class="isDarkMode ? 'bg-grey-9' : 'bg-white'"
+                      >
+                        <q-item-section>
+                          <q-item-label class="text-weight-bold">
+                            {{ dup.nameFile }} (Line {{ dup.line }})
+                          </q-item-label>
+                          <q-item-label>
+                            {{ dup.description }}
+                          </q-item-label>
+                          
+                          <q-expansion-item
+                            label="Show Duplicated Code"
+                            icon="code"
+                            switch-toggle-side
+                            class="q-mt-sm"
+                            :header-class="isDarkMode ? 'text-deep-purple-4' : 'text-deep-purple'"
+                          >
+                            <q-card :class="isDarkMode ? 'bg-grey-9' : 'bg-white'">
+                              <q-card-section>
+                                <pre class="code-block">{{ dup.code }}</pre>
+                              </q-card-section>
+                            </q-card>
+                          </q-expansion-item>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-card-section>
+                </q-card>
+
               </div>
 
               <!-- Table View -->
@@ -408,6 +460,48 @@
                             icon="info" 
                             color="primary"
                             @click="showViolationDetails(props.row)"
+                          />
+                        </q-td>
+                      </template>
+                    </q-table>
+                  </q-card-section>
+                </q-card>
+
+                <!-- Duplicates Table -->
+                <q-card 
+                  v-if="reportData.attentionsCustom && reportData.attentionsCustom.length && (selectReport === 'all' || selectReport === 'Duplicates')"
+                  flat
+                  class="q-mb-md"
+                >
+                  <q-card-section>
+                    <div class="row items-center q-mb-md">
+                      <q-icon name="content_copy" color="deep-purple" size="md" class="q-mr-sm" />
+                      <div class="text-h6 text-weight-bold">Code Duplicates</div>
+                      <q-chip color="deep-purple" text-color="white" class="q-ml-sm">
+                        {{ reportData.attentionsCustom.length }} instances
+                      </q-chip>
+                    </div>
+                    
+                    <q-table
+                      :rows="reportData.attentionsCustom"
+                      :columns="duplicateColumns"
+                      row-key="nameFile"
+                      flat
+                      bordered
+                      :loading="loading"
+                      v-model:pagination="pagination"
+                      class="sticky-header-table"
+                      :class="isDarkMode ? 'bg-grey-9' : ''"
+                    >
+                      <template v-slot:body-cell-actions="props">
+                        <q-td :props="props">
+                          <q-btn 
+                            flat 
+                            round 
+                            dense 
+                            icon="code" 
+                            color="primary"
+                            @click="showDuplicateDetails(props.row)"
                           />
                         </q-td>
                       </template>
@@ -564,6 +658,7 @@
                     </q-table>
                   </q-card-section>
                 </q-card>
+
               </div>
             </q-card-section>
           </q-card>
@@ -641,7 +736,8 @@ export default {
         { label: 'OWASP', value: 'OWASP' },
         { label: 'PMD', value: 'PMD' },
         { label: 'Bugs', value: 'StopBugs' },
-        { label: 'Style', value: 'CheckStyle' }
+        { label: 'Style', value: 'CheckStyle' },
+        { label: 'Duplicates', value: 'Duplicates' }
       ],
       
       // Priority mapping for visual cues
@@ -661,6 +757,37 @@ export default {
         Low: 'low_priority'
       },
       
+      duplicateColumns: [
+        { 
+          name: 'nameFile', 
+          label: 'File', 
+          field: 'nameFile', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'line', 
+          label: 'Line', 
+          field: 'line', 
+          sortable: true,
+          align: 'left'
+        },
+        { 
+          name: 'description', 
+          label: 'Description', 
+          field: 'description', 
+          sortable: false,
+          align: 'left'
+        },
+        { 
+          name: 'actions', 
+          label: '', 
+          field: '', 
+          sortable: false,
+          align: 'right'
+        }
+      ],
+
       // Table columns
       pmdColumns: [
         { 
@@ -837,6 +964,17 @@ export default {
   },
   
   methods: {
+    showDuplicateDetails(duplicate) {
+      this.detailsTitle = `Code Duplication: ${duplicate.nameFile} (Line ${duplicate.line})`
+      this.detailsIcon = 'content_copy'
+      this.detailsContent = JSON.stringify({
+        File: duplicate.nameFile,
+        Line: duplicate.line,
+        Description: duplicate.description,
+        Code: duplicate.code
+      }, null, 2)
+      this.showDetailsDialog = true
+    },
     toggleDarkMode() {
       Dark.toggle()
       this.isDarkMode = Dark.isActive
@@ -1017,4 +1155,15 @@ body.body--dark {
     }
   }
 }
+
+.q-card.bg-deep-purple-1 {
+  border-left: 4px solid var(--q-deep-purple);
+}
+
+body.body--dark {
+  .q-card.bg-grey-10.bg-deep-purple-1 {
+    border-left: 4px solid var(--q-deep-purple);
+  }
+}
+
 </style>

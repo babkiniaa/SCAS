@@ -10,22 +10,19 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "bug_instance")
+@Entity(name = "attentions")
 @Table
-public class BugInstanceCustom {
+public class AttentionsCustom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String type;
+    private String nameFile;
 
-    private int priority;
+    private int line;
+    @Lob
+    private String code;
 
-    private String category;
+    private String description;
 
-    private String message;
-
-    private String source;
-
-    private String instanceHash;
 }

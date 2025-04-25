@@ -132,15 +132,15 @@ public class TaskService {
     }
 
     //Если захотите что бы был выбор пните меня
-    private ReportAndDirDto reportCopyCheck(ReportAndDirDto reportAndDirDto){
+    private ReportAndDirDto reportCopyCheck(ReportAndDirDto reportAndDirDto) {
         List<AttentionsCustomDto> attentionsCustomDtos;
         List<Attentions> attentions;
         String dir = reportAndDirDto.getDir();
-        attentions = DiplomAnalysis.startCopy(dir, Mode.ReturnListAST);
+        attentions = DiplomAnalysis.startCopy(dir, Mode.ReturnListHash);
         attentionsCustomDtos = attentionsMapper.attentionsAttentionsCustomLists(attentions);
 
 
-        reportAndDirDto.setAttentionsCustomDtos(attentionsCustomDtos);
+        reportAndDirDto.setAttentionsCustom(attentionsCustomDtos);
 
         return reportAndDirDto;
     }
@@ -216,7 +216,7 @@ public class TaskService {
             }
             try {
                 List<String> lastAnalyze = agentClient.getAnalyzers(reportAndDirDto.getHash(), startAnalyseDto.getIdProject());
-                if(!lastAnalyze.isEmpty()) {
+                if (!lastAnalyze.isEmpty()) {
                     List<String> filterAnalyze = startAnalyseDto.getNeedReports();
                     for (String analyze : lastAnalyze) {
                         filterAnalyze.remove(analyze);

@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.github.babkiniaa.scas.entity.reportsEntity.BugInstanceCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.DependencyCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.ViolationCustom;
+import org.github.babkiniaa.scas.dto.reportsDto.AttentionsCustomDto;
+import org.github.babkiniaa.scas.entity.reportsEntity.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -33,6 +31,9 @@ public class Report {
     private String branch;
 
     private long projectId;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<AttentionsCustom> attentionsCustom;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<BugInstanceCustom> bugInstanceCustoms;

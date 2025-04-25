@@ -20,7 +20,7 @@ public class ReportAndIdProjectDto {
 
     private String branch;
 
-    private List<AttentionsCustomDto> attentionsCustomDtos;
+    private List<AttentionsCustomDto> attentionsCustom;
 
     private List<BugInstanceCustomDto> bugInstanceCustoms;
 
