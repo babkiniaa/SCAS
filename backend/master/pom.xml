@@ -122,6 +122,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ShchekoturovDA</groupId>
+            <artifactId>Die-Dead-Enough</artifactId>
+            <version>-3699394500-1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

@@ -4,8 +4,12 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.FindBugs2;
 import edu.umd.cs.findbugs.TextUICommandLine;
+
 import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 import org.github.babkiniaa.scas.reporters.MyBg;
+
+import org.shchek.exps.Dumper;
+import org.shchek.exps.Summary;
 import org.springframework.stereotype.Component;
 
 import javax.xml.stream.XMLStreamException;
@@ -15,6 +19,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class BinAnalysis {
+
+    public static List<Summary> DieDead(String dir){
+        return Dumper.process(dir);
+    }
 
     public static List<BugInstanceCustomDto> spotbugs(String dir) throws IOException {
         String bugOut = dir + "\\Bugs.spot";

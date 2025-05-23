@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.github.babkiniaa.scas.entity.reportsEntity.BugInstanceCustom;
+import org.github.babkiniaa.scas.entity.reportsEntity.DeadCodeEntity.DieDead;
+import org.github.babkiniaa.scas.entity.reportsEntity.DeadCodeEntity.SummaryCustom;
 import org.github.babkiniaa.scas.entity.reportsEntity.DependencyCustom;
 import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
 import org.github.babkiniaa.scas.entity.reportsEntity.ViolationCustom;
@@ -39,4 +41,8 @@ public class Report {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ViolationCustom> violationCustoms;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<SummaryCustom> summaryCustoms;
+
 }

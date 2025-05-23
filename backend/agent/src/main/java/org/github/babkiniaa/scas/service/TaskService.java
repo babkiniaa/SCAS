@@ -12,19 +12,24 @@ import org.github.babkiniaa.scas.dto.Response.ReportDto;
 import org.github.babkiniaa.scas.dto.Response.ReportAndDirDto;
 import org.github.babkiniaa.scas.dto.Response.TaskInQueueDto;
 import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
+import org.github.babkiniaa.scas.dto.reportsDto.DeadCodeDto.SummaryCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
 import org.github.babkiniaa.scas.dto.typeForMap.MethodAndTypeAnalysis;
 import org.github.babkiniaa.scas.entity.StatusTask;
 import org.github.babkiniaa.scas.entity.Task;
+import org.github.babkiniaa.scas.entity.reportsEntity.DeadCodeEntity.SummaryCustom;
 import org.github.babkiniaa.scas.mapper.*;
+import org.github.babkiniaa.scas.mapper.deadCode.DeadReportMapper;
+import org.github.babkiniaa.scas.mapper.deadCode.SummariesMapper;
 import org.github.babkiniaa.scas.repository.TaskRepository;
 import org.github.babkiniaa.scas.utils.DeleteFileUtil;
 import org.github.babkiniaa.scas.utils.GitUtil;
 import org.github.babkiniaa.scas.utils.analysis.BinAnalysis;
 import org.github.babkiniaa.scas.utils.analysis.StaticAnalysis;
 import org.owasp.dependencycheck.dependency.Dependency;
+import org.shchek.exps.Summary;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
@@ -53,6 +58,7 @@ public class TaskService {
     private final TaskMapper taskMapper;
     private final ReportPMDMapper reportPMDMapper;
     private final ReportOWASPMapper reportOWASPMapper;
+    private final SummariesMapper summariesMapper;
     private final ReportMapper reportMapper;
     private final ReportService reportService;
     private final TaskRepository taskRepository;
@@ -64,6 +70,7 @@ public class TaskService {
         methodMap.put("CheckStyle", new MethodAndTypeAnalysis(this::reportCheckstyle, "Static"));
         methodMap.put("SpotBugs", new MethodAndTypeAnalysis(this::reportSpotBugs, "Binary"));
         methodMap.put("OWASP", new MethodAndTypeAnalysis(this::reportOwasp, "Binary"));
+        methodMap.put("DieDead", new MethodAndTypeAnalysis(this::reportDieDead, "Binary"));
     }
 
     /**
@@ -114,6 +121,19 @@ public class TaskService {
         double loadFactor = (double) busyThreads / totalThreads;
 
         kafkaTemplateLoad.send("task-load-events-topic", null, loadFactor);
+    }
+
+    private ReportAndDirDto reportDieDead(ReportAndDirDto reportAndDir) {
+        List<SummaryCustomDto> summaryDtos;
+        List<Summary> summaries = new ArrayList<>();
+        String dir = reportAndDir.getDir();
+        summaries = BinAnalysis.DieDead(dir);
+
+        summaryDtos = summariesMapper.sumstoDTO(summaries);
+
+        reportAndDir.setSummaryCustoms(summaryDtos);
+
+        return reportAndDir;
     }
 
     private ReportAndDirDto reportOwasp(ReportAndDirDto reportAndDir) {

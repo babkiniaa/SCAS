@@ -7,10 +7,7 @@ import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
-import org.github.babkiniaa.scas.entity.reportsEntity.BugInstanceCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.DependencyCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.RuleViolationCustom;
-import org.github.babkiniaa.scas.entity.reportsEntity.ViolationCustom;
+import org.github.babkiniaa.scas.entity.reportsEntity.DeadCodeEntity.SummaryCustom;
 
 import java.util.List;
 
@@ -30,6 +27,9 @@ public class ReportDto {
     private List<RuleViolationCustomDto> ruleViolationCustoms;
 
     private List<ViolationCustomDto> violationCustoms;
+
+    private List<SummaryCustom> summaryCustoms;
+
 
     private List<String> analyzers;
 }

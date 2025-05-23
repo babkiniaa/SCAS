@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.github.babkiniaa.scas.dto.reportsDto.BugInstanceCustomDto;
+import org.github.babkiniaa.scas.dto.reportsDto.DeadCodeDto.SummaryCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.DependencyCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.RuleViolationCustomDto;
 import org.github.babkiniaa.scas.dto.reportsDto.ViolationCustomDto;
@@ -30,6 +31,8 @@ public class ReportAndIdProjectDto {
     private List<RuleViolationCustomDto> ruleViolationCustoms;
 
     private List<ViolationCustomDto> violationCustoms;
+
+    private List<SummaryCustomDto> summaries;
 
     private List<String> analyzers;
 }
