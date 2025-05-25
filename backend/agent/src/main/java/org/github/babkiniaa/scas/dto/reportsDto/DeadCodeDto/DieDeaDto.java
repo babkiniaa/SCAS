@@ -12,5 +12,5 @@ import java.util.List;
 public class DieDeaDto {
     private String className;
 
-    private List<SummaryDto> summaries;
+    private List<SummaryCustomDto> summaries;
 }

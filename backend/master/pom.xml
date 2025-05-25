@@ -125,8 +125,7 @@
         <dependency>
             <groupId>com.github.ShchekoturovDA</groupId>
             <artifactId>Die-Dead-Enough</artifactId>
-            <version>-3699394500-1</version>
-            <scope>compile</scope>
+            <version>v1.1</version>
         </dependency>
     </dependencies>
 

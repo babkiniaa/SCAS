@@ -350,24 +350,24 @@
                       >
                         <q-item-section>
                           <q-item-label class="text-weight-bold">
-                            {{ summary.methodOrField }} ({{ summary.result % }})
+                            {{ summary.methodOrField }}
                           </q-item-label>
                           <q-item-label caption>
                             {{ summary.key }}
                           </q-item-label>
 
-                          <q-item-label class="q-mt-sm">
-                            {{ summary.deadNodes || 'No specific message provided' }}
+                          <q-item-label class="text-weight-bold">
+                            {{  summary.before }}
+                          </q-item-label>
+                          <q-item-label class="text-weight-bold">
+                            {{  summary.after }}
                           </q-item-label>
                         </q-item-section>
                       </q-item>
                     </q-list>
                   </q-card-section>
                 </q-card>
-
               </div>
-
-
 
               <!-- Table View -->
               <div v-else>
@@ -685,7 +685,8 @@ export default {
         { label: 'OWASP', value: 'OWASP' },
         { label: 'PMD', value: 'PMD' },
         { label: 'Bugs', value: 'StopBugs' },
-        { label: 'Style', value: 'CheckStyle' }
+        { label: 'Style', value: 'CheckStyle' },
+        { label: 'Dead', value: 'Die Dead Enough' }
       ],
 
       // Priority mapping for visual cues

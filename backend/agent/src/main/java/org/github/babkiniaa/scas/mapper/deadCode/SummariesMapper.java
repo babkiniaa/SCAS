@@ -8,10 +8,12 @@ import org.shchek.exps.CodeBlock;
 import org.shchek.exps.Module;
 import org.shchek.exps.Node;
 import org.shchek.exps.Summary;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class SummariesMapper {
 
     public SummaryCustomDto sumToDTO(Summary summary) {
