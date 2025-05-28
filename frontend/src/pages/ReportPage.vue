@@ -326,7 +326,7 @@
 
                 <!-- DeadCode Section -->
                 <q-card
-                  v-if="reportData.summaryCustoms.length && (selectReport === 'all' || selectReport === 'DieDead')"
+                  v-if="reportData.summaryCustoms.length && (selectReport === 'all' || selectReport === 'Die Dead Enough')"
                   flat
                   :class="isDarkMode ? 'bg-grey-10' : 'bg-cyan-1'"
                 >
@@ -335,7 +335,7 @@
                       <q-icon name="format_indent_increase" color="teal" size="md" class="q-mr-sm" />
                       <div class="text-h6 text-weight-bold">Dead sections</div>
                       <q-chip color="teal" text-color="white" class="q-ml-sm">
-                        {{ reportData.violationCustoms.length }} issues
+                        {{ reportData.summaryCustoms.length }} issues
                       </q-chip>
                     </div>
                   </q-card-section>

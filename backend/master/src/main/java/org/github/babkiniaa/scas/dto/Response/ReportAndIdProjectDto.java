@@ -32,7 +32,7 @@ public class ReportAndIdProjectDto {
 
     private List<ViolationCustomDto> violationCustoms;
 
-    private List<SummaryCustomDto> summaries;
+    private List<SummaryCustomDto> summaryCustoms;
 
     private List<String> analyzers;
 }
