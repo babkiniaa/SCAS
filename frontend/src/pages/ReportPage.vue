@@ -349,13 +349,18 @@
                         :class="isDarkMode ? 'bg-grey-9' : 'bg-white'"
                       >
                         <q-item-section>
-                          <q-item-label class="text-weight-bold">
-                            {{ summary.methodOrField }}
+                          <q-item-label class="text-h6 text-weight-bold">
+                            Method: {{ summary.methodOrField }}
                           </q-item-label>
                           <q-item-label caption>
                             {{ summary.key }}
                           </q-item-label>
-
+                          <q-item-label class="text-weight-bold">
+                            dead lines amount {{  summary.deadNodes.length }}
+                          </q-item-label>
+                          <q-item-label class="text-weight-bold">
+                            dead for {{  summary.result.toFixed(2) }} %
+                          </q-item-label>
                           <q-expansion-item
                             v-if="summary.deadNodes && summary.deadNodes.length"
                             label="Dead lines"
@@ -382,10 +387,10 @@
                           </q-expansion-item>
 
                           <q-item-label class="text-weight-bold">
-                            before {{  summary.before }}
+                            cyclomation: before {{  summary.before }}
                           </q-item-label>
                           <q-item-label class="text-weight-bold">
-                            after {{  summary.after }}
+                            after deadcode elimination: {{  summary.after }}
                           </q-item-label>
                         </q-item-section>
                       </q-item>
