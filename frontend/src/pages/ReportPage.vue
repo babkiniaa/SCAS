@@ -356,11 +356,36 @@
                             {{ summary.key }}
                           </q-item-label>
 
+                          <q-expansion-item
+                            v-if="summary.deadNodes && summary.deadNodes.length"
+                            label="Dead lines"
+                            icon="warning"
+                            switch-toggle-side
+                            class="q-mt-sm"
+                            :header-class="isDarkMode ? 'text-red-4' : 'text-red'"
+                          >
+                            <q-card :class="isDarkMode ? 'bg-grey-9' : 'bg-white'">
+                              <q-card-section>
+                                <div
+                                  v-for="dead in summary.deadNodes"
+                                  :key="dead.key"
+                                  class="q-pa-sm q-mb-sm rounded-borders"
+                                  :class="isDarkMode ? 'bg-red-10' : 'bg-red-1'"
+                                >
+                                  <div class="row items-center">
+                                    <q-icon name="warning" color="red" class="q-mr-sm" />
+                                    <div class="text-weight-bold">{{ dead }}</div>
+                                  </div>
+                                </div>
+                              </q-card-section>
+                            </q-card>
+                          </q-expansion-item>
+
                           <q-item-label class="text-weight-bold">
-                            {{  summary.before }}
+                            before {{  summary.before }}
                           </q-item-label>
                           <q-item-label class="text-weight-bold">
-                            {{  summary.after }}
+                            after {{  summary.after }}
                           </q-item-label>
                         </q-item-section>
                       </q-item>

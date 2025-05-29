@@ -24,6 +24,9 @@ public class SummariesMapper {
         List<String> deadStr = new ArrayList<>();
         for(Node n : summary.getDeadNodes()){
             deadStr.add(n.toString());
+            for( CodeBlock cb: n.getCodeSector()){
+                deadStr.add(cb.toString());
+            }
         }
         summaryDto.setDeadNodes(deadStr);
         summaryDto.setBefore(summary.getBefore());
