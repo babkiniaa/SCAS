@@ -10,14 +10,9 @@ import java.time.LocalDateTime;
 public class CreateProjectDto {
 
     private int userId;
-
     private String name;
-
     private String description;
-
     private String url;
-
     private boolean visibility = true;
-
     private LocalDateTime createdDate;
 }

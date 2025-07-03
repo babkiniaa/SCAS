@@ -1,5 +1,9 @@
 package org.github.babkiniaa.scas.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.media.*;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-
 /**
  * Контроллер для изменения пароля пользователя.
  * Отвечает за отправку кода подтверждения на email, проверку кода и обновление пароля.
@@ -30,27 +33,27 @@ import java.util.Map;
 public class PasswordController {
 
     private final EmailService emailService;
-
     private final UserService userService;
-
     private final TokenService tokenService;
 
-
-    /**
-     * Обрабатывает запрос на смену пароля отправляет письмо с кодом подтверждения на указанный email.
-     *
-     * @param email DTO с email для смены пароля
-     * @return имя шаблона для страницы авторизации
-     * @throws MessagingException           при ошибке отправки письма
-     * @throws UnsupportedEncodingException при ошибке кодировки email
-     */
+    @Operation(
+            summary = "Отправить код подтверждения на email для смены пароля",
+            description = "Принимает email, отправляет код подтверждения для дальнейшей смены пароля"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Код подтверждения отправлен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка валидации данных",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера при отправке письма")
+    })
     @PostMapping("/change")
     public ResponseEntity<?> verifyEmailForChangePassword(
-            @RequestBody @Valid VeritifyEmail email,
+            @RequestBody(description = "DTO с email для смены пароля", required = true,
+                    content = @Content(schema = @Schema(implementation = VeritifyEmail.class)))
+            @Valid @org.springframework.web.bind.annotation.RequestBody VeritifyEmail email,
             BindingResult result
     ) throws MessagingException, UnsupportedEncodingException {
         Map<String, String> errors = ValidCollerctor.collectValidationErrors(result);
-
         if (!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors);
         }
@@ -59,16 +62,21 @@ public class PasswordController {
         return ResponseEntity.ok("The token was sent to confirm the mail");
     }
 
-    /**
-     * Обрабатывает смену пароля проверяет совпадение введенных паролей обновляяя пароль пользователя.
-     *
-     * @param changePasswordDto DTO с новыми паролями
-     * @return имя шаблона для страницы авторизации
-     * @throws PasswordException если пароли не совпадают
-     */
+    @Operation(
+            summary = "Сменить пароль пользователя",
+            description = "Проверяет совпадение паролей и обновляет пароль пользователя по токену подтверждения"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Пароль успешно изменён"),
+            @ApiResponse(responseCode = "400", description = "Ошибка валидации или несовпадение паролей",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Токен не найден или просрочен")
+    })
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
-            @RequestBody @Valid ChangePasswordDto changePasswordDto,
+            @RequestBody(description = "DTO с новым паролем и токеном подтверждения", required = true,
+                    content = @Content(schema = @Schema(implementation = ChangePasswordDto.class)))
+            @Valid @org.springframework.web.bind.annotation.RequestBody ChangePasswordDto changePasswordDto,
             BindingResult result
     ) {
         Map<String, String> errors = ValidCollerctor.collectValidationErrors(result);

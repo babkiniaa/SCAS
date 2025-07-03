@@ -20,19 +20,15 @@ import java.util.stream.Collectors;
 public class MetricsService {
 
     private final MeterRegistry meterRegistry;
+    private final Map<String, AtomicInteger> bugCountGauges = new ConcurrentHashMap<>();
 
-    /**
-     * количество проектов у пользователя установить
-     **/
     public void userAnalysis(long userId1, int a) {
         String userId = String.valueOf(userId1);
         meterRegistry.counter("project_count_user", "userId", userId).increment(a);
         countProject();
     }
 
-    /**
-     * количество тасок у пользователя установить
-     **/
+
     public void userTask(long userId1, int a) {
         String userId = String.valueOf(userId1);
 
@@ -40,9 +36,7 @@ public class MetricsService {
         countAnalyze();
     }
 
-    /**
-     * количество репортов у пользователя установить
-     **/
+
     public void userReport(long userId1, int a, ReportAndIdProjectDto reportAndIdProjectDto) {
         String userId = String.valueOf(userId1);
 
@@ -52,9 +46,7 @@ public class MetricsService {
         projectAnalyzeMore(reportAndIdProjectDto);
     }
 
-    /**
-     * количество запускав анализатора одного по каждому проекту
-     **/
+
     public void projectAnalyzeOne(ReportAndIdProjectDto reportAndIdProjectDto) {
         String projectId = String.valueOf(reportAndIdProjectDto.getProjectId());
 
@@ -73,13 +65,11 @@ public class MetricsService {
         countStartAnalyzer(reportAndIdProjectDto);
     }
 
-    /**
-     * количество всех анализаторов проекту
-     **/
+
     public void projectAnalyzeMore(ReportAndIdProjectDto reportAndIdProjectDto) {
         String projectId = String.valueOf(reportAndIdProjectDto.getProjectId());
 
-        if ((reportAndIdProjectDto.getBugInstanceCustoms() != null) && reportAndIdProjectDto.getBugInstanceCustoms().size() > 0) {
+        if ((reportAndIdProjectDto.getBugInstanceCustoms() != null) && (reportAndIdProjectDto.getBugInstanceCustoms().size() > 0)) {
             meterRegistry.counter("all_analyze_count_project", "projectId", projectId).increment();
         }
         if ((reportAndIdProjectDto.getDependencyCustoms() != null) && reportAndIdProjectDto.getDependencyCustoms().size() > 0) {
@@ -93,9 +83,7 @@ public class MetricsService {
         }
     }
 
-    /**
-     * количество багов общих в report
-     **/
+
     public void bagsInAnalyze(long userId1, ReportAndIdProjectDto reportAndIdProjectDto, long reportId1) {
         String userId = String.valueOf(userId1);
         String branch = reportAndIdProjectDto.getBranch();
@@ -111,7 +99,6 @@ public class MetricsService {
         );
     }
 
-    private final Map<String, AtomicInteger> bugCountGauges = new ConcurrentHashMap<>();
 
     private void updateGaugeWithTags(String gaugeName, Tags tags, int value) {
         String key = generateGaugeKey(gaugeName, tags);
@@ -148,9 +135,6 @@ public class MetricsService {
     }
 
 
-    /**
-     * количество багов по каждому анализу в report
-     **/
     public void countBagsInAnalyze(ReportAndIdProjectDto reportAndIdProjectDto, long reportId1) {
         String reportId = String.valueOf(reportId1);
 
@@ -168,23 +152,17 @@ public class MetricsService {
         }
     }
 
-    /**
-     * количество созданных проектов в целом для админа 🦸‍♂️
-     **/
+
     public void countProject() {
         meterRegistry.counter("all_project_count", "admin", "admin").increment();
     }
 
-    /**
-     * сколько раз был запущен анализ 🦸‍♂️
-     **/
+
     public void countAnalyze() {
         meterRegistry.counter("all_analyze_count", "admin", "admin").increment();
     }
 
-    /**
-     * сколько каждый анализатор вообще отработал 🦸‍♂️
-     **/
+
     public void countStartAnalyzer(ReportAndIdProjectDto reportAndIdProjectDto) {
         if ((reportAndIdProjectDto.getBugInstanceCustoms() != null) && reportAndIdProjectDto.getBugInstanceCustoms().size() > 0) {
             meterRegistry.counter("all_spot_count_project", "admin", "admin").increment();
@@ -201,9 +179,6 @@ public class MetricsService {
     }
 
 
-    /**
-     * сколько всего было создано тасок 🦸‍♂️
-     **/
     public void countAllReport() {
         meterRegistry.counter("all_report_count", "admin", "admin").increment();
     }

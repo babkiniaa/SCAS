@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 public class ListReportDto {
 
     private long id;
-
     private String branch;
-
     private LocalDateTime createdDate;
 }

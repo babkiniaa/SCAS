@@ -12,12 +12,8 @@ import java.util.List;
 public class AnalyserDto {
 
     private long idProject;
-
     private List<String> needReports;
-
     private String branch;
-
     private String commit;
-
     private String url;
 }

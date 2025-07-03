@@ -20,7 +20,7 @@ public interface MasterServiceClient {
     @PostMapping("/project/create")
     long createProject(@RequestBody ProjectCreateDto projectCreateDto);
 
-    @GetMapping("report/status/{id}")
+    @GetMapping("report/{id}/status")
     StatusDto getStatus(@PathVariable("id") Long id);
 
     @GetMapping("report/get-reports/{id}")
@@ -47,7 +47,7 @@ public interface MasterServiceClient {
     @GetMapping("/agent/get-run-task")
     List<TaskInQueueDto> getRunTask();
 
-    @PostMapping("/agent/task/ban/{id}")
+    @PostMapping("/agent/task/{id}/ban")
     void banTask(@PathVariable("id") long taskId);
 
 }

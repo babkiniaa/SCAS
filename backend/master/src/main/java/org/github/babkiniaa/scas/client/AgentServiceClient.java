@@ -30,6 +30,6 @@ public interface AgentServiceClient {
     @GetMapping("/analysis/get-run-task")
     List<TaskInQueueDto> getRunTask();
 
-    @PostMapping("/analysis/task/ban/{id}")
+    @PostMapping("/analysis/task/{id}/ban")
     void banTask(@PathVariable("id") long taskId);
 }

@@ -31,14 +31,7 @@ public class TokenService {
         return StringUtils.randomAlphanumeric(size);
     }
 
-    /**
-     * Создает новый токен для указанного пользователя.
-     *
-     * <p>Токен будет иметь срок действия 1 час и сгенерированный код верификации.</p>
-     *
-     * @param user пользователь, для которого создается токен
-     * @return код верификации токена
-     */
+
     public String createToken(User user) {
         Token token = new Token();
         token.setUser(user);

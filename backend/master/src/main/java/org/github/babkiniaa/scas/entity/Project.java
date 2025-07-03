@@ -13,10 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 @Table
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "project")
-@EntityListeners(AuditingEntityListener.class)
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
