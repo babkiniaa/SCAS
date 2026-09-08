@@ -29,4 +29,13 @@ public class TaskQueue {
         status.remove(task.getIdProject());
         return task;
     }
+
+    public void banTask(long id){
+        status.put(id, "Ban");
+        queue.removeIf(task -> task.getIdProject() == id);
+    }
+
+    public int count(){
+        return queue.size();
+    }
 }

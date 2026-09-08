@@ -19,15 +19,7 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    /**
-     * Отправляет электронное письмо для верификации регистрации пользователя.
-     *
-     * @param email          адрес электронной почты получателя
-     * @param verificationCode код верификации
-     * @param request        объект {@link HttpServletRequest}, необходимый для получения URL сайта
-     * @throws UnsupportedEncodingException если кодировка не поддерживается
-     * @throws MessagingException если произошла ошибка при отправке сообщения
-     */
+
     public void sendVerificationEmail(
             String email, String verificationCode, HttpServletRequest request
     ) throws UnsupportedEncodingException, MessagingException {
@@ -45,14 +37,7 @@ public class EmailService {
         return siteURL.replace(request.getServletPath(), "");
     }
 
-    /**
-     * Отправляет электронное письмо для сброса пароля пользователя.
-     *
-     * @param email          адрес электронной почты получателя
-     * @param verificationCode код верификации
-     * @throws MessagingException если произошла ошибка при отправке сообщения
-     * @throws UnsupportedEncodingException если кодировка не поддерживается
-     */
+
     public void sendVerificationPassword(
             String email, String verificationCode
     ) throws MessagingException, UnsupportedEncodingException {

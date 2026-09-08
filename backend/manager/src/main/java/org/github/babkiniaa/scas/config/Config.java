@@ -1,5 +1,10 @@
 package org.github.babkiniaa.scas.config;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.github.babkiniaa.scas.security.JwtTokenFilter;
@@ -59,6 +64,14 @@ public class Config implements WebMvcConfigurer {
         return configuration.getAuthenticationManager();
     }
 
+    @Bean
+    public OpenAPI openAPI(){
+        return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("bearerAuth")).
+                components(new Components().addSecuritySchemes("bearerAuth", new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP).scheme("bearer")
+                        .bearerFormat("JWT"))).info(new Info().title("Application made by Made Manoilov Konstantin")
+                        .description("SCAS-manager"));
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -73,7 +86,7 @@ public class Config implements WebMvcConfigurer {
                                 )
                 )
                 .authorizeHttpRequests(configurer ->
-                        configurer.requestMatchers("/auth/**", "/password/**", "/verify/**").permitAll()
+                        configurer.requestMatchers("/auth/**", "/password/**", "/verify/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .anonymous(AbstractHttpConfigurer::disable)

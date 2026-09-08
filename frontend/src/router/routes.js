@@ -1,3 +1,8 @@
+import MainLayout from 'src/layouts/MainLayout.vue'
+import DashboardPage from 'src/pages/DashboardPage.vue'
+import UsersPage from 'src/pages/UsersPage.vue'
+import TasksPage from 'src/pages/TasksPage.vue'
+
 const routes = [
   { path: '/login', component: () => import('pages/loginPage.vue') },
   { path: '/register', component: () => import('pages/RegisterPage.vue') },
@@ -12,7 +17,16 @@ const routes = [
   { path: '/reset-password-page', component: () => import('pages/ResetPasswordPage.vue') },
   { path: '/report/:id', name: 'report', component: () => import('pages/ReportPage.vue'), props: true },
   { path: '/project/:id', name: 'project', component: () => import('pages/ProjectPage.vue'), props: true },
-  { path: '/admin', name: 'admin', component: () => import('pages/AdminPage.vue'), props: true }
+  {
+    path: '/admin',
+    component: MainLayout,
+    children: [
+      { path: '', redirect: '/dashboard' },
+      { path: 'dashboard', component: DashboardPage },
+      { path: 'users', component: UsersPage },
+      { path: 'tasks', component: TasksPage }
+    ]
+  }
 ]
 
 export default routes

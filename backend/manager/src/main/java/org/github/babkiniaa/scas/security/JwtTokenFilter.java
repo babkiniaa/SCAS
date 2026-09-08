@@ -26,11 +26,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private static final String START_TOKEN = "Bearer ";
 
-    /**
-     * Фильтр для обработки JWT токенов.
-     * Извлекает токен из заголовка Authorization и проверяет его валидность.
-     * Если токен действителен, устанавливает аутентификацию в SecurityContext.
-     */
+
     @Override
     @SneakyThrows
     protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) {
@@ -51,24 +47,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    /**
-     * Извлекает email из токена JWT.
-     *
-     * @param token JWT токен
-     * @return email пользователя, извлечённый из токена
-     */
+
     private String getEmail(String token) {
 
         return Jwts.parser().verifyWith(jwtTokenProvider.getSigningKey()).build().parseSignedClaims(token).getPayload().getSubject();
     }
 
-    /**
-     * Получает объект Authentication на основе токена.
-     * Загружает данные пользователя и создаёт UsernamePasswordAuthenticationToken.
-     *
-     * @param token JWT токен
-     * @return объект Authentication для пользователя
-     */
+
     public Authentication getAuthentication(String token) {
         String email = getEmail(token);
         UserDetails userDetails = userDetailService.loadUserByUsername(email);
